@@ -84,10 +84,9 @@ remains if we observe the other. It holds that
 
 The following figure gives a good overview:
 
-.. image:: images/mutual_info_overview.png
-  :width: 300pt
+.. figure:: _static/images/mutual_info_overview.png
 
-
+    Mutual information overview.
 
 
 Kullback-Leibler divergence
