@@ -24,6 +24,16 @@ This workflow describes the process of adding code to the repository.
 #. Once your changes are accepted, merge your branch into master. This can
    also be done by the last reviewer that accepts the pull request.
 
+Git commit messages
+-------------------
+Have a look at this `guideline <https://github.com/erlang/otp/wiki/writing-good-commit-messages>`_
+Most important:
+* Single line summary starting with a verb (50 characters)
+* Longer summary if necessary (wrapped at 72 characters).
+
+Editors like ``vim`` enforce these constraints automatically.
+
+
 Style Guide
 ===========
 Follow :pep:`8` styleguide. It is worth reading through the entire
