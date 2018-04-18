@@ -17,12 +17,13 @@ This is just to demonstrate latex.
 
    (a - b)^2 = a^2 - 2ab + b^2
 
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents
+   :glob:
 
-   glossary
-   contributing
+   *
 
 
 

@@ -22,7 +22,7 @@ This workflow describes the process of adding code to the repository.
    #. ``git checkout master``
    #. ``git pull`` to get the latest changes.
    #. ``git checkout <name-for-your-branch>``
-   #. ``git merge master``. This might need to conflicts that you have to resolve
+   #. ``git merge master``. This might lead to conflicts that you have to resolve
       manually.
 
 #. Push your branch to github with ``git push origin <name-for-your-branch>``.
