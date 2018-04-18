@@ -22,7 +22,7 @@ This is just to demonstrate latex.
    :caption: Contents
 
    glossary
-   git_workflow
+   contributing
 
 
 

@@ -16,6 +16,15 @@ This workflow describes the process of adding code to the repository.
 #. Create a new local branch with ``git checkout -b <name-for-your-branch>``.
    It can make sense to prefix your branch with a description like ``feature`` or ``fix``.
 #. Solve the issue, most probably in several commits.
+#. In the meantime there might have been changes on the master branch. So you need
+   to merge these changes into your branch.
+
+   #. ``git checkout master``
+   #. ``git pull`` to get the latest changes.
+   #. ``git checkout <name-for-your-branch>``
+   #. ``git merge master``. This might need to conflicts that you have to resolve
+      manually.
+
 #. Push your branch to github with ``git push origin <name-for-your-branch>``.
 #. Go to github and switch to your branch.
 #. Send a pull request from the web UI on github.
@@ -26,8 +35,10 @@ This workflow describes the process of adding code to the repository.
 
 Git commit messages
 -------------------
-Have a look at this `guideline <https://github.com/erlang/otp/wiki/writing-good-commit-messages>`_
+Have a look at this `guideline <https://github.com/erlang/otp/wiki/writing-good-commit-messages>`_.
+
 Most important:
+
 * Single line summary starting with a verb (50 characters)
 * Longer summary if necessary (wrapped at 72 characters).
 
@@ -41,20 +52,23 @@ styleguide, but the most importand points are summarized here.
 
 Naming
 ------
-Functions and variables use ``snake_case``
-Classes use ``CamelCase``
-Constants use ``CAPITAL_SNAKE_CASE``
+* Functions and variables use ``snake_case``
+* Classes use ``CamelCase``
+* Constants use ``CAPITAL_SNAKE_CASE``
 
 Spacing
 -------
 Spaces around infix operators and assignment
+
 * ``a + b`` not ``a+b``
 * ``a = 1`` not ``a=1``
 
 An exception are keyword arguments
+
 * ``some_function(arg1=a, arg2=b)`` not ``some_function(arg1 = a, arg2 = b)``
 
 Use one space after separating commas
+
 * ``some_list = [1, 2, 3]`` not ``some_list = [1,2,3]``
 
 In general PyCharm's auto format (Ctrl + Alt + l) should be good enough.
