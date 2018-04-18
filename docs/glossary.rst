@@ -114,7 +114,7 @@ Yet it is not a real distance as symmetry is not given.
 
 Typicality
 ^^^^^^^^^^
-TODO
+TODO Test
 
 
 
