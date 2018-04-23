@@ -3,7 +3,7 @@ import keras
 import keras.backend as K
 import numpy as np
 
-import cPickle
+import pickle as cPickle
 import os
 
 import utils
