@@ -4,3 +4,4 @@ tensorflow
 joblib
 matplotlib
 statsmodels
+pillow
