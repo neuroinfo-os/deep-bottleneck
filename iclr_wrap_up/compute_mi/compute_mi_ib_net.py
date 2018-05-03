@@ -12,56 +12,49 @@ from iclr_wrap_up import utils
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 import seaborn as sns
+
 sns.set_style('darkgrid')
 
 
-def load(training_data, test_data, epochs, architecture_name, full_mi):
-    estimator = MutualInformationEstimator(training_data, test_data, epochs, architecture_name, full_mi)
+def load(training_data, test_data, epochs, architecture_name, full_mi, activation_fn):
+    estimator = MutualInformationEstimator(training_data, test_data, epochs,
+                                           architecture_name, full_mi, activation_fn)
     return estimator
-
 
 
 class MutualInformationEstimator:
 
-    def __init__(self, training_data, test_data, epochs, architecture_name, full_mi):
+    def __init__(self, training_data, test_data, epochs, architecture_name, full_mi, activation_fn):
         self.training_data = training_data
         self.test_data = test_data
         self.epochs = epochs
         self.architecture_name = architecture_name
         self.full_mi = full_mi
-
-
-
+        self.activation_fn = activation_fn
 
     def compute_mi(self):
         # Which measure to plot
         infoplane_measure = 'upper'
         # infoplane_measure = 'bin'
 
-        DO_LOWER       = (infoplane_measure == 'lower')   # Whether to compute lower bounds also
-        DO_BINNED      = (infoplane_measure == 'bin')     # Whether to compute MI estimates based on binning
+        DO_LOWER = (infoplane_measure == 'lower')  # Whether to compute lower bounds also
+        DO_BINNED = (infoplane_measure == 'bin')  # Whether to compute MI estimates based on binning
 
-        NUM_LABELS = 2
-        # MAX_EPOCHS = 1000
-        COLORBAR_MAX_EPOCHS = 10000
 
         # Directories from which to load saved layer activity
-        # ARCH = '1024-20-20-20'
-        architecture_name = '10-7-5-4-3'
-        #ARCH = '20-20-20-20-20-20'
-        #ARCH = '32-28-24-20-16-12'
-        #ARCH = '32-28-24-20-16-12-8-8'
-        DIR_TEMPLATE = '%%s_%s'%architecture_name
+        DIR_TEMPLATE = '%%s_%s' % self.architecture_name
 
         # Functions to return upper and lower bounds on entropy of layer activity
-        noise_variance = 1e-3                    # Added Gaussian noise variance
-        binsize = 0.07                           # size of bins for binning method
+        noise_variance = 1e-3  # Added Gaussian noise variance
+        binsize = 0.07  # size of bins for binning method
         Klayer_activity = K.placeholder(ndim=2)  # Keras placeholder
-        entropy_func_upper = K.function([Klayer_activity,], [kde.entropy_estimator_kl(Klayer_activity, noise_variance),])
-        entropy_func_lower = K.function([Klayer_activity,], [kde.entropy_estimator_bd(Klayer_activity, noise_variance),])
+        entropy_func_upper = K.function([Klayer_activity, ],
+                                        [kde.entropy_estimator_kl(Klayer_activity, noise_variance), ])
+        entropy_func_lower = K.function([Klayer_activity, ],
+                                        [kde.entropy_estimator_bd(Klayer_activity, noise_variance), ])
 
         # nats to bits conversion factor
-        nats2bits = 1.0/np.log(2)
+        nats2bits = 1.0 / np.log(2)
 
         # Save indexes of tests data for each of the output classes
         saved_labelixs = {}
@@ -73,24 +66,20 @@ class MutualInformationEstimator:
             y = full.y
             Y = full.Y
 
-        for i in range(NUM_LABELS):
+        for i in range(self.training_data.nb_classes):
             saved_labelixs[i] = y == i
 
         labelprobs = np.mean(Y, axis=0)
 
-
         # ------------------------------------
 
-        PLOT_LAYERS    = None     # Which layers to plot.  If None, all saved layers are plotted
+        PLOT_LAYERS = None  # Which layers to plot.  If None, all saved layers are plotted
 
         # Data structure used to store results
         measures = OrderedDict()
-        measures['tanh'] = {}
-        measures['relu'] = {}
-        # measures['softsign'] = {}
-        # measures['softplus'] = {}
+        measures[self.activation_fn] = {}
 
-        #----------------------------------------
+        # ----------------------------------------
 
         for activation in measures.keys():
             cur_dir = 'rawdata/' + DIR_TEMPLATE % activation
@@ -139,13 +128,13 @@ class MutualInformationEstimator:
 
                 # Compute conditional entropies of layer activity given output
                 hM_given_Y_upper = 0.
-                for i in range(NUM_LABELS):
+                for i in range(self.training_data.nb_classes):
                     hcond_upper = entropy_func_upper([activity[saved_labelixs[i], :], ])[0]
                     hM_given_Y_upper += labelprobs[i] * hcond_upper
 
                 if DO_LOWER:
                     hM_given_Y_lower = 0.
-                    for i in range(NUM_LABELS):
+                    for i in range(self.training_data.nb_classes):
                         hcond_lower = entropy_func_lower([activity[saved_labelixs[i], :], ])[0]
                         hM_given_Y_lower += labelprobs[i] * hcond_lower
 
@@ -154,29 +143,30 @@ class MutualInformationEstimator:
                 cepochdata['H_M_upper'].append(nats2bits * h_upper)
 
                 pstr = 'upper: MI(X;M)=%0.3f, MI(Y;M)=%0.3f' % (
-                cepochdata['MI_XM_upper'][-1], cepochdata['MI_YM_upper'][-1])
+                    cepochdata['MI_XM_upper'][-1], cepochdata['MI_YM_upper'][-1])
                 if DO_LOWER:  # Compute lower bounds
                     cepochdata['MI_XM_lower'].append(nats2bits * (h_lower - hM_given_X))
                     cepochdata['MI_YM_lower'].append(nats2bits * (h_lower - hM_given_Y_lower))
                     cepochdata['H_M_lower'].append(nats2bits * h_lower)
                     pstr += ' | lower: MI(X;M)=%0.3f, MI(Y;M)=%0.3f' % (
-                    cepochdata['MI_XM_lower'][-1], cepochdata['MI_YM_lower'][-1])
+                        cepochdata['MI_XM_lower'][-1], cepochdata['MI_YM_lower'][-1])
 
                 if DO_BINNED:  # Compute binned estimates
                     binxm, binym = simplebinmi.bin_calc_information2(saved_labelixs, activity, binsize)
                     cepochdata['MI_XM_bin'].append(nats2bits * binxm)
                     cepochdata['MI_YM_bin'].append(nats2bits * binym)
                     pstr += ' | bin: MI(X;M)=%0.3f, MI(Y;M)=%0.3f' % (
-                    cepochdata['MI_XM_bin'][-1], cepochdata['MI_YM_bin'][-1])
+                        cepochdata['MI_XM_bin'][-1], cepochdata['MI_YM_bin'][-1])
 
                 print('- Layer %d %s' % (lndx, pstr))
 
             measures[activation][epoch] = cepochdata
 
-        #--------------------------
+        # --------------------------
 
-        max_epoch = max((max(vals.keys()) if len(vals) else 0) for vals in measures.values())
-        sm = plt.cm.ScalarMappable(cmap='gnuplot', norm=plt.Normalize(vmin=0, vmax=COLORBAR_MAX_EPOCHS))
+        os.makedirs('plots/', exist_ok=True)
+
+        sm = plt.cm.ScalarMappable(cmap='gnuplot', norm=plt.Normalize(vmin=0, vmax=self.epochs))
         sm._A = []
 
         fig = plt.figure(figsize=(10, 5))
@@ -205,10 +195,10 @@ class MutualInformationEstimator:
         plt.colorbar(sm, label='Epoch', cax=cbaxes)
         plt.tight_layout()
 
-        # if DO_SAVE:
-        # plt.savefig('plots/' + DIR_TEMPLATE % ('infoplane_'+ARCH),bbox_inches='tight')
+        plt.savefig('plots/' + DIR_TEMPLATE % ('infoplane_' + self.architecture_name),
+                    bbox_inches='tight')
 
-        #------------------------------------------------
+        # ------------------------------------------------
 
         plt.figure(figsize=(12, 5))
 
@@ -250,6 +240,4 @@ class MutualInformationEstimator:
 
         plt.legend(loc='lower left', bbox_to_anchor=(1.1, 0.2))
         plt.tight_layout()
-
-        plt.savefig('plots/' + DIR_TEMPLATE % ('snr_'+architecture_name), bbox_inches='tight')
-
+        plt.savefig('plots/' + DIR_TEMPLATE % ('snr_' + self.architecture_name), bbox_inches='tight')
