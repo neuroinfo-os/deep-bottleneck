@@ -1,5 +1,5 @@
-import keras
-import keras.backend as K
+from tensorflow.contrib import keras
+from tensorflow.contrib.keras import backend as K
 import numpy as np
 
 import pickle

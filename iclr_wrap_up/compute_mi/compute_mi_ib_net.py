@@ -3,7 +3,7 @@ import pickle
 from collections import defaultdict, OrderedDict
 
 import numpy as np
-import keras.backend as K
+from tensorflow.contrib.keras import backend as K
 
 from iclr_wrap_up import kde
 from iclr_wrap_up import simplebinmi

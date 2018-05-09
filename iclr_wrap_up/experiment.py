@@ -13,9 +13,9 @@ ex = Experiment('sacred_keras_example')
 
 @ex.config
 def hyperparameters():
-    epochs = 10000
+    epochs = 10
     batch_size = 256
-    architecture = [10, 7, 5, 4, 3]
+    architecture = [10, 7, 3]
     learning_rate = 0.0004
     full_mi = True
     infoplane_measure = 'upper'

@@ -1,4 +1,4 @@
-import keras
+from tensorflow.contrib import keras
 import tensorflow as tf
 import numpy as np
 
@@ -16,7 +16,7 @@ def load(architecture, activation_fn, learning_rate, input_size, output_size):
     output_layer = keras.layers.Dense(output_size, activation='softmax')(clayer)
 
     model = keras.models.Model(inputs=input_layer, outputs=output_layer)
-    optimizer = keras.optimizers.TFOptimizer(tf.train.AdamOptimizer(learning_rate=learning_rate))
+    optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate)
 
     model.compile(loss='categorical_crossentropy', optimizer=optimizer, metrics=['accuracy'])
 
