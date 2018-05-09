@@ -1,0 +1,19 @@
+{
+  "activation_fn": "tanh",
+  "architecture": [
+    10,
+    7,
+    3
+  ],
+  "architecture_name": "10-7-3",
+  "batch_size": 256,
+  "dataset": "datasets.harmonics",
+  "epochs": 10,
+  "estimator": "compute_mi.compute_mi_ib_net",
+  "full_mi": true,
+  "infoplane_measure": "upper",
+  "learning_rate": 0.0004,
+  "model": "models.feedforward",
+  "save_dir": "rawdata/tanh_10-7-3",
+  "seed": 388045258
+}

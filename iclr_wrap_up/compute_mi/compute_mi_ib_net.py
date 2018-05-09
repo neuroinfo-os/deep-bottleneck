@@ -16,29 +16,29 @@ import seaborn as sns
 sns.set_style('darkgrid')
 
 
-def load(training_data, test_data, epochs, architecture_name, full_mi, activation_fn):
+def load(training_data, test_data, epochs, architecture_name, full_mi, activation_fn, infoplane_measure):
     estimator = MutualInformationEstimator(training_data, test_data, epochs,
-                                           architecture_name, full_mi, activation_fn)
+                                           architecture_name, full_mi, activation_fn, infoplane_measure)
     return estimator
 
 
 class MutualInformationEstimator:
 
-    def __init__(self, training_data, test_data, epochs, architecture_name, full_mi, activation_fn):
+    def __init__(self, training_data, test_data, epochs, architecture_name, full_mi, activation_fn, infoplane_measure):
         self.training_data = training_data
         self.test_data = test_data
         self.epochs = epochs
         self.architecture_name = architecture_name
         self.full_mi = full_mi
         self.activation_fn = activation_fn
+        self.infoplane_measure = infoplane_measure
 
     def compute_mi(self):
         # Which measure to plot
-        infoplane_measure = 'upper'
         # infoplane_measure = 'bin'
 
-        DO_LOWER = (infoplane_measure == 'lower')  # Whether to compute lower bounds also
-        DO_BINNED = (infoplane_measure == 'bin')  # Whether to compute MI estimates based on binning
+        DO_LOWER = (self.infoplane_measure == 'lower')  # Whether to compute lower bounds also
+        DO_BINNED = (self.infoplane_measure == 'bin')  # Whether to compute MI estimates based on binning
 
 
         # Directories from which to load saved layer activity
@@ -177,8 +177,8 @@ class MutualInformationEstimator:
             plt.subplot(1, 2, actndx + 1)
             for epoch in epochs:
                 c = sm.to_rgba(epoch)
-                xmvals = np.array(vals[epoch]['MI_XM_' + infoplane_measure])[PLOT_LAYERS]
-                ymvals = np.array(vals[epoch]['MI_YM_' + infoplane_measure])[PLOT_LAYERS]
+                xmvals = np.array(vals[epoch]['MI_XM_' + self.infoplane_measure])[PLOT_LAYERS]
+                ymvals = np.array(vals[epoch]['MI_YM_' + self.infoplane_measure])[PLOT_LAYERS]
 
                 plt.plot(xmvals, ymvals, c=c, alpha=0.1, zorder=1)
                 plt.scatter(xmvals, ymvals, s=20, facecolors=[c for _ in PLOT_LAYERS], edgecolor='none', zorder=2)

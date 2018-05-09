@@ -9,14 +9,16 @@ from sacred.observers import FileStorageObserver
 ex = Experiment('sacred_keras_example')
 #ex.observers.append(MongoObserver.create(url='mongodb://127.0.0.1:27017',
 #                                         db_name='dneck_test'))
+ex.observers.append(FileStorageObserver.create('my_runs'))
 
 
 @ex.config
 def hyperparameters():
-    epochs = 10000
+    epochs = 10
     batch_size = 256
-    architecture = [10, 7, 5, 4, 3]
+    architecture = [10, 7, 3]
     learning_rate = 0.0004
+    activation_fn = 'relu'
     full_mi = True
     infoplane_measure = 'upper'
     architecture_name= '-'.join(map(str, architecture))

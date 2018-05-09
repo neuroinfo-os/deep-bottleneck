@@ -1,0 +1,88 @@
+INFO - sacred_keras_example - Running command 'conduct'
+INFO - sacred_keras_example - Started run with ID "1"
+Epoch 1/10
+2018-05-08 15:01:17.200361: I tensorflow/core/platform/cpu_feature_guard.cc:140] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 FMA
+ - 0s - loss: 0.7819 - acc: 0.4657
+Saving rawdata/tanh_10-7-3/epoch00000000
+Epoch 2/10
+ - 0s - loss: 0.7477 - acc: 0.4965
+Saving rawdata/tanh_10-7-3/epoch00000001
+Epoch 3/10
+ - 0s - loss: 0.7265 - acc: 0.5279
+Saving rawdata/tanh_10-7-3/epoch00000002
+Epoch 4/10
+ - 0s - loss: 0.7137 - acc: 0.5432
+Saving rawdata/tanh_10-7-3/epoch00000003
+Epoch 5/10
+ - 0s - loss: 0.7043 - acc: 0.5520
+Saving rawdata/tanh_10-7-3/epoch00000004
+Epoch 6/10
+ - 0s - loss: 0.6966 - acc: 0.5612
+Saving rawdata/tanh_10-7-3/epoch00000005
+Epoch 7/10
+ - 0s - loss: 0.6898 - acc: 0.5679
+Saving rawdata/tanh_10-7-3/epoch00000006
+Epoch 8/10
+ - 0s - loss: 0.6837 - acc: 0.5767
+Saving rawdata/tanh_10-7-3/epoch00000007
+Epoch 9/10
+ - 0s - loss: 0.6781 - acc: 0.5844
+Saving rawdata/tanh_10-7-3/epoch00000008
+Epoch 10/10
+ - 0s - loss: 0.6729 - acc: 0.5935
+Saving rawdata/tanh_10-7-3/epoch00000009
+*** Doing rawdata/tanh_10-7-3 ***
+Doing rawdata/tanh_10-7-3/epoch00000000
+- Layer 0 upper: MI(X;M)=12.000, MI(Y;M)=0.999
+- Layer 1 upper: MI(X;M)=12.000, MI(Y;M)=0.999
+- Layer 2 upper: MI(X;M)=10.378, MI(Y;M)=0.438
+- Layer 3 upper: MI(X;M)=3.271, MI(Y;M)=0.017
+Doing rawdata/tanh_10-7-3/epoch00000001
+- Layer 0 upper: MI(X;M)=12.000, MI(Y;M)=0.999
+- Layer 1 upper: MI(X;M)=12.000, MI(Y;M)=0.999
+- Layer 2 upper: MI(X;M)=10.377, MI(Y;M)=0.447
+- Layer 3 upper: MI(X;M)=3.254, MI(Y;M)=0.015
+Doing rawdata/tanh_10-7-3/epoch00000002
+- Layer 0 upper: MI(X;M)=12.000, MI(Y;M)=0.999
+- Layer 1 upper: MI(X;M)=12.000, MI(Y;M)=0.999
+- Layer 2 upper: MI(X;M)=10.334, MI(Y;M)=0.452
+- Layer 3 upper: MI(X;M)=3.191, MI(Y;M)=0.016
+Doing rawdata/tanh_10-7-3/epoch00000003
+- Layer 0 upper: MI(X;M)=12.000, MI(Y;M)=0.999
+- Layer 1 upper: MI(X;M)=12.000, MI(Y;M)=0.999
+- Layer 2 upper: MI(X;M)=10.253, MI(Y;M)=0.441
+- Layer 3 upper: MI(X;M)=3.105, MI(Y;M)=0.019
+Doing rawdata/tanh_10-7-3/epoch00000004
+- Layer 0 upper: MI(X;M)=12.000, MI(Y;M)=0.999
+- Layer 1 upper: MI(X;M)=12.000, MI(Y;M)=0.999
+- Layer 2 upper: MI(X;M)=10.169, MI(Y;M)=0.434
+- Layer 3 upper: MI(X;M)=3.025, MI(Y;M)=0.023
+Doing rawdata/tanh_10-7-3/epoch00000005
+- Layer 0 upper: MI(X;M)=12.000, MI(Y;M)=0.999
+- Layer 1 upper: MI(X;M)=12.000, MI(Y;M)=0.999
+- Layer 2 upper: MI(X;M)=10.089, MI(Y;M)=0.429
+- Layer 3 upper: MI(X;M)=2.951, MI(Y;M)=0.026
+Doing rawdata/tanh_10-7-3/epoch00000006
+- Layer 0 upper: MI(X;M)=12.000, MI(Y;M)=0.999
+- Layer 1 upper: MI(X;M)=12.000, MI(Y;M)=0.999
+- Layer 2 upper: MI(X;M)=10.010, MI(Y;M)=0.422
+- Layer 3 upper: MI(X;M)=2.887, MI(Y;M)=0.030
+Doing rawdata/tanh_10-7-3/epoch00000007
+- Layer 0 upper: MI(X;M)=12.000, MI(Y;M)=0.999
+- Layer 1 upper: MI(X;M)=11.999, MI(Y;M)=0.999
+- Layer 2 upper: MI(X;M)=9.935, MI(Y;M)=0.414
+- Layer 3 upper: MI(X;M)=2.832, MI(Y;M)=0.034
+Doing rawdata/tanh_10-7-3/epoch00000008
+- Layer 0 upper: MI(X;M)=12.000, MI(Y;M)=0.999
+- Layer 1 upper: MI(X;M)=11.999, MI(Y;M)=0.999
+- Layer 2 upper: MI(X;M)=9.868, MI(Y;M)=0.410
+- Layer 3 upper: MI(X;M)=2.784, MI(Y;M)=0.040
+Doing rawdata/tanh_10-7-3/epoch00000009
+- Layer 0 upper: MI(X;M)=12.000, MI(Y;M)=0.999
+- Layer 1 upper: MI(X;M)=11.999, MI(Y;M)=0.999
+- Layer 2 upper: MI(X;M)=9.826, MI(Y;M)=0.411
+- Layer 3 upper: MI(X;M)=2.751, MI(Y;M)=0.045
+/media/jonas/data/anaconda3/envs/dneck/lib/python3.6/site-packages/matplotlib/figure.py:2267: UserWarning: This figure includes Axes that are not compatible with tight_layout, so results might be incorrect.
+  warnings.warn("This figure includes Axes that are not compatible "
+INFO - matplotlib.backends._backend_tk - Could not load matplotlib icon: can't use "pyimage10" as iconphoto: not a photo image
+INFO - sacred_keras_example - Completed after 0:00:19

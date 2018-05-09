@@ -1,0 +1,71 @@
+{
+  "artifacts": [],
+  "command": "conduct",
+  "experiment": {
+    "base_dir": "/media/jonas/data/deep-bottleneck/iclr_wrap_up",
+    "dependencies": [
+      "numpy==1.14.2",
+      "sacred==0.7.2"
+    ],
+    "mainfile": "experiment.py",
+    "name": "sacred_keras_example",
+    "repositories": [],
+    "sources": [
+      [
+        "callbacks/__init__.py",
+        "_sources/__init___d41d8cd98f00b204e9800998ecf8427e.py"
+      ],
+      [
+        "callbacks/loggingreporter.py",
+        "_sources/loggingreporter_039ae980ff63e520254e6f9eefb3f2aa.py"
+      ],
+      [
+        "experiment.py",
+        "_sources/experiment_dbe079682384fb2c704f6d9b3e8f62f7.py"
+      ]
+    ]
+  },
+  "heartbeat": "2018-05-08T13:01:36.311594",
+  "host": {
+    "ENV": {},
+    "cpu": "Intel(R) Core(TM) i7-6500U CPU @ 2.50GHz",
+    "hostname": "jonas",
+    "os": [
+      "Linux",
+      "Linux-4.13.0-39-generic-x86_64-with-debian-stretch-sid"
+    ],
+    "python_version": "3.6.5"
+  },
+  "meta": {
+    "command": "conduct",
+    "options": {
+      "--beat_interval": null,
+      "--capture": null,
+      "--comment": null,
+      "--debug": false,
+      "--enforce_clean": false,
+      "--file_storage": null,
+      "--force": false,
+      "--help": false,
+      "--loglevel": null,
+      "--mongo_db": null,
+      "--name": null,
+      "--pdb": false,
+      "--print_config": false,
+      "--priority": null,
+      "--queue": false,
+      "--sql": null,
+      "--tiny_db": null,
+      "--unobserved": false,
+      "COMMAND": null,
+      "UPDATE": [],
+      "help": false,
+      "with": false
+    }
+  },
+  "resources": [],
+  "result": null,
+  "start_time": "2018-05-08T13:01:16.818958",
+  "status": "COMPLETED",
+  "stop_time": "2018-05-08T13:01:36.310663"
+}
