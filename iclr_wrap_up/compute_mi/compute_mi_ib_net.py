@@ -9,8 +9,6 @@ from iclr_wrap_up import kde
 from iclr_wrap_up import simplebinmi
 from iclr_wrap_up import utils
 
-import matplotlib.pyplot as plt
-import matplotlib.gridspec as gridspec
 import seaborn as sns
 
 sns.set_style('darkgrid')
@@ -132,19 +130,20 @@ class MutualInformationEstimator:
                     hcond_upper = entropy_func_upper([activity[saved_labelixs[i], :], ])[0]
                     hM_given_Y_upper += labelprobs[i] * hcond_upper
 
-                if DO_LOWER:
-                    hM_given_Y_lower = 0.
-                    for i in range(self.training_data.nb_classes):
-                        hcond_lower = entropy_func_lower([activity[saved_labelixs[i], :], ])[0]
-                        hM_given_Y_lower += labelprobs[i] * hcond_lower
-
                 cepochdata['MI_XM_upper'].append(nats2bits * (h_upper - hM_given_X))
                 cepochdata['MI_YM_upper'].append(nats2bits * (h_upper - hM_given_Y_upper))
                 cepochdata['H_M_upper'].append(nats2bits * h_upper)
 
                 pstr = 'upper: MI(X;M)=%0.3f, MI(Y;M)=%0.3f' % (
                     cepochdata['MI_XM_upper'][-1], cepochdata['MI_YM_upper'][-1])
+
                 if DO_LOWER:  # Compute lower bounds
+
+                    hM_given_Y_lower = 0.
+                    for i in range(self.training_data.nb_classes):
+                        hcond_lower = entropy_func_lower([activity[saved_labelixs[i], :], ])[0]
+                        hM_given_Y_lower += labelprobs[i] * hcond_lower
+
                     cepochdata['MI_XM_lower'].append(nats2bits * (h_lower - hM_given_X))
                     cepochdata['MI_YM_lower'].append(nats2bits * (h_lower - hM_given_Y_lower))
                     cepochdata['H_M_lower'].append(nats2bits * h_lower)
@@ -162,82 +161,6 @@ class MutualInformationEstimator:
 
             measures[activation][epoch] = cepochdata
 
-        # --------------------------
+        return measures, PLOT_LAYERS
 
-        os.makedirs('plots/', exist_ok=True)
 
-        sm = plt.cm.ScalarMappable(cmap='gnuplot', norm=plt.Normalize(vmin=0, vmax=self.epochs))
-        sm._A = []
-
-        fig = plt.figure(figsize=(10, 5))
-        for actndx, (activation, vals) in enumerate(measures.items()):
-            epochs = sorted(vals.keys())
-            if not len(epochs):
-                continue
-            plt.subplot(1, 2, actndx + 1)
-            for epoch in epochs:
-                c = sm.to_rgba(epoch)
-                xmvals = np.array(vals[epoch]['MI_XM_' + self.infoplane_measure])[PLOT_LAYERS]
-                ymvals = np.array(vals[epoch]['MI_YM_' + self.infoplane_measure])[PLOT_LAYERS]
-
-                plt.plot(xmvals, ymvals, c=c, alpha=0.1, zorder=1)
-                plt.scatter(xmvals, ymvals, s=20, facecolors=[c for _ in PLOT_LAYERS], edgecolor='none', zorder=2)
-
-            plt.ylim([0, 1])
-            plt.xlim([0, 12])
-            #     plt.ylim([0, 3.5])
-            #     plt.xlim([0, 14])
-            plt.xlabel('I(X;M)')
-            plt.ylabel('I(Y;M)')
-            plt.title(activation)
-
-        cbaxes = fig.add_axes([1.0, 0.125, 0.03, 0.8])
-        plt.colorbar(sm, label='Epoch', cax=cbaxes)
-        plt.tight_layout()
-
-        plt.savefig('plots/' + DIR_TEMPLATE % ('infoplane_' + self.architecture_name),
-                    bbox_inches='tight')
-
-        # ------------------------------------------------
-
-        plt.figure(figsize=(12, 5))
-
-        gs = gridspec.GridSpec(len(measures), len(PLOT_LAYERS))
-        for activation in measures.keys():
-            cur_dir = 'rawdata/' + DIR_TEMPLATE % activation
-            if not os.path.exists(cur_dir):
-                continue
-
-            epochs = []
-            means = []
-            stds = []
-            wnorms = []
-            for epochfile in sorted(os.listdir(cur_dir)):
-                if not epochfile.startswith('epoch'):
-                    continue
-
-                with open(cur_dir + "/" + epochfile, 'rb') as f:
-                    d = pickle.load(f)
-
-                epoch = d['epoch']
-                epochs.append(epoch)
-                wnorms.append(d['data']['weights_norm'])
-                means.append(d['data']['gradmean'])
-                stds.append(d['data']['gradstd'])
-
-            wnorms, means, stds = map(np.array, [wnorms, means, stds])
-            for lndx, layerid in enumerate(PLOT_LAYERS):
-                plt.subplot(gs[actndx, lndx])
-                plt.plot(epochs, means[:, layerid], 'b', label="Mean")
-                plt.plot(epochs, stds[:, layerid], 'orange', label="Std")
-                plt.plot(epochs, means[:, layerid] / stds[:, layerid], 'red', label="SNR")
-                plt.plot(epochs, wnorms[:, layerid], 'g', label="||W||")
-
-                plt.title('Layer %d' % layerid)
-                plt.xlabel('Epoch')
-                plt.gca().set_xscale("log", nonposx='clip')
-                plt.gca().set_yscale("log", nonposy='clip')
-
-        plt.legend(loc='lower left', bbox_to_anchor=(1.1, 0.2))
-        plt.tight_layout()
-        plt.savefig('plots/' + DIR_TEMPLATE % ('snr_' + self.architecture_name), bbox_inches='tight')

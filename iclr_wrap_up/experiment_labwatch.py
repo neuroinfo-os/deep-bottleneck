@@ -9,9 +9,13 @@ from sacred import Experiment
 from sacred.observers import MongoObserver
 from iclr_wrap_up.callbacks.loggingreporter import LoggingReporter
 from sacred.observers import FileStorageObserver
+from labwatch.assistant import LabAssistant
+from labwatch.optimizers.random_search import RandomSearch
+from labwatch.hyperparameters import UniformNumber, Categorical
 
 
 ex = Experiment('sacred_keras_example')
+a = LabAssistant(ex, "labwatch_example", optimizer=RandomSearch)
 ex.observers.append(MongoObserver.create(url='mongodb://127.0.0.1:27017',
                                          db_name='dneck_test'))
 
@@ -31,6 +35,15 @@ def hyperparameters():
     model = 'models.feedforward'
     dataset = 'datasets.harmonics'
     estimator = 'compute_mi.compute_mi_ib_net'
+
+@a.search_space
+def search_space():
+    activation_fn = Categorical({'relu', 'tanh'})
+    batch_size = UniformNumber(lower=128,
+                               upper=512,
+                               default=256,
+                               type=int,
+                               log_scale=True)
 
 
 @ex.capture
