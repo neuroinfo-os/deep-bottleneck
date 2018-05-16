@@ -18,14 +18,14 @@ ex.observers.append(MongoObserver.create(url=url,
 
 @ex.config
 def hyperparameters():
-    epochs = 10
+    epochs = 100
     batch_size = 256
-    architecture = [4, 3]
+    architecture = [10, 7, 5, 4, 3]
     learning_rate = 0.0004
-    full_mi = True
-    infoplane_measure = 'upper'
+    full_mi = False
+    infoplane_measure = 'bin'
     architecture_name = '-'.join(map(str, architecture))
-    activation_fn = 'relu'
+    activation_fn = 'tanh'
     save_dir = 'rawdata/' + activation_fn + '_' + architecture_name
     infoplane_measure = 'upper'
     model = 'models.feedforward'
@@ -51,7 +51,7 @@ def do_report(epoch):
         return True
     elif epoch < 100:  # Then for every 5th epoch
         return (epoch % 5) == 0
-    elif epoch < 2000:  # Then every 10th
+    elif epoch < 2000:  # Then every 20th
         return (epoch % 20) == 0
     else:  # Then every 100th
         return (epoch % 100) == 0
@@ -81,8 +81,8 @@ def plot_infoplane(measures, architecture_name, infoplane_measure, epochs, activ
 
     fig, ax = plt.subplots()
 
-    for epoch, mi_measures in measures.items():
-        color = sm.to_rgba(epoch)
+    for (epoch_nr, mi_measures) in measures.items():
+        color = sm.to_rgba(epoch_nr)
 
         xmvals = np.array(mi_measures['MI_XM_' + infoplane_measure])
         ymvals = np.array(mi_measures['MI_YM_' + infoplane_measure])
@@ -94,7 +94,7 @@ def plot_infoplane(measures, architecture_name, infoplane_measure, epochs, activ
 
     plt.colorbar(sm, label='Epoch')
 
-    filename = f'plots/infoplane_{activation_fn}_{architecture_name}'
+    filename = f'plots/infoplane_{activation_fn}_{architecture_name}_{infoplane_measure}'
     plt.savefig(filename, bbox_inches='tight')
 
 
