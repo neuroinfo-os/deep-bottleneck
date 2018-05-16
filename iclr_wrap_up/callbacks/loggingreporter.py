@@ -1,5 +1,5 @@
-from tensorflow.contrib import keras
-from tensorflow.contrib.keras import backend as K
+from tensorflow import keras
+from tensorflow.python.keras import backend as K
 import numpy as np
 
 import pickle
@@ -39,7 +39,7 @@ class LoggingReporter(keras.callbacks.Callback):
         # Functions return weights of each layer
         self.layerweights = []
         for lndx, l in enumerate(self.model.layers):
-            if hasattr(l, 'kernel'):
+            if hasattr(l, 'kernel'):  # Dense-like layers have a kernel attribute.
                 self.layerixs.append(lndx)
                 self.layerfuncs.append(K.function(self.model.inputs, [l.output]))
                 self.layerweights.append(l.kernel)

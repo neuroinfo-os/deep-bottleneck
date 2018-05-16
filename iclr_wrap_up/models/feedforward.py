@@ -1,6 +1,7 @@
-from tensorflow.contrib import keras
+from tensorflow import keras
 import tensorflow as tf
 import numpy as np
+
 
 def load(architecture, activation_fn, learning_rate, input_size, output_size):
     input_layer = keras.layers.Input((input_size,))

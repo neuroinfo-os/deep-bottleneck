@@ -38,7 +38,6 @@ class MutualInformationEstimator:
         DO_LOWER = (self.infoplane_measure == 'lower')  # Whether to compute lower bounds also
         DO_BINNED = (self.infoplane_measure == 'bin')  # Whether to compute MI estimates based on binning
 
-
         # Directories from which to load saved layer activity
         DIR_TEMPLATE = '%%s_%s' % self.architecture_name
 
@@ -71,19 +70,14 @@ class MutualInformationEstimator:
 
         # ------------------------------------
 
-        PLOT_LAYERS = None  # Which layers to plot.  If None, all saved layers are plotted
-
         # Data structure used to store results
         measures = OrderedDict()
-        measures[self.activation_fn] = {}
 
         # ----------------------------------------
 
-        for activation in measures.keys():
-            cur_dir = 'rawdata/' + DIR_TEMPLATE % activation
-            if not os.path.exists(cur_dir):
-                print("Directory %s not found" % cur_dir)
-                continue
+        cur_dir = 'rawdata/' + DIR_TEMPLATE % self.activation_fn
+        if not os.path.exists(cur_dir):
+            print("Directory %s not found" % cur_dir)
 
         # Load files saved during each epoch, and compute MI measures of the activity in that epoch
         print('*** Doing %s ***' % cur_dir)
@@ -96,8 +90,6 @@ class MutualInformationEstimator:
                 d = pickle.load(f)
 
             epoch = d['epoch']
-            if epoch in measures[activation]:  # Skip this epoch if its already been processed
-                continue  # this is a trick to allow us to rerun this cell multiple times)
 
             if epoch > self.epochs:
                 continue
@@ -105,12 +97,6 @@ class MutualInformationEstimator:
             print("Doing", fname)
 
             num_layers = len(d['data']['activity_tst'])
-
-            if PLOT_LAYERS is None:
-                PLOT_LAYERS = []
-                for lndx in range(num_layers):
-                    # if d['data']['activity_tst'][lndx].shape[1] < 200 and lndx != num_layers - 1:
-                    PLOT_LAYERS.append(lndx)
 
             cepochdata = defaultdict(list)
             for lndx in range(num_layers):
@@ -159,8 +145,6 @@ class MutualInformationEstimator:
 
                 print('- Layer %d %s' % (lndx, pstr))
 
-            measures[activation][epoch] = cepochdata
+            measures[epoch] = cepochdata
 
-        return measures, PLOT_LAYERS
-
-
+        return measures

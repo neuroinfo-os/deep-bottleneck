@@ -109,3 +109,9 @@ IDNNs/jobs/
 IDNNs/figure.jpg
 
 */plots/
+
+# credentials
+credentials.py
+
+# sacredboard starting script
+infrastructure/dneckboard
