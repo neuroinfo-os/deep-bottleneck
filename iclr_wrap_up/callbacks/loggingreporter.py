@@ -127,7 +127,8 @@ class LoggingReporter(keras.callbacks.Callback):
             else:
                 data['activity_tst'].append(self.layerfuncs[lndx]([self.tst.X])[0])
 
-        fname = self.save_dir + "/epoch%08d" % epoch
+        filename_epoch = epoch + 1
+        fname = self.save_dir + "/epoch%08d" % filename_epoch
         print("Saving", fname)
         with open(fname, 'wb') as f:
             pickle.dump({'ACTIVATION': self.activation_fn, 'epoch': epoch, 'data': data, 'loss': loss}, f,

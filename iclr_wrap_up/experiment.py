@@ -20,7 +20,7 @@ ex.observers.append(MongoObserver.create(url=url,
 def hyperparameters():
     epochs = 100
     batch_size = 256
-    architecture = [10, 7, 5, 4, 3]
+    architecture = [10, 7, 2]
     learning_rate = 0.0004
     full_mi = False
     infoplane_measure = 'bin'
@@ -81,7 +81,7 @@ def plot_infoplane(measures, architecture_name, infoplane_measure, epochs, activ
 
     fig, ax = plt.subplots()
 
-    for (epoch_nr, mi_measures) in measures.items():
+    for epoch_nr, mi_measures in measures.groupby(level=0):
         color = sm.to_rgba(epoch_nr)
 
         xmvals = np.array(mi_measures['MI_XM_' + infoplane_measure])

@@ -3,7 +3,7 @@ import pickle
 
 import pandas as pd
 import numpy as np
-from tensorflow.contrib.keras import backend as K
+from tensorflow.python.keras import backend as K
 
 from iclr_wrap_up import kde
 from iclr_wrap_up import simplebinmi
@@ -28,14 +28,10 @@ class MutualInformationEstimator:
 
     def compute_mi(self):
 
-        compute_lower_bounds = False
-
-        DO_LOWER = (self.infoplane_measure == 'lower')  # Whether to compute lower bounds also
-        DO_BINNED = (self.infoplane_measure == 'bin')  # Whether to compute MI estimates based on binning
+        binsize = 0.07  # size of bins for binning method
 
         # Functions to return upper and lower bounds on entropy of layer activity
         noise_variance = 1e-3  # Added Gaussian noise variance
-        binsize = 0.07  # size of bins for binning method
 
         Klayer_activity = K.placeholder(ndim=2)  # Keras placeholder
         entropy_func_upper = K.function([Klayer_activity, ],
@@ -61,12 +57,27 @@ class MutualInformationEstimator:
 
         labelprobs = np.mean(Y, axis=0)
 
-        # Data structure used to store results
-        measures = {}
+        info_measures = ['MI_XM_upper', 'MI_YM_upper', 'MI_XM_lower', 'MI_YM_lower', 'MI_XM_bin',
+                         'MI_YM_bin', 'H_M_upper', 'H_M_lower']
 
         cur_dir = f'rawdata/{self.activation_fn}_{self.architecture_name}'
         if not os.path.exists(cur_dir):
             print("Directory %s not found" % cur_dir)
+
+        # Build up index and Data structure to store results
+        filenames = os.listdir(cur_dir)
+        epoch_nrs = []
+        for s in filenames:
+            epoch_nrs.append(int((s[5:].lstrip('0'))))
+
+        epoch_nrs.sort()
+
+        num_layers = len(self.architecture_name.split('-'))
+
+        index_base_keys = [epoch_nrs, list(range(num_layers))]
+        index = pd.MultiIndex.from_product(index_base_keys, names=['epoch_nr', 'layer_nr'])
+
+        measures = pd.DataFrame(index=index, columns=info_measures)
 
         # Load files saved during each epoch, and compute MI measures of the activity in that epoch
         print(f'*** Doing {cur_dir} ***')
@@ -87,11 +98,6 @@ class MutualInformationEstimator:
 
             num_layers = len(d['data']['activity_tst'])
 
-            info_measures = ['MI_XM_upper', 'MI_YM_upper', 'MI_XM_lower', 'MI_YM_lower', 'MI_XM_bin',
-                             'MI_YM_bin', 'H_M_upper', 'H_M_lower']
-
-            current_epoch_data = pd.DataFrame(columns=info_measures, index=range(num_layers))
-
             for layer_index in range(num_layers):
                 activity = d['data']['activity_tst'][layer_index]
 
@@ -108,12 +114,12 @@ class MutualInformationEstimator:
                         hcond_upper = entropy_func_upper([activity[saved_labelixs[i], :], ])[0]
                         hM_given_Y_upper += labelprobs[i] * hcond_upper
 
-                    current_epoch_data['MI_XM_upper'][layer_index] = nats2bits * (h_upper - hM_given_X)
-                    current_epoch_data['MI_YM_upper'][layer_index] = nats2bits * (h_upper - hM_given_Y_upper)
-                    current_epoch_data['H_M_upper'][layer_index] = nats2bits * h_upper
+                    measures.loc[(epoch, layer_index), 'MI_XM_upper'] = nats2bits * (h_upper - hM_given_X)
+                    measures.loc[(epoch, layer_index), 'MI_YM_upper'] = nats2bits * (h_upper - hM_given_Y_upper)
+                    measures.loc[(epoch, layer_index), 'H_M_upper'] = nats2bits * h_upper
 
                     pstr = 'upper: MI(X;M)=%0.3f, MI(Y;M)=%0.3f' % (
-                        current_epoch_data['MI_XM_upper'][layer_index], current_epoch_data['MI_YM_upper'][layer_index])
+                        measures.loc[(epoch, layer_index), 'MI_XM_upper'], measures.loc[(epoch, layer_index), 'MI_YM_upper'])
 
                 if self.infoplane_measure == "lower":
 
@@ -125,23 +131,21 @@ class MutualInformationEstimator:
                         hcond_lower = entropy_func_lower([activity[saved_labelixs[i], :], ])[0]
                         hM_given_Y_lower += labelprobs[i] * hcond_lower
 
-                    current_epoch_data['MI_XM_lower'][layer_index] = nats2bits * (h_lower - hM_given_X)
-                    current_epoch_data['MI_YM_lower'][layer_index] = nats2bits * (h_lower - hM_given_Y_lower)
-                    current_epoch_data['H_M_lower'][layer_index] = nats2bits * h_lower
+                    measures.loc[(epoch, layer_index), 'MI_XM_lower'] = nats2bits * (h_lower - hM_given_X)
+                    measures.loc[(epoch, layer_index), 'MI_YM_lower'] = nats2bits * (h_lower - hM_given_Y_lower)
+                    measures.loc[(epoch, layer_index), 'H_M_lower'] = nats2bits * h_lower
 
                     pstr += ' | lower: MI(X;M)=%0.3f, MI(Y;M)=%0.3f' % (
-                        current_epoch_data['MI_XM_lower'][layer_index], current_epoch_data['MI_YM_lower'][layer_index])
+                        measures.loc[(epoch, layer_index), 'MI_XM_lower'], measures.loc[(epoch, layer_index), 'MI_YM_lower'])
 
                 if self.infoplane_measure == "bin":
                     binxm, binym = simplebinmi.bin_calc_information2(saved_labelixs, activity, binsize)
-                    current_epoch_data['MI_XM_bin'][layer_index] = nats2bits * binxm
-                    current_epoch_data['MI_YM_bin'][layer_index] = nats2bits * binym
+                    measures.loc[(epoch, layer_index), 'MI_XM_bin'] = nats2bits * binxm
+                    measures.loc[(epoch, layer_index), 'MI_YM_bin'] = nats2bits * binym
 
                     pstr += ' | bin: MI(X;M)=%0.3f, MI(Y;M)=%0.3f' % (
-                        current_epoch_data['MI_XM_bin'][layer_index], current_epoch_data['MI_YM_bin'][layer_index])
+                        measures.loc[(epoch, layer_index), 'MI_XM_bin'], measures.loc[(epoch, layer_index), 'MI_YM_bin'])
 
                 print(f'- Layer {layer_index} {pstr}')
-
-            measures[epoch] = current_epoch_data
 
         return measures
