@@ -18,7 +18,7 @@ ex.observers.append(MongoObserver.create(url=url,
 
 @ex.config
 def hyperparameters():
-    epochs = 100
+    epochs = 10
     batch_size = 256
     architecture = [10, 7, 2]
     learning_rate = 0.0004
@@ -94,8 +94,9 @@ def plot_infoplane(measures, architecture_name, infoplane_measure, epochs, activ
 
     plt.colorbar(sm, label='Epoch')
 
-    filename = f'plots/infoplane_{activation_fn}_{architecture_name}_{infoplane_measure}'
+    filename = f'plots/infoplane_{activation_fn}_{architecture_name}_{infoplane_measure}.png'
     plt.savefig(filename, bbox_inches='tight')
+    return filename
 
 
 @ex.capture
@@ -139,11 +140,13 @@ def plot_snr(architecture_name, activation_fn, architecture):
     handles, labels = axes[0].get_legend_handles_labels()
     fig.legend(handles, labels, loc='center left', bbox_to_anchor=(1.0, 0.5))
     fig.tight_layout()
-    fig.savefig(f'plots/snr_{activation_fn}_{architecture_name}', bbox_inches='tight')
+    filename = f'plots/snr_{activation_fn}_{architecture_name}.png'
+    fig.savefig(filename, bbox_inches='tight')
+    return filename
 
 
 @ex.automain
-def conduct(epochs, batch_size):
+def conduct(epochs, batch_size, _run):
     training, test = load_dataset()
     model = load_model(input_size=training.X.shape[1], output_size=training.nb_classes)
     callbacks = make_callbacks(training=training, test=test)
@@ -157,5 +160,7 @@ def conduct(epochs, batch_size):
     print(model.summary())
     estimator = load_estimator(training_data=training, test_data=test)
     measures = estimator.compute_mi()
-    plot_infoplane(measures=measures)
-    plot_snr()
+    filename = plot_infoplane(measures=measures)
+    _run.add_artifact(filename, name='infoplane_plot')
+    filename = plot_snr()
+    _run.add_artifact(filename, name='snr_plot')
