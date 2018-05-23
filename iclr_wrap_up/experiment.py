@@ -19,9 +19,9 @@ ex.observers.append(MongoObserver.create(url=url,
 
 @ex.config
 def hyperparameters():
-    epochs = 1000
+    epochs = 10
     batch_size = 256
-    architecture = [10, 7, 5, 4, 3]
+    architecture = [10, 7, 2]
     learning_rate = 0.0004
     full_mi = False
     infoplane_measure = 'bin'
@@ -100,8 +100,9 @@ def plot_infoplane(measures, architecture_name, infoplane_measure, epochs, activ
 
     plt.colorbar(sm, label='Epoch')
 
-    filename = f'plots/infoplane_{activation_fn}_{architecture_name}_{infoplane_measure}'
+    filename = f'plots/infoplane_{activation_fn}_{architecture_name}_{infoplane_measure}.png'
     plt.savefig(filename, bbox_inches='tight', dpi=600)
+    return filename
 
 
 @ex.capture
@@ -145,11 +146,13 @@ def plot_snr(architecture_name, activation_fn, architecture):
     handles, labels = axes[0].get_legend_handles_labels()
     fig.legend(handles, labels, loc='center left', bbox_to_anchor=(1.0, 0.5))
     fig.tight_layout()
-    fig.savefig(f'plots/snr_{activation_fn}_{architecture_name}', bbox_inches='tight', dpi=600)
+    filename = f'plots/snr_{activation_fn}_{architecture_name}.png'
+    fig.savefig(filename, bbox_inches='tight', dpi=600)
+    return filename
 
 
 @ex.automain
-def conduct(epochs, batch_size, n_runs):
+def conduct(epochs, batch_size, n_runs, _run):
     training, test = load_dataset()
 
     measures_all_runs = []
@@ -173,8 +176,11 @@ def conduct(epochs, batch_size, n_runs):
     # compute mean of information measures over all runs
     mi_mean_over_runs = measures_all_runs.groupby(['epoch', 'layer']).mean()
 
-    # plot the infoplane for average MI estimates
-    plot_infoplane(measures=mi_mean_over_runs)
 
+    # plot the infoplane for average MI estimates
+    filename = plot_infoplane(measures=mi_mean_over_runs)
+    _run.add_artifact(filename, name='infoplane_plot')
     # TODO think about whether plotting snr ratio averaged over multiple runs does make sense
-    #plot_snr()
+    filename = plot_snr()
+    _run.add_artifact(filename, name='snr_plot')
+
