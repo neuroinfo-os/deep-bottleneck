@@ -19,16 +19,15 @@ ex.observers.append(MongoObserver.create(url=url,
 
 @ex.config
 def hyperparameters():
-    epochs = 100
+    epochs = 1000
     batch_size = 256
     architecture = [10, 7, 5, 4, 3]
     learning_rate = 0.0004
     full_mi = False
     infoplane_measure = 'bin'
     architecture_name = '-'.join(map(str, architecture))
-    activation_fn = 'relu'
+    activation_fn = 'tanh'
     save_dir = 'rawdata/' + activation_fn + '_' + architecture_name
-    infoplane_measure = 'upper'
     model = 'models.feedforward'
     dataset = 'datasets.harmonics'
     estimator = 'compute_mi.compute_mi_ib_net'
@@ -97,7 +96,7 @@ def plot_infoplane(measures, architecture_name, infoplane_measure, epochs, activ
     plt.colorbar(sm, label='Epoch')
 
     filename = f'plots/infoplane_{activation_fn}_{architecture_name}_{infoplane_measure}'
-    plt.savefig(filename, bbox_inches='tight')
+    plt.savefig(filename, bbox_inches='tight', dpi=600)
 
 
 @ex.capture
@@ -141,7 +140,7 @@ def plot_snr(architecture_name, activation_fn, architecture):
     handles, labels = axes[0].get_legend_handles_labels()
     fig.legend(handles, labels, loc='center left', bbox_to_anchor=(1.0, 0.5))
     fig.tight_layout()
-    fig.savefig(f'plots/snr_{activation_fn}_{architecture_name}', bbox_inches='tight')
+    fig.savefig(f'plots/snr_{activation_fn}_{architecture_name}', bbox_inches='tight', dpi=600)
 
 
 @ex.automain
@@ -164,10 +163,10 @@ def conduct(epochs, batch_size, n_runs):
         measures_all_runs.append(measures)
 
     # transform list of measurements into DataFrame with hierarchical index
-    measures_all_runs = pd.concat(measures_all_runs, axis=1, keys=range(n_runs), names=["n_runs", "MI_measure"])
+    measures_all_runs = pd.concat(measures_all_runs)
     measures_all_runs = measures_all_runs.fillna(0)
     # compute mean of information measures over all runs
-    mi_mean_over_runs = measures_all_runs.groupby(axis=1, level="MI_measure").mean()
+    mi_mean_over_runs = measures_all_runs.groupby(['epoch', 'layer']).mean()
 
     # plot the infoplane for average MI estimates
     plot_infoplane(measures=mi_mean_over_runs)

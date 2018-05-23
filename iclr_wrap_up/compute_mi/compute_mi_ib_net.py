@@ -75,7 +75,7 @@ class MutualInformationEstimator:
         num_layers = len(self.architecture_name.split('-'))
 
         index_base_keys = [epoch_nrs, list(range(num_layers))]
-        index = pd.MultiIndex.from_product(index_base_keys, names=['epoch_nr', 'layer_nr'])
+        index = pd.MultiIndex.from_product(index_base_keys, names=['epoch', 'layer'])
 
         measures = pd.DataFrame(index=index, columns=info_measures)
 
