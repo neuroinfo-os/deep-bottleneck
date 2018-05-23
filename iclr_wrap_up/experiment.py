@@ -2,6 +2,7 @@ import importlib
 import os
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 import pickle
 
 from sacred import Experiment
@@ -27,10 +28,10 @@ def hyperparameters():
     architecture_name = '-'.join(map(str, architecture))
     activation_fn = 'tanh'
     save_dir = 'rawdata/' + activation_fn + '_' + architecture_name
-    infoplane_measure = 'upper'
     model = 'models.feedforward'
     dataset = 'datasets.harmonics'
     estimator = 'compute_mi.compute_mi_ib_net'
+    n_runs = 3
 
 
 @ex.capture
@@ -95,7 +96,7 @@ def plot_infoplane(measures, architecture_name, infoplane_measure, epochs, activ
     plt.colorbar(sm, label='Epoch')
 
     filename = f'plots/infoplane_{activation_fn}_{architecture_name}_{infoplane_measure}.png'
-    plt.savefig(filename, bbox_inches='tight')
+    plt.savefig(filename, bbox_inches='tight', dpi=600)
     return filename
 
 
@@ -141,26 +142,40 @@ def plot_snr(architecture_name, activation_fn, architecture):
     fig.legend(handles, labels, loc='center left', bbox_to_anchor=(1.0, 0.5))
     fig.tight_layout()
     filename = f'plots/snr_{activation_fn}_{architecture_name}.png'
-    fig.savefig(filename, bbox_inches='tight')
+    fig.savefig(filename, bbox_inches='tight', dpi=600)
     return filename
 
 
 @ex.automain
-def conduct(epochs, batch_size, _run):
+def conduct(epochs, batch_size, n_runs, _run):
     training, test = load_dataset()
-    model = load_model(input_size=training.X.shape[1], output_size=training.nb_classes)
-    callbacks = make_callbacks(training=training, test=test)
-    model.fit(x=training.X, y=training.Y,
-              verbose=2,
-              batch_size=batch_size,
-              epochs=epochs,
-              # validation_data=(tst.X, tst.Y),
-              callbacks=callbacks)
-    print(model.layers)
-    print(model.summary())
-    estimator = load_estimator(training_data=training, test_data=test)
-    measures = estimator.compute_mi()
-    filename = plot_infoplane(measures=measures)
+
+    measures_all_runs = []
+    for run_id in range(n_runs):
+        model = load_model(input_size=training.X.shape[1], output_size=training.nb_classes)
+        callbacks = make_callbacks(training=training, test=test)
+        model.fit(x=training.X, y=training.Y,
+                  verbose=2,
+                  batch_size=batch_size,
+                  epochs=epochs,
+                  validation_data=(test.X, test.Y),
+                  callbacks=callbacks)
+
+        estimator = load_estimator(training_data=training, test_data=test)
+        measures = estimator.compute_mi()
+        measures_all_runs.append(measures)
+
+    # transform list of measurements into DataFrame with hierarchical index
+    measures_all_runs = pd.concat(measures_all_runs)
+    measures_all_runs = measures_all_runs.fillna(0)
+    # compute mean of information measures over all runs
+    mi_mean_over_runs = measures_all_runs.groupby(['epoch', 'layer']).mean()
+
+
+    # plot the infoplane for average MI estimates
+    filename = plot_infoplane(measures=mi_mean_over_runs)
     _run.add_artifact(filename, name='infoplane_plot')
+    # TODO think about whether plotting snr ratio averaged over multiple runs does make sense
     filename = plot_snr()
     _run.add_artifact(filename, name='snr_plot')
+

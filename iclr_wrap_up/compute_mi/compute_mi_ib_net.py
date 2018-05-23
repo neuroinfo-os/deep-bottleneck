@@ -75,7 +75,7 @@ class MutualInformationEstimator:
         num_layers = len(self.architecture_name.split('-'))
 
         index_base_keys = [epoch_nrs, list(range(num_layers))]
-        index = pd.MultiIndex.from_product(index_base_keys, names=['epoch_nr', 'layer_nr'])
+        index = pd.MultiIndex.from_product(index_base_keys, names=['epoch', 'layer'])
 
         measures = pd.DataFrame(index=index, columns=info_measures)
 
@@ -125,6 +125,9 @@ class MutualInformationEstimator:
 
                     h_lower = entropy_func_lower([activity, ])[0]
 
+                    # Layer activity given input. This is simply the entropy of the Gaussian noise
+                    hM_given_X = kde.kde_condentropy(activity, noise_variance)
+
                     hM_given_Y_lower = 0.
 
                     for i in range(self.training_data.nb_classes):
@@ -135,7 +138,7 @@ class MutualInformationEstimator:
                     measures.loc[(epoch, layer_index), 'MI_YM_lower'] = nats2bits * (h_lower - hM_given_Y_lower)
                     measures.loc[(epoch, layer_index), 'H_M_lower'] = nats2bits * h_lower
 
-                    pstr += ' | lower: MI(X;M)=%0.3f, MI(Y;M)=%0.3f' % (
+                    pstr = ' | lower: MI(X;M)=%0.3f, MI(Y;M)=%0.3f' % (
                         measures.loc[(epoch, layer_index), 'MI_XM_lower'], measures.loc[(epoch, layer_index), 'MI_YM_lower'])
 
                 if self.infoplane_measure == "bin":
@@ -143,7 +146,7 @@ class MutualInformationEstimator:
                     measures.loc[(epoch, layer_index), 'MI_XM_bin'] = nats2bits * binxm
                     measures.loc[(epoch, layer_index), 'MI_YM_bin'] = nats2bits * binym
 
-                    pstr += ' | bin: MI(X;M)=%0.3f, MI(Y;M)=%0.3f' % (
+                    pstr = ' | bin: MI(X;M)=%0.3f, MI(Y;M)=%0.3f' % (
                         measures.loc[(epoch, layer_index), 'MI_XM_bin'], measures.loc[(epoch, layer_index), 'MI_YM_bin'])
 
                 print(f'- Layer {layer_index} {pstr}')
