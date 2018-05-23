@@ -31,6 +31,7 @@ def hyperparameters():
     model = 'models.feedforward'
     dataset = 'datasets.harmonics'
     estimator = 'compute_mi.compute_mi_ib_net'
+    callbacks = [('callbacks.earlystopping_manual', [])]
     n_runs = 3
 
 
@@ -59,11 +60,15 @@ def do_report(epoch):
 
 
 @ex.capture
-def make_callbacks(training, test, full_mi, save_dir, batch_size, activation_fn, _run):
-    callbacks = [LoggingReporter(trn=training, tst=test, full_mi=full_mi, save_dir=save_dir,
+def make_callbacks(callbacks, training, test, full_mi, save_dir, batch_size, activation_fn, _run):
+    callback_objects = []
+    for callback in callbacks:
+        callback_object = importlib.import_module(callback[0]).load(*callback[1])
+        callback_objects.append(callback_object)
+    callback_objects.append(LoggingReporter(trn=training, tst=test, full_mi=full_mi, save_dir=save_dir,
                                  batch_size=batch_size, activation_fn=activation_fn,
-                                 do_save_func=do_report)]
-    return callbacks
+                                 do_save_func=do_report))
+    return callback_objects
 
 
 @ex.capture
