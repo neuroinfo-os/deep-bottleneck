@@ -45,6 +45,7 @@ def bin_calc_information_evenbins(labelixs, layerdata, numbins):
         for line in d:
             l2 = [digitize(cell) for cell in line]
             digitized.append(l2)
+        digitized = np.array(digitized, dtype=np.float64)
         p_ts, _ = get_unique_probs(digitized)
         return -np.sum(p_ts * np.log(p_ts))
 
