@@ -1,5 +1,6 @@
-import keras
-import keras.backend as K
+from tensorflow.python.keras import utils
+from tensorflow import keras
+#from tensorflow.python.keras import backend as K
 import numpy as np
 import scipy.io as sio
 from pathlib2 import Path
@@ -18,8 +19,8 @@ def get_mnist():
     #X_train = X_train * 2.0 - 1.0
     #X_test  = X_test  * 2.0 - 1.0
 
-    Y_train = keras.utils.np_utils.to_categorical(y_train, nb_classes).astype('float32')
-    Y_test  = keras.utils.np_utils.to_categorical(y_test, nb_classes).astype('float32')
+    Y_train = utils.to_categorical(y_train, nb_classes).astype('float32')
+    Y_test  = utils.to_categorical(y_test, nb_classes).astype('float32')
 
     Dataset = namedtuple('Dataset',['X','Y','y','nb_classes'])
     trn = Dataset(X_train, Y_train, y_train, nb_classes)
@@ -45,8 +46,8 @@ def get_IB_data(ID):
         
     (X_train, y_train), (X_test, y_test) = (data['X_train'], data['y_train']), (data['X_test'], data['y_test'])
 
-    Y_train = keras.utils.np_utils.to_categorical(y_train, nb_classes).astype('float32')
-    Y_test  = keras.utils.np_utils.to_categorical(y_test, nb_classes).astype('float32')
+    Y_train = utils.to_categorical(y_train, nb_classes).astype('float32')
+    Y_test  = utils.to_categorical(y_test, nb_classes).astype('float32')
 
     Dataset = namedtuple('Dataset',['X','Y','y','nb_classes'])
     trn = Dataset(X_train, Y_train, y_train, nb_classes)

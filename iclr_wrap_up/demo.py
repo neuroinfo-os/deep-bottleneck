@@ -1,7 +1,7 @@
 # Simple example of how to estimate MI between X and Y, where Y = f(X) + Noise(0, noise_variance)
 from __future__ import print_function
 import kde
-import keras.backend as K
+from tensorflow.python.keras import backend as K
 import numpy as np
 
 Y_samples = K.placeholder(ndim=2)
