@@ -29,6 +29,7 @@ class MutualInformationEstimator:
     def compute_mi(self):
 
         binsize = 0.07  # size of bins for binning method
+        numbins = 100   # number of bins for other binning method
 
         # Functions to return upper and lower bounds on entropy of layer activity
         noise_variance = 1e-3  # Added Gaussian noise variance
@@ -57,8 +58,8 @@ class MutualInformationEstimator:
 
         labelprobs = np.mean(Y, axis=0)
 
-        info_measures = ['MI_XM_upper', 'MI_YM_upper', 'MI_XM_lower', 'MI_YM_lower', 'MI_XM_bin',
-                         'MI_YM_bin', 'H_M_upper', 'H_M_lower']
+        info_measures = ['MI_XM_upper', 'MI_YM_upper', 'MI_XM_lower', 'MI_YM_lower', 'MI_XM_bin',  'MI_XM_bin2',
+                         'MI_YM_bin', 'MI_YM_bin2', 'H_M_upper', 'H_M_lower']
 
         cur_dir = f'rawdata/{self.activation_fn}_{self.architecture_name}'
         if not os.path.exists(cur_dir):
@@ -148,6 +149,15 @@ class MutualInformationEstimator:
 
                     pstr = ' | bin: MI(X;M)=%0.3f, MI(Y;M)=%0.3f' % (
                         measures.loc[(epoch, layer_index), 'MI_XM_bin'], measures.loc[(epoch, layer_index), 'MI_YM_bin'])
+
+                if self.infoplane_measure == "bin2":
+                    binxm, binym = simplebinmi.bin_calc_information_evenbins(saved_labelixs, activity, numbins)
+                    measures.loc[(epoch, layer_index), 'MI_XM_bin'] = nats2bits * binxm
+                    measures.loc[(epoch, layer_index), 'MI_YM_bin'] = nats2bits * binym
+
+                    pstr = ' | bin: MI(X;M)=%0.3f, MI(Y;M)=%0.3f' % (
+                        measures.loc[(epoch, layer_index), 'MI_XM_bin'], measures.loc[(epoch, layer_index), 'MI_YM_bin'])
+
 
                 print(f'- Layer {layer_index} {pstr}')
 
