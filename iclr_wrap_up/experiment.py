@@ -4,10 +4,16 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import pickle
+import datetime
+
+import tensorflow as tf
+from tensorflow.python.keras.callbacks import TensorBoard
+
 
 from sacred import Experiment
 from sacred.observers import MongoObserver
 from iclr_wrap_up.callbacks.loggingreporter import LoggingReporter
+from iclr_wrap_up.callbacks.activityprojector import ActivityProjector
 import iclr_wrap_up.credentials as credentials
 
 ex = Experiment('sacred_keras_example')
@@ -19,19 +25,19 @@ ex.observers.append(MongoObserver.create(url=url,
 
 @ex.config
 def hyperparameters():
-    epochs = 1000
+    epochs = 3
     batch_size = 256
-    architecture = [10, 7, 5, 4, 3]
+    architecture = [20, 16, 14, 10, 6, 3]
     learning_rate = 0.0004
     full_mi = False
-    infoplane_measure = 'bin'
+    infoplane_measure = 'lower'
     architecture_name = '-'.join(map(str, architecture))
     activation_fn = 'tanh'
     save_dir = 'rawdata/' + activation_fn + '_' + architecture_name
     model = 'models.feedforward'
     dataset = 'datasets.harmonics'
     estimator = 'compute_mi.compute_mi_ib_net'
-    n_runs = 3
+    n_runs = 1
 
 
 @ex.capture
@@ -60,9 +66,17 @@ def do_report(epoch):
 
 @ex.capture
 def make_callbacks(training, test, full_mi, save_dir, batch_size, activation_fn, _run):
+    datestr = str(datetime.datetime.now()).split(sep='.')[0]
+    datestr = datestr.replace(':', '-')
+    datestr = datestr.replace(' ', '_')
+
     callbacks = [LoggingReporter(trn=training, tst=test, full_mi=full_mi, save_dir=save_dir,
                                  batch_size=batch_size, activation_fn=activation_fn,
-                                 do_save_func=do_report)]
+                                 do_save_func=do_report),
+                 TensorBoard(log_dir=f'./logs/{datestr}', histogram_freq=10),
+                 ActivityProjector(log_dir=f'./logs/{datestr}', train=training, test=test,
+                                   embeddings_freq=10)
+                 ]
     return callbacks
 
 
@@ -145,11 +159,13 @@ def plot_snr(architecture_name, activation_fn, architecture):
 
 @ex.automain
 def conduct(epochs, batch_size, n_runs):
+
     training, test = load_dataset()
 
     measures_all_runs = []
     for run_id in range(n_runs):
         model = load_model(input_size=training.X.shape[1], output_size=training.nb_classes)
+
         callbacks = make_callbacks(training=training, test=test)
         model.fit(x=training.X, y=training.Y,
                   verbose=2,
@@ -173,3 +189,6 @@ def conduct(epochs, batch_size, n_runs):
 
     # TODO think about whether plotting snr ratio averaged over multiple runs does make sense
     #plot_snr()
+
+
+
