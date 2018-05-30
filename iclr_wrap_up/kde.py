@@ -1,4 +1,5 @@
-import keras.backend as K
+from tensorflow.python.keras import backend as K
+from keras.backend import logsumexp
 import numpy as np
 
 
@@ -25,7 +26,7 @@ def entropy_estimator_kl(x, var):
     dists = Kget_dists(x)
     dists2 = dists / (2 * var)
     normconst = (dims / 2.0) * K.log(2 * np.pi * var)
-    lprobs = K.logsumexp(-dists2, axis=1) - K.log(N) - normconst
+    lprobs = logsumexp(-dists2, axis=1) - K.log(N) - normconst
     h = -K.mean(lprobs)
     return dims / 2 + h
 

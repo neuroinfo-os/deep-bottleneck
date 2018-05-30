@@ -26,23 +26,24 @@ class MutualInformationEstimator:
         self.activation_fn = activation_fn
         self.infoplane_measure = infoplane_measure
 
-    def compute_mi(self):
+    def compute_mi(self, activations_summary):
 
-        binsize = 0.07  # size of bins for binning method
+        binsize = 0.07  # Size of bins for binning method.
+        numbins = 100   # Number of bins for other binning method.
 
-        # Functions to return upper and lower bounds on entropy of layer activity
-        noise_variance = 1e-3  # Added Gaussian noise variance
+        # Functions to return upper and lower bounds on entropy of layer activity.
+        noise_variance = 1e-3  # Added Gaussian noise variance.
 
-        Klayer_activity = K.placeholder(ndim=2)  # Keras placeholder
+        Klayer_activity = K.placeholder(ndim=2)  # Keras placeholder.
         entropy_func_upper = K.function([Klayer_activity, ],
                                         [kde.entropy_estimator_kl(Klayer_activity, noise_variance), ])
         entropy_func_lower = K.function([Klayer_activity, ],
                                         [kde.entropy_estimator_bd(Klayer_activity, noise_variance), ])
 
-        # nats to bits conversion factor
+        # Nats to bits conversion factor.
         nats2bits = 1.0 / np.log(2)
 
-        # Save indexes of tests data for each of the output classes
+        # Save indexes of tests data for each of the output classes.
         saved_labelixs = {}
 
         y = self.test_data.y
@@ -57,17 +58,13 @@ class MutualInformationEstimator:
 
         labelprobs = np.mean(Y, axis=0)
 
-        info_measures = ['MI_XM_upper', 'MI_YM_upper', 'MI_XM_lower', 'MI_YM_lower', 'MI_XM_bin',
-                         'MI_YM_bin', 'H_M_upper', 'H_M_lower']
+        info_measures = ['MI_XM_upper', 'MI_YM_upper', 'MI_XM_lower', 'MI_YM_lower', 'MI_XM_bin',  'MI_XM_bin2',
+                         'MI_YM_bin', 'MI_YM_bin2', 'H_M_upper', 'H_M_lower']
 
-        cur_dir = f'rawdata/{self.activation_fn}_{self.architecture_name}'
-        if not os.path.exists(cur_dir):
-            print("Directory %s not found" % cur_dir)
 
-        # Build up index and Data structure to store results
-        filenames = os.listdir(cur_dir)
+        # Build up index and Data structure to store results.
         epoch_nrs = []
-        for s in filenames:
+        for s in activations_summary.keys():
             epoch_nrs.append(int((s[5:].lstrip('0'))))
 
         epoch_nrs.sort()
@@ -80,26 +77,19 @@ class MutualInformationEstimator:
         measures = pd.DataFrame(index=index, columns=info_measures)
 
         # Load files saved during each epoch, and compute MI measures of the activity in that epoch
-        print(f'*** Doing {cur_dir} ***')
-        for epochfile in sorted(os.listdir(cur_dir)):
-            if not epochfile.startswith('epoch'):
-                continue
+        print(f'*** Start Iterations over epochs ***')
+        for epoch_number, epoch_values in activations_summary.items():
 
-            fname = f'{cur_dir}/{epochfile}'
-            with open(fname, 'rb') as f:
-                d = pickle.load(f)
-
-            epoch = d['epoch']
+            print('Doing epoch nr.: ', epoch_number)
+            epoch = epoch_values['epoch']
 
             if epoch > self.epochs:
                 continue
 
-            print("Doing", fname)
-
-            num_layers = len(d['data']['activity_tst'])
+            num_layers = len(epoch_values['data']['activity_tst'])
 
             for layer_index in range(num_layers):
-                activity = d['data']['activity_tst'][layer_index]
+                activity = epoch_values['data']['activity_tst'][layer_index]
 
                 if self.infoplane_measure == "upper":
                     # Compute marginal entropies
@@ -125,7 +115,7 @@ class MutualInformationEstimator:
 
                     h_lower = entropy_func_lower([activity, ])[0]
 
-                    # Layer activity given input. This is simply the entropy of the Gaussian noise
+                    # Layer activity given input. This is simply the entropy of the Gaussian noise.
                     hM_given_X = kde.kde_condentropy(activity, noise_variance)
 
                     hM_given_Y_lower = 0.
@@ -148,6 +138,15 @@ class MutualInformationEstimator:
 
                     pstr = ' | bin: MI(X;M)=%0.3f, MI(Y;M)=%0.3f' % (
                         measures.loc[(epoch, layer_index), 'MI_XM_bin'], measures.loc[(epoch, layer_index), 'MI_YM_bin'])
+
+                if self.infoplane_measure == "bin2":
+                    binxm, binym = simplebinmi.bin_calc_information_evenbins(saved_labelixs, activity, numbins)
+                    measures.loc[(epoch, layer_index), 'MI_XM_bin'] = nats2bits * binxm
+                    measures.loc[(epoch, layer_index), 'MI_YM_bin'] = nats2bits * binym
+
+                    pstr = ' | bin: MI(X;M)=%0.3f, MI(Y;M)=%0.3f' % (
+                        measures.loc[(epoch, layer_index), 'MI_XM_bin'], measures.loc[(epoch, layer_index), 'MI_YM_bin'])
+
 
                 print(f'- Layer {layer_index} {pstr}')
 
