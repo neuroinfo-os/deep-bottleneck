@@ -26,7 +26,7 @@ class MutualInformationEstimator:
         self.activation_fn = activation_fn
         self.infoplane_measure = infoplane_measure
 
-    def compute_mi(self):
+    def compute_mi(self, activations_summary):
 
         binsize = 0.07  # size of bins for binning method
         numbins = 100   # number of bins for other binning method
@@ -61,15 +61,11 @@ class MutualInformationEstimator:
         info_measures = ['MI_XM_upper', 'MI_YM_upper', 'MI_XM_lower', 'MI_YM_lower', 'MI_XM_bin',  'MI_XM_bin2',
                          'MI_YM_bin', 'MI_YM_bin2', 'H_M_upper', 'H_M_lower']
 
-        cur_dir = f'rawdata/{self.activation_fn}_{self.architecture_name}'
-        if not os.path.exists(cur_dir):
-            print("Directory %s not found" % cur_dir)
 
         # Build up index and Data structure to store results
-        filenames = os.listdir(cur_dir)
         epoch_nrs = []
-        for s in filenames:
-            epoch_nrs.append(int((s[5:].lstrip('0'))))
+        for s in activations_summary.keys():
+            epoch_nrs.append(int((s[6:].lstrip('0'))))
 
         epoch_nrs.sort()
 
@@ -81,26 +77,19 @@ class MutualInformationEstimator:
         measures = pd.DataFrame(index=index, columns=info_measures)
 
         # Load files saved during each epoch, and compute MI measures of the activity in that epoch
-        print(f'*** Doing {cur_dir} ***')
-        for epochfile in sorted(os.listdir(cur_dir)):
-            if not epochfile.startswith('epoch'):
-                continue
+        print(f'*** Start Iterations over epochs ***')
+        for epoch_number, epoch_values in activations_summary.items():
 
-            fname = f'{cur_dir}/{epochfile}'
-            with open(fname, 'rb') as f:
-                d = pickle.load(f)
-
-            epoch = d['epoch']
+            print('Doing epoch nr.: ', epoch_number)
+            epoch = epoch_values['epoch']
 
             if epoch > self.epochs:
                 continue
 
-            print("Doing", fname)
-
-            num_layers = len(d['data']['activity_tst'])
+            num_layers = len(epoch_values['data']['activity_tst'])
 
             for layer_index in range(num_layers):
-                activity = d['data']['activity_tst'][layer_index]
+                activity = epoch_values['data']['activity_tst'][layer_index]
 
                 if self.infoplane_measure == "upper":
                     # Compute marginal entropies

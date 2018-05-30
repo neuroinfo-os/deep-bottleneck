@@ -21,9 +21,9 @@ ex.observers.append(MongoObserver.create(url=url,
 
 @ex.config
 def hyperparameters():
-    epochs = 3
+    epochs = 10000
     batch_size = 256
-    architecture = [10, 7, 2]
+    architecture = [10, 7, 5, 4, 3]
     learning_rate = 0.0004
     full_mi = False
     infoplane_measure = 'upper'
@@ -33,8 +33,9 @@ def hyperparameters():
     model = 'models.feedforward'
     dataset = 'datasets.harmonics'
     estimator = 'compute_mi.compute_mi_ib_net'
-    callbacks = [('callbacks.earlystopping_manual', []), ]
-    n_runs = 2
+    #callbacks = [('callbacks.earlystopping_manual', []), ]
+    callbacks = []
+    n_runs = 3
 
 
 @ex.capture
@@ -64,12 +65,13 @@ def do_report(epoch):
 @ex.capture
 def make_callbacks(callbacks, training, test, full_mi, save_dir, batch_size, activation_fn, _run):
     callback_objects = []
+    #the logging reporter needs to be at position 0 to access the correct one for the further processing
+    callback_objects.append(LoggingReporter(trn=training, tst=test, full_mi=full_mi,
+                                            batch_size=batch_size, activation_fn=activation_fn,
+                                            do_save_func=do_report))
     for callback in callbacks:
         callback_object = importlib.import_module(callback[0]).load(*callback[1])
         callback_objects.append(callback_object)
-    callback_objects.append(LoggingReporter(trn=training, tst=test, full_mi=full_mi, save_dir=save_dir,
-                                            batch_size=batch_size, activation_fn=activation_fn,
-                                            do_save_func=do_report))
     callback_objects.append(MetricsLogger(_run))
 
     return callback_objects
@@ -110,26 +112,20 @@ def plot_infoplane(measures, architecture_name, infoplane_measure, epochs, activ
 
 
 @ex.capture
-def plot_snr(architecture_name, activation_fn, architecture):
-    cur_dir = f'rawdata/{activation_fn}_{architecture_name}'
+def plot_snr(architecture_name, activation_fn, architecture, activations_summary):
 
     epochs = []
     means = []
     stds = []
     wnorms = []
 
-    for epochfile in sorted(os.listdir(cur_dir)):
-        if not epochfile.startswith('epoch'):
-            continue
+    for epoch_number, epoch_values in activations_summary.items():
 
-        with open(os.path.join(cur_dir, epochfile), 'rb') as fh:
-            d = pickle.load(fh)
-
-        epoch = d['epoch']
+        epoch = epoch_values['epoch']
         epochs.append(epoch)
-        wnorms.append(d['data']['weights_norm'])
-        means.append(d['data']['gradmean'])
-        stds.append(d['data']['gradstd'])
+        wnorms.append(epoch_values['data']['weights_norm'])
+        means.append(epoch_values['data']['gradmean'])
+        stds.append(epoch_values['data']['gradstd'])
 
     wnorms, means, stds = map(np.array, [wnorms, means, stds])
     plot_layers = range(len(architecture) + 1)  # +1 for the last output layer.
@@ -170,8 +166,15 @@ def conduct(epochs, batch_size, n_runs, _run):
                   validation_data=(test.X, test.Y),
                   callbacks=callbacks)
 
+        print('fit successful')
+
+        #getting the current activations_summary from the logging_callback
+        activations_summary = callbacks[0].activations_summary
+
+        print(len(activations_summary))
+
         estimator = load_estimator(training_data=training, test_data=test)
-        measures = estimator.compute_mi()
+        measures = estimator.compute_mi(activations_summary=activations_summary)
         measures_all_runs.append(measures)
 
     # transform list of measurements into DataFrame with hierarchical index
@@ -184,5 +187,5 @@ def conduct(epochs, batch_size, n_runs, _run):
     filename = plot_infoplane(measures=mi_mean_over_runs)
     _run.add_artifact(filename, name='infoplane_plot')
     # TODO think about whether plotting snr ratio averaged over multiple runs does make sense
-    filename = plot_snr()
+    filename = plot_snr(activations_summary=activations_summary)
     _run.add_artifact(filename, name='snr_plot')
