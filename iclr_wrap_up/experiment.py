@@ -8,7 +8,7 @@ import pickle
 from sacred import Experiment
 from sacred.observers import MongoObserver
 from iclr_wrap_up.callbacks.loggingreporter import LoggingReporter
-from iclr_wrap_up.callbacks.logger import MetricsLogger
+from iclr_wrap_up.callbacks.metrics_logger import MetricsLogger
 
 import iclr_wrap_up.credentials as credentials
 
@@ -34,7 +34,7 @@ def hyperparameters():
     dataset = 'datasets.harmonics'
     estimator = 'compute_mi.compute_mi_ib_net'
     callbacks = [('callbacks.earlystopping_manual', []), ]
-    n_runs = 1
+    n_runs = 2
 
 
 @ex.capture
