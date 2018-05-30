@@ -58,8 +58,8 @@ class MutualInformationEstimator:
 
         labelprobs = np.mean(Y, axis=0)
 
-        info_measures = ['MI_XM_upper', 'MI_YM_upper', 'MI_XM_lower', 'MI_YM_lower', 'MI_XM_bin',
-                         'MI_YM_bin', 'H_M_upper', 'H_M_lower']
+        info_measures = ['MI_XM_upper', 'MI_YM_upper', 'MI_XM_lower', 'MI_YM_lower', 'MI_XM_bin',  'MI_XM_bin2',
+                         'MI_YM_bin', 'MI_YM_bin2', 'H_M_upper', 'H_M_lower']
 
         cur_dir = f'rawdata/{self.activation_fn}_{self.architecture_name}'
         if not os.path.exists(cur_dir):
