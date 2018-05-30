@@ -28,22 +28,22 @@ class MutualInformationEstimator:
 
     def compute_mi(self, activations_summary):
 
-        binsize = 0.07  # size of bins for binning method
-        numbins = 100   # number of bins for other binning method
+        binsize = 0.07  # Size of bins for binning method.
+        numbins = 100   # Number of bins for other binning method.
 
-        # Functions to return upper and lower bounds on entropy of layer activity
-        noise_variance = 1e-3  # Added Gaussian noise variance
+        # Functions to return upper and lower bounds on entropy of layer activity.
+        noise_variance = 1e-3  # Added Gaussian noise variance.
 
-        Klayer_activity = K.placeholder(ndim=2)  # Keras placeholder
+        Klayer_activity = K.placeholder(ndim=2)  # Keras placeholder.
         entropy_func_upper = K.function([Klayer_activity, ],
                                         [kde.entropy_estimator_kl(Klayer_activity, noise_variance), ])
         entropy_func_lower = K.function([Klayer_activity, ],
                                         [kde.entropy_estimator_bd(Klayer_activity, noise_variance), ])
 
-        # nats to bits conversion factor
+        # Nats to bits conversion factor.
         nats2bits = 1.0 / np.log(2)
 
-        # Save indexes of tests data for each of the output classes
+        # Save indexes of tests data for each of the output classes.
         saved_labelixs = {}
 
         y = self.test_data.y
@@ -62,10 +62,10 @@ class MutualInformationEstimator:
                          'MI_YM_bin', 'MI_YM_bin2', 'H_M_upper', 'H_M_lower']
 
 
-        # Build up index and Data structure to store results
+        # Build up index and Data structure to store results.
         epoch_nrs = []
         for s in activations_summary.keys():
-            epoch_nrs.append(int((s[6:].lstrip('0'))))
+            epoch_nrs.append(int((s[5:].lstrip('0'))))
 
         epoch_nrs.sort()
 
@@ -115,7 +115,7 @@ class MutualInformationEstimator:
 
                     h_lower = entropy_func_lower([activity, ])[0]
 
-                    # Layer activity given input. This is simply the entropy of the Gaussian noise
+                    # Layer activity given input. This is simply the entropy of the Gaussian noise.
                     hM_given_X = kde.kde_condentropy(activity, noise_variance)
 
                     hM_given_Y_lower = 0.

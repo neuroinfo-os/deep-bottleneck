@@ -21,7 +21,7 @@ ex.observers.append(MongoObserver.create(url=url,
 
 @ex.config
 def hyperparameters():
-    epochs = 10000
+    epochs = 1000
     batch_size = 256
     architecture = [10, 7, 5, 4, 3]
     learning_rate = 0.0004
@@ -33,9 +33,8 @@ def hyperparameters():
     model = 'models.feedforward'
     dataset = 'datasets.harmonics'
     estimator = 'compute_mi.compute_mi_ib_net'
-    #callbacks = [('callbacks.earlystopping_manual', []), ]
-    callbacks = []
-    n_runs = 3
+    callbacks = [('callbacks.earlystopping_manual', []), ]
+    n_runs = 2
 
 
 @ex.capture
@@ -65,7 +64,7 @@ def do_report(epoch):
 @ex.capture
 def make_callbacks(callbacks, training, test, full_mi, save_dir, batch_size, activation_fn, _run):
     callback_objects = []
-    #the logging reporter needs to be at position 0 to access the correct one for the further processing
+    # The logging reporter needs to be at position 0 to access the correct one for the further processing.
     callback_objects.append(LoggingReporter(trn=training, tst=test, full_mi=full_mi,
                                             batch_size=batch_size, activation_fn=activation_fn,
                                             do_save_func=do_report))
@@ -168,7 +167,7 @@ def conduct(epochs, batch_size, n_runs, _run):
 
         print('fit successful')
 
-        #getting the current activations_summary from the logging_callback
+        # Getting the current activations_summary from the logging_callback.
         activations_summary = callbacks[0].activations_summary
 
         print(len(activations_summary))
@@ -177,13 +176,13 @@ def conduct(epochs, batch_size, n_runs, _run):
         measures = estimator.compute_mi(activations_summary=activations_summary)
         measures_all_runs.append(measures)
 
-    # transform list of measurements into DataFrame with hierarchical index
+    # Transform list of measurements into DataFrame with hierarchical index.
     measures_all_runs = pd.concat(measures_all_runs)
     measures_all_runs = measures_all_runs.fillna(0)
     # compute mean of information measures over all runs
     mi_mean_over_runs = measures_all_runs.groupby(['epoch', 'layer']).mean()
 
-    # plot the infoplane for average MI estimates
+    # Plot the infoplane for average MI estimates.
     filename = plot_infoplane(measures=mi_mean_over_runs)
     _run.add_artifact(filename, name='infoplane_plot')
     # TODO think about whether plotting snr ratio averaged over multiple runs does make sense

@@ -125,7 +125,7 @@ class LoggingReporter(keras.callbacks.Callback):
                 data['activity_tst'].append(self.layerfuncs[lndx]([self.tst.X])[0])
 
         current_epoch = epoch + 1
-        activations_key = "/epoch%08d" % current_epoch
+        activations_key = "epoch%08d" % current_epoch
         print("Saving", current_epoch)
 
         self.activations_summary[activations_key] = {'ACTIVATION': self.activation_fn, 'epoch': epoch, 'data': data, 'loss': loss}
