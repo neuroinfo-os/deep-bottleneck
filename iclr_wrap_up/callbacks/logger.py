@@ -1,6 +1,7 @@
 from tensorflow.python.keras.callbacks import Callback
 
-class Logger(Callback):
+
+class MetricsLogger(Callback):
 
     def __init__(self, run):
         super().__init__()
@@ -9,4 +10,11 @@ class Logger(Callback):
 
     def on_epoch_end(self, epoch, logs=None):
         print(logs)
-        self._run.log_scalar("training.loss",  float(logs['loss']))
+        self._run.log_scalar("training.loss", float(logs['loss']), step=epoch)
+        self._run.log_scalar("training.accuracy", float(logs['acc']), step=epoch)
+
+        try:
+            self._run.log_scalar("validation.loss", float(logs['val_loss']), step=epoch)
+            self._run.log_scalar("validation.accuracy", float(logs['val_acc']), step=epoch)
+        except KeyError:
+            print('Validation not enabled. Validation metrics cannot be logged')
