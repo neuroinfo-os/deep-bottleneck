@@ -19,11 +19,11 @@ ex.observers.append(MongoObserver.create(url=url,
 
 @ex.config
 def hyperparameters():
-    epochs = 10
+    epochs = 10000
     batch_size = 256
     architecture = [10, 7, 2]
     learning_rate = 0.0004
-    full_mi = False
+    full_mi = True
     infoplane_measure = 'bin'
     architecture_name = '-'.join(map(str, architecture))
     activation_fn = 'tanh'

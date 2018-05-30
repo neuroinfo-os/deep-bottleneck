@@ -14,11 +14,11 @@ class EarlyStoppingAtSpecificAccuracy(Callback):
 
 
     def __init__(self, monitor, value):
-        super(Callback, self).__init__()
+        super().__init__()
         self.monitor = monitor
         self.value = value
 
-    def on_epoch_end(self, epoch, logs={}):
+    def on_epoch_end(self, epoch, logs):
         current = logs.get(self.monitor)
 
         print('current = ', current)
