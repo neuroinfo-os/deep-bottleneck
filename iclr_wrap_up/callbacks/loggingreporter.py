@@ -4,19 +4,19 @@ import numpy as np
 
 import pickle
 import os
-
+from collections import OrderedDict
 import utils
 
 
 class LoggingReporter(keras.callbacks.Callback):
-    def __init__(self, trn, tst, full_mi, save_dir, batch_size, activation_fn, do_save_func=None, *args, **kwargs):
+    def __init__(self, trn, tst, full_mi, batch_size, activation_fn, do_save_func=None, *args, **kwargs):
         super(LoggingReporter, self).__init__(*args, **kwargs)
         self.trn = trn  # Train data
         self.tst = tst  # Test data
         self.full_mi = full_mi
-        self.save_dir = save_dir
         self.batch_size = batch_size
         self.activation_fn = activation_fn
+        self.activations_summary = OrderedDict()
 
         if self.full_mi:
             self.full = utils.construct_full_dataset(trn, tst)
@@ -25,9 +25,6 @@ class LoggingReporter(keras.callbacks.Callback):
         self.do_save_func = do_save_func
 
     def on_train_begin(self, logs={}):
-        if not os.path.exists(self.save_dir):
-            print("Making directory", self.save_dir)
-            os.makedirs(self.save_dir)
 
         # Indexes of the layers which we keep track of. Basically, this will be any layer 
         # which has a 'kernel' attribute, which is essentially the "Dense" or "Dense"-like layers
@@ -127,9 +124,10 @@ class LoggingReporter(keras.callbacks.Callback):
             else:
                 data['activity_tst'].append(self.layerfuncs[lndx]([self.tst.X])[0])
 
-        filename_epoch = epoch + 1
-        fname = self.save_dir + "/epoch%08d" % filename_epoch
-        print("Saving", fname)
-        with open(fname, 'wb') as f:
-            pickle.dump({'ACTIVATION': self.activation_fn, 'epoch': epoch, 'data': data, 'loss': loss}, f,
-                        pickle.HIGHEST_PROTOCOL)
+        current_epoch = epoch + 1
+        activations_key = "epoch%08d" % current_epoch
+        print("Saving", current_epoch)
+
+        self.activations_summary[activations_key] = {'ACTIVATION': self.activation_fn, 'epoch': epoch, 'data': data, 'loss': loss}
+
+        print('saved')
