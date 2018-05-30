@@ -8,6 +8,8 @@ import pickle
 from sacred import Experiment
 from sacred.observers import MongoObserver
 from iclr_wrap_up.callbacks.loggingreporter import LoggingReporter
+from iclr_wrap_up.callbacks.metrics_logger import MetricsLogger
+
 import iclr_wrap_up.credentials as credentials
 
 ex = Experiment('sacred_keras_example')
@@ -19,20 +21,20 @@ ex.observers.append(MongoObserver.create(url=url,
 
 @ex.config
 def hyperparameters():
-    epochs = 10000
+    epochs = 3
     batch_size = 256
     architecture = [10, 7, 2]
     learning_rate = 0.0004
     full_mi = False
-    infoplane_measure = 'bin2'
+    infoplane_measure = 'upper'
     architecture_name = '-'.join(map(str, architecture))
     activation_fn = 'tanh'
     save_dir = 'rawdata/' + activation_fn + '_' + architecture_name
     model = 'models.feedforward'
     dataset = 'datasets.harmonics'
     estimator = 'compute_mi.compute_mi_ib_net'
-    callbacks = [('callbacks.earlystopping_manual', [])]
-    n_runs = 3
+    callbacks = [('callbacks.earlystopping_manual', []), ]
+    n_runs = 2
 
 
 @ex.capture
@@ -66,8 +68,10 @@ def make_callbacks(callbacks, training, test, full_mi, save_dir, batch_size, act
         callback_object = importlib.import_module(callback[0]).load(*callback[1])
         callback_objects.append(callback_object)
     callback_objects.append(LoggingReporter(trn=training, tst=test, full_mi=full_mi, save_dir=save_dir,
-                                 batch_size=batch_size, activation_fn=activation_fn,
-                                 do_save_func=do_report))
+                                            batch_size=batch_size, activation_fn=activation_fn,
+                                            do_save_func=do_report))
+    callback_objects.append(MetricsLogger(_run))
+
     return callback_objects
 
 
@@ -176,11 +180,9 @@ def conduct(epochs, batch_size, n_runs, _run):
     # compute mean of information measures over all runs
     mi_mean_over_runs = measures_all_runs.groupby(['epoch', 'layer']).mean()
 
-
     # plot the infoplane for average MI estimates
     filename = plot_infoplane(measures=mi_mean_over_runs)
     _run.add_artifact(filename, name='infoplane_plot')
     # TODO think about whether plotting snr ratio averaged over multiple runs does make sense
     filename = plot_snr()
     _run.add_artifact(filename, name='snr_plot')
-
