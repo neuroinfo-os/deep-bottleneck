@@ -31,7 +31,7 @@ class ActivityProjector(keras.callbacks.Callback):
         self.full = utils.construct_full_dataset(train, test)
 
         # Save metadata.
-        np.savetxt(f'{log_dir}/metadata.tsv', self.full.y, fmt='%i')
+        np.savetxt(f'{log_dir}/metadata.tsv', self.test.y, fmt='%i')
 
     def set_model(self, model):
         self.model = model
@@ -40,7 +40,7 @@ class ActivityProjector(keras.callbacks.Callback):
         for layer in self.model.layers:
             if hasattr(layer, 'kernel'):  # Dense-like layers have a kernel attribute.
                 layerfunc = K.function(self.model.inputs, [layer.output])
-                layer_activity = layerfunc([self.full.X])[0]
+                layer_activity = layerfunc([self.test.X])[0]
                 embeddings.append(tf.Variable(layer_activity, name=layer.name))
 
         self.saver = tf.train.Saver(embeddings)
