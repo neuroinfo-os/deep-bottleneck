@@ -12,8 +12,22 @@ import numpy as np
 
 
 class ActivityProjector(keras.callbacks.Callback):
+    """  Read activity from layers of a Keras model and log is for TensorBoard
+
+    This callback reads activity from the hidden layers of a Keras model
+    and logs it as Model Checkpoint files.
+    The network activity patterns can then be explored in TensorBoard
+    with its Embeddings Projector
+    """
 
     def __init__(self, train, test, log_dir='./logs', embeddings_freq=10):
+        """
+        :param train: The training data
+        :param test: The test data
+        :param log_dir: Path to directory used for logging
+        :param embeddings_freq: Defines how often embedding variables will be saved to
+        the log directory. If set to 1, this is done every epoch, if it is set to 10 every 10th epoch and so forth.
+        """
         super().__init__()
 
         self.sess = K.get_session()
@@ -34,11 +48,14 @@ class ActivityProjector(keras.callbacks.Callback):
         np.savetxt(f'{log_dir}/metadata.tsv', self.test.y, fmt='%i')
 
     def set_model(self, model):
+        """ Prepare for logging the activities of the layers and set up the TensorBoard projector
+        :param model: The Keras model
+        """
         self.model = model
 
         embeddings = []
         for layer in self.model.layers:
-            if hasattr(layer, 'kernel'):  # Dense-like layers have a kernel attribute.
+            if utils.is_dense_like(layer):
                 layerfunc = K.function(self.model.inputs, [layer.output])
                 layer_activity = layerfunc([self.test.X])[0]
                 embeddings.append(tf.Variable(layer_activity, name=layer.name))
@@ -55,9 +72,16 @@ class ActivityProjector(keras.callbacks.Callback):
         projector.visualize_embeddings(self.writer, config)
 
     def on_epoch_end(self, epoch, logs=None):
+        """ Write layer activations to file
+        :param epoch: Number of the current epoch
+        :param logs: Quantities such as acc, loss which are passed by Sequential.fit()
+        """
         if self.embeddings_freq and self.embeddings_ckpt_path:
             if (epoch % self.embeddings_freq) == 0:
                 self.saver.save(self.sess, self.embeddings_ckpt_path, epoch)
 
     def on_train_end(self, logs=None):
+        """ Close files
+        :param logs: Quantities such as acc, loss which are passed by Sequential.fit()
+        """
         self.writer.close()

@@ -10,7 +10,7 @@ If not marked otherwise, all information below can be found there.
 
 Prerequisites: random variable, probability distribution
 
-One major question in information theory is "how to measure information content",
+A major part of information theory is persuing answers to problems like "how to measure information content",
 "how to compress data" and "how to communicate perfectly over imperfect communcation
 channels".
 
@@ -31,7 +31,7 @@ Ensemble
 ^^^^^^^^
 We extend the notion of a random variable to the notion of an **ensemble**.
 An **ensemble** :math:`{X}` is a triplet :math:`(x, A_X, P_X)`, where :math:`x`
-is just the variable denoting the outcomes of the random variable, :math:`A_X`
+is just the variable denoting an outcome of the random variable, :math:`A_X`
 is the set of all possible outcomes and :math:`P_X` is the defining probability
 distribution.
 
@@ -39,7 +39,7 @@ distribution.
 
 Entropy
 ^^^^^^^
-Let :math:`X` be an random variable and :math:`A_X` the set of possible
+Let :math:`X` be a random variable and :math:`A_X` the set of possible
 outcomes. The entropy is defined as
 
 .. math::
