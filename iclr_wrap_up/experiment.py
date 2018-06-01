@@ -3,12 +3,17 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import pickle
+import datetime
 
 from sacred import Experiment
 from sacred.observers import MongoObserver
+
+from tensorflow.python.keras import backend as K
+
+from tensorflow.python.keras.callbacks import TensorBoard
 from iclr_wrap_up.callbacks.loggingreporter import LoggingReporter
 from iclr_wrap_up.callbacks.metrics_logger import MetricsLogger
+from iclr_wrap_up.callbacks.activityprojector import ActivityProjector
 
 import iclr_wrap_up.credentials as credentials
 
@@ -63,6 +68,10 @@ def do_report(epoch):
 
 @ex.capture
 def make_callbacks(callbacks, training, test, full_mi, save_dir, batch_size, activation_fn, _run):
+    datestr = str(datetime.datetime.now()).split(sep='.')[0]
+    datestr = datestr.replace(':', '-')
+    datestr = datestr.replace(' ', '_')
+
     callback_objects = []
     # The logging reporter needs to be at position 0 to access the correct one for the further processing.
     callback_objects.append(LoggingReporter(trn=training, tst=test, full_mi=full_mi,
@@ -72,6 +81,9 @@ def make_callbacks(callbacks, training, test, full_mi, save_dir, batch_size, act
         callback_object = importlib.import_module(callback[0]).load(*callback[1])
         callback_objects.append(callback_object)
     callback_objects.append(MetricsLogger(_run))
+    callback_objects.append(TensorBoard(log_dir=f'./logs/{datestr}', histogram_freq=10))
+    callback_objects.append(ActivityProjector(log_dir=f'./logs/{datestr}', train=training, test=test,
+                                   embeddings_freq=10))
 
     return callback_objects
 
@@ -175,6 +187,11 @@ def conduct(epochs, batch_size, n_runs, _run):
         estimator = load_estimator(training_data=training, test_data=test)
         measures = estimator.compute_mi(activations_summary=activations_summary)
         measures_all_runs.append(measures)
+
+        # Clear the current Session to free current layer and model definition.
+        # This would otherwise be kept in memory. It is not needed as every run
+        # redefines the model.
+        K.clear_session()
 
     # Transform list of measurements into DataFrame with hierarchical index.
     measures_all_runs = pd.concat(measures_all_runs)
