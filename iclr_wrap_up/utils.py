@@ -1,17 +1,20 @@
 from tensorflow.python.keras import utils
 from tensorflow import keras
-#from tensorflow.python.keras import backend as K
+
 import numpy as np
 import scipy.io as sio
+
 from pathlib2 import Path
 from collections import namedtuple
 
 def get_mnist():
-    # Returns two namedtuples, with MNIST training and testing data
-    #   trn.X is training data
-    #   trn.y is trainiing class, with numbers from 0 to 9
-    #   trn.Y is training class, but coded as a 10-dim vector with one entry set to 1
-    # similarly for tst
+    """ Load the MNIST handwritten digits dataset
+    :return: Returns two namedtuples, the first one containing training
+    and the second one containing test data respectively. Both come with fields X, y and Y:
+    X is the training data
+    y is training class, with numbers from 0 to 9
+    Y is training class, but coded as a 10-dim vector with one entry set to 1 at the column index corresponding to the class
+    """
     nb_classes = 10
     (X_train, y_train), (X_test, y_test) = keras.datasets.mnist.load_data()
     X_train = np.reshape(X_train, [X_train.shape[0], -1]).astype('float32') / 255.
@@ -31,11 +34,13 @@ def get_mnist():
     return trn, tst
 
 def get_IB_data(ID):
-    # Returns two namedtuples, with IB training and testing data
-    #   trn.X is training data
-    #   trn.y is trainiing class, with numbers from 0 to 9
-    #   trn.Y is training class, but coded as a 10-dim vector with one entry set to 1
-    # similarly for tst
+    """ Load the Information Bottleneck harmonics dataset
+    :return: Returns two namedtuples, the first one containing training
+    and the second one containing test data respectively. Both come with fields X, y and Y:
+    X is the training data
+    y is training class, with numbers from 0 to 1
+    Y is training class, but coded as a 2-dim vector with one entry set to 1 at the column index corresponding to the class
+    """
     nb_classes = 2
     data_file = Path('datasets/IB_data_'+str(ID)+'.npz')
     if data_file.is_file():
@@ -85,7 +90,7 @@ def load_data():
     return data_sets
 
 def shuffle_in_unison_inplace(a, b):
-    """Shuffle the arrays randomly"""
+    """ Shuffle the arrays randomly """
     assert len(a) == len(b)
     p = np.random.permutation(len(a))
     return a[p], b[p]
@@ -110,3 +115,10 @@ def data_shuffle(data_sets_org, percent_of_train, min_test_data=80, shuffle_data
     data_sets.test.data = shuffled_data[start_test_index:, :]
     data_sets.test.labels = shuffled_labels[start_test_index:, :]
     return data_sets
+
+def is_dense_like(layer):
+    """ Check whether a layer has attribute 'kernel', which is true for dense-like layers
+    :param layer: Keras layer to check for attribute 'kernel'
+    :return: True if layer has attribute 'kernel', False otherwise
+    """
+    return hasattr(layer, 'kernel')
