@@ -1,6 +1,7 @@
 import importlib
 import os
 import matplotlib.pyplot as plt
+from matplotlib.animation import FFMpegWriter
 import numpy as np
 import pandas as pd
 import datetime
@@ -39,7 +40,7 @@ def hyperparameters():
     dataset = 'datasets.harmonics'
     estimator = 'compute_mi.compute_mi_ib_net'
     callbacks = []
-    n_runs = 1
+    n_runs = 5
 
 
 @ex.capture
@@ -107,8 +108,8 @@ def plot_infoplane(measures, architecture_name, infoplane_measure, epochs, activ
     for epoch_nr, mi_measures in measures.groupby(level=0):
         color = sm.to_rgba(epoch_nr)
 
-        xmvals = np.array(mi_measures['MI_XM_' + infoplane_measure])
-        ymvals = np.array(mi_measures['MI_YM_' + infoplane_measure])
+        xmvals = np.array(mi_measures['MI_XM'])
+        ymvals = np.array(mi_measures['MI_YM'])
 
         ax.plot(xmvals, ymvals, color=color, alpha=0.1, zorder=1)
         ax.scatter(xmvals, ymvals, s=20, facecolors=color, edgecolor='none', zorder=2)
@@ -166,6 +167,37 @@ def plot_snr(architecture_name, activation_fn, architecture, activations_summary
     return filename
 
 
+@ex.capture
+def plot_infoplane_movie(measures_all_runs, epochs, dataset, architecture):
+    fig, ax = plt.subplots()
+
+    if(dataset == "datasets.mnist" or dataset ==  "datasets.fashion_mnist"):
+        ax.set(xlim=[0, 14], ylim=[0, 3.5], xlabel='I(X;M)', ylabel='I(Y;M)')
+    else:
+        ax.set(xlim=[0, 12], ylim=[0, 1], xlabel='I(X;M)', ylabel='I(Y;M)')
+
+    scatter = ax.scatter([], [], s=20, edgecolor='none', zorder=2)
+    layers_colors = np.random.rand(len(architecture) + 1)
+
+    writer = FFMpegWriter(fps=10)
+
+    with writer.saving(fig, "plots/writer_test.mp4", 600):
+        for epoch_number, mi_epoch in measures_all_runs.groupby(level=0):
+
+            # Drop outer index level corresponding to the epoch.
+            mi_epoch.index = mi_epoch.index.droplevel()
+
+            xmvals = mi_epoch['MI_XM']
+            ymvals = mi_epoch['MI_YM']
+            points = np.array([xmvals, ymvals]).transpose()
+            colors = layers_colors[mi_epoch.index]
+
+            scatter.set_offsets(points)
+            scatter.set_array(colors)
+
+            writer.grab_frame()
+
+
 @ex.automain
 def conduct(epochs, batch_size, n_runs, _run):
     training, test = load_dataset()
@@ -190,6 +222,7 @@ def conduct(epochs, batch_size, n_runs, _run):
 
         estimator = load_estimator(training_data=training, test_data=test)
         measures = estimator.compute_mi(activations_summary=activations_summary)
+        measures['run'] = run_id
         measures_all_runs.append(measures)
 
         # Clear the current Session to free current layer and model definition.
@@ -209,3 +242,5 @@ def conduct(epochs, batch_size, n_runs, _run):
     # TODO think about whether plotting snr ratio averaged over multiple runs does make sense
     filename = plot_snr(activations_summary=activations_summary)
     _run.add_artifact(filename, name='snr_plot')
+
+    plot_infoplane_movie(measures_all_runs=measures_all_runs)
