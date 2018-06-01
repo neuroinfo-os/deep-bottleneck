@@ -28,12 +28,12 @@ ex.observers.append(MongoObserver.create(url=url,
 def hyperparameters():
     epochs = 10
     batch_size = 128
-    architecture = [2000, 120, 14]
+    architecture = [128, 64, 32, 16, 14]
     learning_rate = 0.001
     full_mi = False
     infoplane_measure = 'lower'
     architecture_name = '-'.join(map(str, architecture))
-    activation_fn = 'tanh'
+    activation_fn = 'relu'
     save_dir = 'rawdata/' + activation_fn + '_' + architecture_name
     model = 'models.feedforward'
     dataset = 'datasets.mnist'
