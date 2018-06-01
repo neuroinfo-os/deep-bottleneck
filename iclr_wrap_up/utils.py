@@ -3,16 +3,19 @@ from collections import namedtuple
 
 
 def construct_full_dataset(training, test):
-    """
-    :param training: Namedtuple with fields X, y and Y:
-    X is the training data
-    y is training class, with numbers from 0 to 1
-    Y is training class, but coded as a 2-dim vector with one entry set to 1 at the column index corresponding to the class
-    :param test: Namedtuple with fields X, y and Y:
-    X is the test data
-    y is test class, with numbers from 0 to 1
-    Y is test class, but coded as a 2-dim vector with one entry set to 1 at the column index corresponding to the class
-    :return: A new Namedtuple with fields X, y and Y containing the concatenation of training and test data
+    """Concatenates training and test data splits to obtain the full dataset.
+    Args:
+        training: Namedtuple with fields X, y and Y:
+            X is the training data
+            y is training class, with numbers from 0 to 1
+            Y is training class, but coded as a 2-dim vector with one entry set to 1 at the column index corresponding to the class
+        test: Namedtuple with fields X, y and Y:
+            X is the test data
+            y is test class, with numbers from 0 to 1
+            Y is test class, but coded as a 2-dim vector with one entry set to 1 at the column index corresponding to the class
+
+    Returns: A new Namedtuple with fields X, y and Y containing the concatenation of training and test data
+
     """
     Dataset = namedtuple('Dataset',['X','Y','y','nb_classes'])
     X = np.concatenate((training.X, test.X))
@@ -22,10 +25,13 @@ def construct_full_dataset(training, test):
 
 
 def shuffle_in_unison_inplace(a, b):
-    """ Shullfes both array a and b randomly in unison ""
-    :param a: An Array, containing data samples
-    :param b: An Array, containing labels respective to a
-    :return: Both arrays shuffled in the same way
+    """ Shuffles both array a and b randomly in unison
+    Args:
+        a: An Array, for example containing data samples
+        b: An Array, fpor example containing labels
+
+    Returns: Both arrays shuffled in the same way
+
     """
     assert len(a) == len(b)
     p = np.random.permutation(len(a))
@@ -34,6 +40,7 @@ def shuffle_in_unison_inplace(a, b):
 
 def data_shuffle(data_sets_org, percent_of_train, min_test_data=80, shuffle_data=False):
     """ Divided the data to train and test and shuffle it """
+    # TODO Function data_shuffle need refctoring and proper docstring
     perc = lambda i, t: np.rint((i * t) / 100).astype(np.int32)
     C = type('type_C', (object,), {})
     data_sets = C()
@@ -55,8 +62,11 @@ def data_shuffle(data_sets_org, percent_of_train, min_test_data=80, shuffle_data
 
 
 def is_dense_like(layer):
-    """ Check whether a layer has attribute 'kernel', which is true for dense-like layers
-    :param layer: Keras layer to check for attribute 'kernel'
-    :return: True if layer has attribute 'kernel', False otherwise
+    """Check whether a layer has attribute 'kernel', which is true for dense-like layers
+    Args:
+        layer: Keras layer to check for attribute 'kernel'
+
+    Returns: True if layer has attribute 'kernel', False otherwise
+
     """
     return hasattr(layer, 'kernel')
