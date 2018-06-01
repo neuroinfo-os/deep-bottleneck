@@ -26,17 +26,17 @@ ex.observers.append(MongoObserver.create(url=url,
 
 @ex.config
 def hyperparameters():
-    epochs = 10
-    batch_size = 128
-    architecture = [128, 64, 32, 16, 14]
-    learning_rate = 0.001
+    epochs = 1000
+    batch_size = 256
+    architecture = [10, 7, 5, 4, 3]
+    learning_rate = 0.0004
     full_mi = False
     infoplane_measure = 'lower'
     architecture_name = '-'.join(map(str, architecture))
     activation_fn = 'relu'
     save_dir = 'rawdata/' + activation_fn + '_' + architecture_name
     model = 'models.feedforward'
-    dataset = 'datasets.mnist'
+    dataset = 'datasets.harmonics'
     estimator = 'compute_mi.compute_mi_ib_net'
     callbacks = []
     n_runs = 1
@@ -96,7 +96,7 @@ def load_estimator(estimator, training_data, test_data,
 
 
 @ex.capture
-def plot_infoplane(measures, architecture_name, infoplane_measure, epochs, activation_fn):
+def plot_infoplane(measures, architecture_name, infoplane_measure, epochs, activation_fn, dataset):
     os.makedirs('plots/', exist_ok=True)
 
     sm = plt.cm.ScalarMappable(cmap='gnuplot', norm=plt.Normalize(vmin=0, vmax=epochs))
@@ -113,7 +113,11 @@ def plot_infoplane(measures, architecture_name, infoplane_measure, epochs, activ
         ax.plot(xmvals, ymvals, color=color, alpha=0.1, zorder=1)
         ax.scatter(xmvals, ymvals, s=20, facecolors=color, edgecolor='none', zorder=2)
 
-    ax.set(xlim=[0, 14], ylim=[0, 3.5], xlabel='I(X;M)', ylabel='I(Y;M)')
+
+    if(dataset == "datasets.mnist" or dataset ==  "datasets.fashion_mnist"):
+        ax.set(xlim=[0, 14], ylim=[0, 3.5], xlabel='I(X;M)', ylabel='I(Y;M)')
+    else:
+        ax.set(xlim=[0, 12], ylim=[0, 1], xlabel='I(X;M)', ylabel='I(Y;M)')
 
     plt.colorbar(sm, label='Epoch')
 
