@@ -53,8 +53,8 @@ class ActivityProjector(keras.callbacks.Callback):
         Args:
             model: The Keras model
 
-        Returns: None
-
+        Returns:
+            None
         """
         self.model = model
 
@@ -82,8 +82,8 @@ class ActivityProjector(keras.callbacks.Callback):
             epoch: Number of the current epoch
             logs: Quantities such as acc, loss which are passed by Sequential.fit()
 
-        Returns: None
-
+        Returns:
+            None
         """
         if self.embeddings_freq and self.embeddings_ckpt_path:
             if (epoch % self.embeddings_freq) == 0:
@@ -94,7 +94,7 @@ class ActivityProjector(keras.callbacks.Callback):
         Args:
             logs: Quantities such as acc, loss which are passed by Sequential.fit()
 
-        Returns: None
-
+        Returns:
+            None
         """
         self.writer.close()

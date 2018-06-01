@@ -6,16 +6,16 @@ def construct_full_dataset(training, test):
     """Concatenates training and test data splits to obtain the full dataset.
     Args:
         training: Namedtuple with fields X, y and Y:
-            X is the training data
-            y is training class, with numbers from 0 to 1
-            Y is training class, but coded as a 2-dim vector with one entry set to 1 at the column index corresponding to the class
+            - X is the training data
+            - y is training class, with numbers from 0 to 1
+            - Y is training class, but coded as a 2-dim vector with one entry set to 1 at the column index corresponding to the class
         test: Namedtuple with fields X, y and Y:
-            X is the test data
-            y is test class, with numbers from 0 to 1
-            Y is test class, but coded as a 2-dim vector with one entry set to 1 at the column index corresponding to the class
+            - X is the test data
+            - y is test class, with numbers from 0 to 1
+            - Y is test class, but coded as a 2-dim vector with one entry set to 1 at the column index corresponding to the class
 
-    Returns: A new Namedtuple with fields X, y and Y containing the concatenation of training and test data
-
+    Returns:
+        A new Namedtuple with fields X, y and Y containing the concatenation of training and test data
     """
     Dataset = namedtuple('Dataset',['X','Y','y','nb_classes'])
     X = np.concatenate((training.X, test.X))
@@ -30,8 +30,8 @@ def shuffle_in_unison_inplace(a, b):
         a: An Array, for example containing data samples
         b: An Array, fpor example containing labels
 
-    Returns: Both arrays shuffled in the same way
-
+    Returns:
+        Both arrays shuffled in the same way
     """
     assert len(a) == len(b)
     p = np.random.permutation(len(a))
@@ -66,7 +66,7 @@ def is_dense_like(layer):
     Args:
         layer: Keras layer to check for attribute 'kernel'
 
-    Returns: True if layer has attribute 'kernel', False otherwise
-
+    Returns:
+        True if layer has attribute 'kernel', False otherwise
     """
     return hasattr(layer, 'kernel')

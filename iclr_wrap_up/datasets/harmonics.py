@@ -10,12 +10,12 @@ from iclr_wrap_up import utils
 
 def load():
     """ Load the Information Bottleneck harmonics dataset
-    Returns: Returns two namedtuples, the first one containing training
+    Returns:
+        Returns two namedtuples, the first one containing training
         and the second one containing test data respectively. Both come with fields X, y and Y:
         - X is the data
         - y is class, with numbers from 0 to 1
         - Y is class, but coded as a 2-dim vector with one entry set to 1 at the column index corresponding to the class
-
     """
     ID = '2017_12_21_16_51_3_275766'
     nb_classes = 2
@@ -43,8 +43,8 @@ def import_IB_data_from_mat(name_ID):
     Args:
         name_ID: Identifier which is going to be part of the output filename
 
-    Returns: None
-
+    Returns:
+        None
     """
     print('Loading Data...')
     d = sio.loadmat('datasets/var_u.mat')
