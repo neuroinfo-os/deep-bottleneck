@@ -1,7 +1,4 @@
 import importlib
-import os
-import matplotlib.pyplot as plt
-import numpy as np
 import pandas as pd
 import datetime
 
@@ -26,19 +23,21 @@ ex.observers.append(MongoObserver.create(url=url,
 
 @ex.config
 def hyperparameters():
-    epochs = 1000
+    epochs = 5
     batch_size = 256
     architecture = [10, 7, 5, 4, 3]
     learning_rate = 0.0004
     full_mi = False
-    infoplane_measure = 'lower'
+    infoplane_measure = 'upper'
     architecture_name = '-'.join(map(str, architecture))
-    activation_fn = 'relu'
+    activation_fn = 'tanh'
     save_dir = 'rawdata/' + activation_fn + '_' + architecture_name
     model = 'models.feedforward'
     dataset = 'datasets.harmonics'
     estimator = 'compute_mi.compute_mi_ib_net'
-    callbacks = []
+    callbacks = [('callbacks.earlystopping_manual', []), ]
+    plotters = [('plotter.informationplane', [infoplane_measure, epochs]),
+               ('plotter.snr', [architecture])]
     n_runs = 1
 
 
@@ -64,6 +63,22 @@ def do_report(epoch):
         return (epoch % 20) == 0
     else:  # Then every 100th
         return (epoch % 100) == 0
+
+@ex.capture
+def make_plotters(plotters, _run, dataset):
+
+    plotter_objects = []
+    for plotter in plotters:
+        plotter_object = importlib.import_module(plotter[0]).load(_run, dataset, *plotter[1])
+        plotter_objects.append(plotter_object)
+
+    return plotter_objects
+
+@ex.capture
+def generate_plots(plotter_objects, measures_summary):
+
+    for plotter in plotter_objects:
+        plotter.generate(measures_summary)
 
 
 @ex.capture
@@ -93,78 +108,6 @@ def load_estimator(estimator, training_data, test_data,
                    full_mi, epochs, architecture_name, activation_fn, infoplane_measure):
     module = importlib.import_module(estimator)
     return module.load(training_data, test_data, epochs, architecture_name, full_mi, activation_fn, infoplane_measure)
-
-
-@ex.capture
-def plot_infoplane(measures, architecture_name, infoplane_measure, epochs, activation_fn, dataset):
-    os.makedirs('plots/', exist_ok=True)
-
-    sm = plt.cm.ScalarMappable(cmap='gnuplot', norm=plt.Normalize(vmin=0, vmax=epochs))
-    sm.set_array([])
-
-    fig, ax = plt.subplots()
-
-    for epoch_nr, mi_measures in measures.groupby(level=0):
-        color = sm.to_rgba(epoch_nr)
-
-        xmvals = np.array(mi_measures['MI_XM_' + infoplane_measure])
-        ymvals = np.array(mi_measures['MI_YM_' + infoplane_measure])
-
-        ax.plot(xmvals, ymvals, color=color, alpha=0.1, zorder=1)
-        ax.scatter(xmvals, ymvals, s=20, facecolors=color, edgecolor='none', zorder=2)
-
-    ax.set(xlabel='I(X;M)', ylabel='I(Y;M)')
-
-    if(dataset == "datasets.mnist" or dataset ==  "datasets.fashion_mnist"):
-        ax.set(xlim=[0, 14], ylim=[0, 3.5])
-    else:
-        ax.set(xlim=[0, 12], ylim=[0, 1])
-
-    plt.colorbar(sm, label='Epoch')
-
-    filename = f'plots/infoplane_{activation_fn}_{architecture_name}_{infoplane_measure}.png'
-    plt.savefig(filename, bbox_inches='tight', dpi=600)
-    return filename
-
-
-@ex.capture
-def plot_snr(architecture_name, activation_fn, architecture, activations_summary):
-
-    epochs = []
-    means = []
-    stds = []
-    wnorms = []
-
-    for epoch_number, epoch_values in activations_summary.items():
-
-        epoch = epoch_values['epoch']
-        epochs.append(epoch)
-        wnorms.append(epoch_values['data']['weights_norm'])
-        means.append(epoch_values['data']['gradmean'])
-        stds.append(epoch_values['data']['gradstd'])
-
-    wnorms, means, stds = map(np.array, [wnorms, means, stds])
-    plot_layers = range(len(architecture) + 1)  # +1 for the last output layer.
-
-    fig, axes = plt.subplots(ncols=len(plot_layers), figsize=(12, 5))
-
-    for lndx, layerid in enumerate(plot_layers):
-        axes[lndx].plot(epochs, means[:, layerid], 'b', label="Mean")
-        axes[lndx].plot(epochs, stds[:, layerid], 'orange', label="Std")
-        axes[lndx].plot(epochs, means[:, layerid] / stds[:, layerid], 'red', label="SNR")
-        axes[lndx].plot(epochs, wnorms[:, layerid], 'g', label="||W||")
-
-        axes[lndx].set_title(f'Layer {layerid}')
-        axes[lndx].set_xlabel('Epoch')
-        axes[lndx].set_xscale("log", nonposx='clip')
-        axes[lndx].set_yscale("log", nonposy='clip')
-
-    handles, labels = axes[0].get_legend_handles_labels()
-    fig.legend(handles, labels, loc='center left', bbox_to_anchor=(1.0, 0.5))
-    fig.tight_layout()
-    filename = f'plots/snr_{activation_fn}_{architecture_name}.png'
-    fig.savefig(filename, bbox_inches='tight', dpi=600)
-    return filename
 
 
 @ex.automain
@@ -204,9 +147,8 @@ def conduct(epochs, batch_size, n_runs, _run):
     # compute mean of information measures over all runs
     mi_mean_over_runs = measures_all_runs.groupby(['epoch', 'layer']).mean()
 
-    # Plot the infoplane for average MI estimates.
-    filename = plot_infoplane(measures=mi_mean_over_runs)
-    _run.add_artifact(filename, name='infoplane_plot')
-    # TODO think about whether plotting snr ratio averaged over multiple runs does make sense
-    filename = plot_snr(activations_summary=activations_summary)
-    _run.add_artifact(filename, name='snr_plot')
+    measures_summary = {'mi_mean_over_runs': mi_mean_over_runs,
+                        'activations_summary': activations_summary}
+
+    plotter_objects = make_plotters()
+    generate_plots(plotter_objects, measures_summary)
