@@ -2,26 +2,24 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 
-
-def load(run, dataset, architecture_name, infoplane_measure, epochs, activation_fn):
-    return InformationPlanePlotter(run, dataset, architecture_name, infoplane_measure, epochs, activation_fn)
-
-class InformationPlanePlotter:
-    '''
-    Plot the infoplane for average MI estimates.
-    '''
+from iclr_wrap_up.plotter.base import BasePlotter
 
 
-    def __init__(self, run, dataset, architecture_name, infoplane_measure, epochs, activation_fn):
+def load(run, dataset, infoplane_measure, epochs):
+    return InformationPlanePlotter(run, dataset, infoplane_measure, epochs)
+
+
+class InformationPlanePlotter(BasePlotter):
+    """Plot the infoplane for average MI estimates."""
+    plotname = 'infoplane'
+
+    def __init__(self, run, dataset, infoplane_measure, epochs):
         self.dataset = dataset
-        self.architecture_name = architecture_name
         self.infoplane_measure = infoplane_measure
         self.epochs = epochs
-        self.activation_fn = activation_fn
         self.run = run
 
-
-    def generate_plot(self, measures_summary):
+    def plot(self, measures_summary):
 
         measures = measures_summary['mi_mean_over_runs']
 
@@ -43,14 +41,11 @@ class InformationPlanePlotter:
 
         ax.set(xlabel='I(X;M)', ylabel='I(Y;M)')
 
-        if (self.dataset == "datasets.mnist" or self.dataset == "datasets.fashion_mnist"):
+        if self.dataset == 'datasets.mnist' or self.dataset == 'datasets.fashion_mnist':
             ax.set(xlim=[0, 14], ylim=[0, 3.5])
         else:
             ax.set(xlim=[0, 12], ylim=[0, 1])
 
-        plt.colorbar(sm, label='Epoch')
+        fig.colorbar(sm, label='Epoch')
 
-        filename = f'plots/infoplane_{self.activation_fn}_{self.architecture_name}_{self.infoplane_measure}.png'
-        plt.savefig(filename, bbox_inches='tight', dpi=600)
-
-        self.run.add_artifact(filename, name='infoplane_plot')
+        return fig

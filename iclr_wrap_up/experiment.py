@@ -23,7 +23,7 @@ ex.observers.append(MongoObserver.create(url=url,
 
 @ex.config
 def hyperparameters():
-    epochs = 100
+    epochs = 5
     batch_size = 256
     architecture = [10, 7, 5, 4, 3]
     learning_rate = 0.0004
@@ -36,8 +36,8 @@ def hyperparameters():
     dataset = 'datasets.harmonics'
     estimator = 'compute_mi.compute_mi_ib_net'
     callbacks = [('callbacks.earlystopping_manual', []), ]
-    plotter = [('plotter.informationplane', [architecture_name, infoplane_measure, epochs, activation_fn]),
-               ('plotter.snr', [architecture_name, activation_fn, architecture])]
+    plotters = [('plotter.informationplane', [infoplane_measure, epochs]),
+               ('plotter.snr', [architecture])]
     n_runs = 1
 
 
@@ -65,11 +65,11 @@ def do_report(epoch):
         return (epoch % 100) == 0
 
 @ex.capture
-def make_plotter(plotter, _run, dataset):
+def make_plotters(plotters, _run, dataset):
 
     plotter_objects = []
-    for plot_generator in plotter:
-        plotter_object = importlib.import_module(plot_generator[0]).load(_run, dataset, *plot_generator[1])
+    for plotter in plotters:
+        plotter_object = importlib.import_module(plotter[0]).load(_run, dataset, *plotter[1])
         plotter_objects.append(plotter_object)
 
     return plotter_objects
@@ -77,8 +77,8 @@ def make_plotter(plotter, _run, dataset):
 @ex.capture
 def generate_plots(plotter_objects, measures_summary):
 
-    for plot_generator in plotter_objects:
-        plot_generator.generate_plot(measures_summary)
+    for plotter in plotter_objects:
+        plotter.generate(measures_summary)
 
 
 @ex.capture
@@ -150,5 +150,5 @@ def conduct(epochs, batch_size, n_runs, _run):
     measures_summary = {'mi_mean_over_runs': mi_mean_over_runs,
                         'activations_summary': activations_summary}
 
-    plotter_objects = make_plotter()
+    plotter_objects = make_plotters()
     generate_plots(plotter_objects, measures_summary)
