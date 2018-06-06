@@ -113,11 +113,12 @@ def plot_infoplane(measures, architecture_name, infoplane_measure, epochs, activ
         ax.plot(xmvals, ymvals, color=color, alpha=0.1, zorder=1)
         ax.scatter(xmvals, ymvals, s=20, facecolors=color, edgecolor='none', zorder=2)
 
+    ax.set(xlabel='I(X;M)', ylabel='I(Y;M)')
 
     if(dataset == "datasets.mnist" or dataset ==  "datasets.fashion_mnist"):
-        ax.set(xlim=[0, 14], ylim=[0, 3.5], xlabel='I(X;M)', ylabel='I(Y;M)')
+        ax.set(xlim=[0, 14], ylim=[0, 3.5])
     else:
-        ax.set(xlim=[0, 12], ylim=[0, 1], xlabel='I(X;M)', ylabel='I(Y;M)')
+        ax.set(xlim=[0, 12], ylim=[0, 1])
 
     plt.colorbar(sm, label='Epoch')
 
