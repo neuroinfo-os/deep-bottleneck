@@ -12,7 +12,7 @@ import numpy as np
 
 
 class ActivityProjector(keras.callbacks.Callback):
-    """  Read activity from layers of a Keras model and log is for TensorBoard
+    """Read activity from layers of a Keras model and log is for TensorBoard
 
     This callback reads activity from the hidden layers of a Keras model
     and logs it as Model Checkpoint files.
@@ -21,12 +21,13 @@ class ActivityProjector(keras.callbacks.Callback):
     """
 
     def __init__(self, train, test, log_dir='./logs', embeddings_freq=10):
-        """ 
-        :param train: The training data
-        :param test: The test data
-        :param log_dir: Path to directory used for logging
-        :param embeddings_freq: Defines how often embedding variables will be saved to
-        the log directory. If set to 1, this is done every epoch, if it is set to 10 every 10th epoch and so forth.
+        """
+        Args:
+            train: The training data
+            test: The test data
+            log_dir: Path to directory used for logging
+            embeddings_freq: Defines how often embedding variables will be saved to
+                the log directory. If set to 1, this is done every epoch, if it is set to 10 every 10th epoch and so forth.
         """
         super().__init__()
 
@@ -45,11 +46,15 @@ class ActivityProjector(keras.callbacks.Callback):
         self.full = utils.construct_full_dataset(train, test)
 
         # Save metadata.
-        np.savetxt(f'{log_dir}/metadata.tsv', self.full.y, fmt='%i')
-        
+        np.savetxt(f'{log_dir}/metadata.tsv', self.test.y, fmt='%i')
+
     def set_model(self, model):
-        """ Prepare for logging the activities of the layers and set up the TensorBoard projector
-        :param model: The Keras model
+        """Prepare for logging the activities of the layers and set up the TensorBoard projector
+        Args:
+            model: The Keras model
+
+        Returns:
+            None
         """
         self.model = model
 
@@ -57,7 +62,7 @@ class ActivityProjector(keras.callbacks.Callback):
         for layer in self.model.layers:
             if utils.is_dense_like(layer):
                 layerfunc = K.function(self.model.inputs, [layer.output])
-                layer_activity = layerfunc([self.full.X])[0]
+                layer_activity = layerfunc([self.test.X])[0]
                 embeddings.append(tf.Variable(layer_activity, name=layer.name))
 
         self.saver = tf.train.Saver(embeddings)
@@ -72,16 +77,24 @@ class ActivityProjector(keras.callbacks.Callback):
         projector.visualize_embeddings(self.writer, config)
 
     def on_epoch_end(self, epoch, logs=None):
-        """ Write layer activations to file
-        :param epoch: Number of the current epoch
-        :param logs: Quantities such as acc, loss which are passed by Sequential.fit()
+        """Write layer activations to file
+        Args:
+            epoch: Number of the current epoch
+            logs: Quantities such as acc, loss which are passed by Sequential.fit()
+
+        Returns:
+            None
         """
         if self.embeddings_freq and self.embeddings_ckpt_path:
             if (epoch % self.embeddings_freq) == 0:
                 self.saver.save(self.sess, self.embeddings_ckpt_path, epoch)
 
     def on_train_end(self, logs=None):
-        """ Close files
-        :param logs: Quantities such as acc, loss which are passed by Sequential.fit()
+        """Close files
+        Args:
+            logs: Quantities such as acc, loss which are passed by Sequential.fit()
+
+        Returns:
+            None
         """
         self.writer.close()

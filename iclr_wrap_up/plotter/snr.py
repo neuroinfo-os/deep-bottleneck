@@ -3,15 +3,16 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-def load(run, architecture_name, activation_fn, architecture):
-    return Snr(run, architecture_name, activation_fn, architecture)
+def load(run, dataset, architecture_name, activation_fn, architecture):
+    return Snr(run, dataset, architecture_name, activation_fn, architecture)
 
 # TODO think about whether plotting snr ratio averaged over multiple runs does make sense
 
 class Snr:
 
 
-    def __init__(self, run, architecture_name, activation_fn, architecture):
+    def __init__(self, run, dataset, architecture_name, activation_fn, architecture):
+        self.dataset = dataset
         self.architecture_name = architecture_name
         self.activation_fn = activation_fn
         self.run = run

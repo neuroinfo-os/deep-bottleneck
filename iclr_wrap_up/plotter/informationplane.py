@@ -3,8 +3,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-def load(run, architecture_name, infoplane_measure, epochs, activation_fn):
-    return InformationPlanePlotter(run, architecture_name, infoplane_measure, epochs, activation_fn)
+def load(run, dataset, architecture_name, infoplane_measure, epochs, activation_fn):
+    return InformationPlanePlotter(run, dataset, architecture_name, infoplane_measure, epochs, activation_fn)
 
 class InformationPlanePlotter:
     '''
@@ -12,7 +12,8 @@ class InformationPlanePlotter:
     '''
 
 
-    def __init__(self, run, architecture_name, infoplane_measure, epochs, activation_fn):
+    def __init__(self, run, dataset, architecture_name, infoplane_measure, epochs, activation_fn):
+        self.dataset = dataset
         self.architecture_name = architecture_name
         self.infoplane_measure = infoplane_measure
         self.epochs = epochs
@@ -40,7 +41,12 @@ class InformationPlanePlotter:
             ax.plot(xmvals, ymvals, color=color, alpha=0.1, zorder=1)
             ax.scatter(xmvals, ymvals, s=20, facecolors=color, edgecolor='none', zorder=2)
 
-        ax.set(xlim=[0, 12], ylim=[0, 1], xlabel='I(X;M)', ylabel='I(Y;M)')
+        ax.set(xlabel='I(X;M)', ylabel='I(Y;M)')
+
+        if (self.dataset == "datasets.mnist" or self.dataset == "datasets.fashion_mnist"):
+            ax.set(xlim=[0, 14], ylim=[0, 3.5])
+        else:
+            ax.set(xlim=[0, 12], ylim=[0, 1])
 
         plt.colorbar(sm, label='Epoch')
 

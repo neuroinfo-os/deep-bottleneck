@@ -23,7 +23,7 @@ ex.observers.append(MongoObserver.create(url=url,
 
 @ex.config
 def hyperparameters():
-    epochs = 10
+    epochs = 100
     batch_size = 256
     architecture = [10, 7, 5, 4, 3]
     learning_rate = 0.0004
@@ -65,11 +65,11 @@ def do_report(epoch):
         return (epoch % 100) == 0
 
 @ex.capture
-def make_plotter(plotter, _run):
+def make_plotter(plotter, _run, dataset):
 
     plotter_objects = []
     for plot_generator in plotter:
-        plotter_object = importlib.import_module(plot_generator[0]).load(_run, *plot_generator[1])
+        plotter_object = importlib.import_module(plot_generator[0]).load(_run, dataset, *plot_generator[1])
         plotter_objects.append(plotter_object)
 
     return plotter_objects
