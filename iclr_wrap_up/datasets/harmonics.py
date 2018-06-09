@@ -26,7 +26,10 @@ def load():
         import_IB_data_from_mat(ID)
         data = np.load('datasets/IB_data_' + str(ID) + '.npz')
 
-    (X_train, y_train), (X_test, y_test) = (data['X_train'], data['y_train']), (data['X_test'], data['y_test'])
+    X_train = data['X_train']
+    y_train = data['y_train']
+    X_test  = data['X_test']
+    y_test  = data['y_test']
 
     Y_train = keras_utils.to_categorical(y_train, nb_classes).astype('float32')
     Y_test = keras_utils.to_categorical(y_test, nb_classes).astype('float32')
@@ -34,7 +37,6 @@ def load():
     Dataset = namedtuple('Dataset', ['X', 'Y', 'y', 'nb_classes'])
     training = Dataset(X_train, Y_train, y_train, nb_classes)
     test = Dataset(X_test, Y_test, y_test, nb_classes)
-    del X_train, X_test, Y_train, Y_test, y_train, y_test
     return training, test
 
 
