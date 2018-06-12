@@ -1,7 +1,19 @@
 Literature Summary
 ==================
 
-1. ON THE INFORMATION BOTTLENECK THEORY OF DEEP LEARNING
+1. THE INFORMATION BOTTLENECK METHOD
+--------------------------------------------------------
+
+
+2. DEEP LEARNING AND THE INFORMATION BOTTLENECK PRINCIPLE 
+--------------------------------------------------------
+
+
+3. OPENING THE BLACK BOX OF DEEP NEURAL NETWORKS VIA INFORMATION 
+--------------------------------------------------------
+
+
+4. ON THE INFORMATION BOTTLENECK THEORY OF DEEP LEARNING
 --------------------------------------------------------
 
 :cite:`Andrew2017`
