@@ -1,0 +1,90 @@
+#!/bin/bash
+
+# Bashscript to mount the project directory from the scratch drive
+# into your local filesystem. This way you can view images in your
+# filebrowser and open files with normal editors.
+
+function printhelp() {
+    echo "Usage: mountdneck"
+    echo "    [-u|--user USER]"
+    echo "    [-m|--mountpoint MOUNTPOINT [default: ~/mnt/dneck]]"
+}
+
+# Parse command line arguments.
+# Check that getopt works.
+getopt --test > /dev/null
+if [[ $? -ne 4 ]]; then
+    echo "I’m sorry, `getopt --test` failed in this environment."
+    exit 1
+fi
+
+# Set options.
+OPTIONS=u:m:h
+LONGOPTIONS=user:,mountpoint:,help
+
+# Actually parse the options.
+PARSED=$(getopt --options=$OPTIONS --longoptions=$LONGOPTIONS --name "$0" -- "$@")
+if [[ $? -ne 0 ]]; then
+    # e.g. $? == 1
+    # then getopt has complained about wrong arguments to stdout
+    exit 2
+fi
+
+# Read getopt’s output this way to handle the quoting right.
+eval set -- "$PARSED"
+
+# Now enjoy the options in order and nicely split until we see --
+while true; do
+   case "$1" in
+	-u|--user)
+	    user="$2"
+	    shift 2
+	    ;;
+	-m|--mountpoint)
+	    mountpoint="$2"
+	    shift 2
+	    ;;
+        -h|--help)
+            printhelp
+            exit
+            ;;
+	--)
+	    shift
+	    break
+	    ;;
+        *)
+            printhelp
+            exit 3
+            ;;
+   esac
+done
+
+# Check if user was set.
+if [ -z "$user" ]; then
+    printhelp
+    exit
+fi
+
+# Set default mountpoint.
+if [ -z "$mountpoint"  ]; then
+    mountpoint=~/mnt/dneck
+fi
+
+# Check if sshfs is installed.
+if [ ! -f $sshfs_path ]; then
+   echo "sshfs is not installed on your system"
+   exit
+fi
+
+# Create directory to mount into.
+if [ ! -d "$mountpoint" ]; then
+    mkdir -p $mountpoint
+fi
+
+# Get the recent root directory of our project.
+DNECK_ROOT=`ssh "$user@gate.ikw.uni-osnabrueck.de" 'source /net/home/student/j/jrebstadt/dneck_setup.bash; echo $DNECK_ROOT'`
+
+# Mount the files from the grid.
+sshfs "$user@gate.ikw.uni-osnabrueck.de:$DNECK_ROOT" "$mountpoint"
+echo "Dneck projects files are now mounted in $mountpoint."
+

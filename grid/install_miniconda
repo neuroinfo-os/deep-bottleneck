@@ -1,0 +1,31 @@
+#!/bin/bash
+# Set environment for installation.
+SETUP_FILE="/net/home/student/j/jrebstadt/conda_setup/conda_setup.bash"
+CONDA_INSTALL_LOCATION=$DNECK_ROOT/miniconda
+CONDA_PATH="$CONDA_INSTALL_LOCATION/bin"
+# Reset path to forget old conda installation.
+export PATH=$(getconf PATH)
+# Remove old conda installation
+rm -rf $CONDA_INSTALL_LOCATION 
+# Download and install conda.
+wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+bash miniconda.sh -b -p $CONDA_INSTALL_LOCATION 
+export PATH=$CONDA_PATH:$PATH
+echo $PATH
+hash -r
+conda config --set always_yes yes
+conda update -q conda
+conda info -a
+# Install environment.
+conda env create -q --file ../requirements/dev.txt
+chmod --recursive 777  $CONDA_INSTALL_LOCATION
+# Set new conda path.
+echo "export CONDA_PATH=$CONDA_PATH" > $SETUP_FILE
+echo 'export PATH=$CONDA_PATH:$PATH' >> $SETUP_FILE
+echo "alias activate='source $CONDA_PATH/activate'" >> $SETUP_FILE
+echo "alias deactivate='source deactivate'" >> $SETUP_FILE
+chgrp cv_project18 $SETUP_FILE
+chmod g+rwx $SETUP_FILE
+source ~/.bashrc
+# Clean up.
+rm miniconda.sh
