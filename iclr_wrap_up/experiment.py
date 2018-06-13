@@ -23,7 +23,7 @@ ex.observers.append(MongoObserver.create(url=url,
 
 @ex.config
 def hyperparameters():
-    epochs = 300
+    epochs = 1000
     batch_size = 256
     architecture = [10, 7, 5, 4, 3]
     learning_rate = 0.0004

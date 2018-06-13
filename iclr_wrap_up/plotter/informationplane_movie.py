@@ -19,27 +19,32 @@ class InformationPlaneMoviePlotter(BasePlotter):
         self.dataset = dataset
         self.run = run
 
+    def generate(self, measures_summary):
+        self.plot(measures_summary)
+        filename = f'plots/{self.plotname}.mp4'
+        self.run.add_artifact(filename, name=self.plotname)
+
     def plot(self, measures_summary):
 
         measures = measures_summary['measures_all_runs']
 
         os.makedirs('plots/', exist_ok=True)
 
+        plt.set_cmap("hsv")
         fig, ax = plt.subplots()
         if self.dataset == 'datasets.mnist' or self.dataset == 'datasets.fashion_mnist':
             ax.set(xlim=[0, 14], ylim=[0, 3.5])
         else:
             ax.set(xlim=[0, 12], ylim=[0, 1])
 
-
-        scatter = ax.scatter([], [], s=20, edgecolor='none', zorder=2)
+        scatter = ax.scatter([], [], s=20, edgecolor='none')
 
         num_layers = measures.index.get_level_values(1).nunique()
-        layers_colors = np.random.rand(num_layers)
+        layers_colors = np.linspace(0, 1, num_layers)
 
         writer = FFMpegWriter(fps=10)
 
-        with writer.saving(fig, "plots/writer_test.mp4", 600):
+        with writer.saving(fig, f'plots/{self.plotname}.mp4', 600):
             for epoch_number, mi_epoch in measures.groupby(level=0):
                 # Drop outer index level corresponding to the epoch.
                 mi_epoch.index = mi_epoch.index.droplevel()
@@ -56,6 +61,3 @@ class InformationPlaneMoviePlotter(BasePlotter):
                 writer.grab_frame()
 
         ax.set(xlabel='I(X;M)', ylabel='I(Y;M)')
-
-
-        return fig
