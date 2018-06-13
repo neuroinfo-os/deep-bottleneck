@@ -60,17 +60,10 @@ class MutualInformationEstimator:
 
         info_measures = ['MI_XM', 'MI_YM']
 
+        epoch_numbers = activations_summary.keys()
+        num_layers = len(self.architecture_name.split('-')) + 1  # + 1 for output layer
 
-        # Build up index and Data structure to store results.
-        epoch_nrs = []
-        for s in activations_summary.keys():
-            epoch_nrs.append(int((s[5:].lstrip('0'))))
-
-        epoch_nrs.sort()
-
-        num_layers = len(self.architecture_name.split('-'))
-
-        index_base_keys = [epoch_nrs, list(range(num_layers))]
+        index_base_keys = [epoch_numbers, list(range(num_layers))]
         index = pd.MultiIndex.from_product(index_base_keys, names=['epoch', 'layer'])
 
         measures = pd.DataFrame(index=index, columns=info_measures)

@@ -1,8 +1,4 @@
 import importlib
-import os
-import matplotlib.pyplot as plt
-from matplotlib.animation import FFMpegWriter
-import numpy as np
 import pandas as pd
 import datetime
 
@@ -27,7 +23,7 @@ ex.observers.append(MongoObserver.create(url=url,
 
 @ex.config
 def hyperparameters():
-    epochs = 5
+    epochs = 300
     batch_size = 256
     architecture = [10, 7, 5, 4, 3]
     learning_rate = 0.0004
@@ -39,10 +35,11 @@ def hyperparameters():
     model = 'models.feedforward'
     dataset = 'datasets.harmonics'
     estimator = 'compute_mi.compute_mi_ib_net'
-    callbacks = [('callbacks.earlystopping_manual', []), ]
-    plotters = [('plotter.informationplane', [infoplane_measure, epochs]),
-               ('plotter.snr', [architecture])]
-    n_runs = 1
+    callbacks = []
+    plotters = [('plotter.informationplane', [epochs]),
+               ('plotter.snr', [architecture]),
+               ('plotter.informationplane_movie', [])]
+    n_runs = 5
 
 
 @ex.capture
@@ -114,37 +111,6 @@ def load_estimator(estimator, training_data, test_data,
     return module.load(training_data, test_data, epochs, architecture_name, full_mi, activation_fn, infoplane_measure)
 
 
-@ex.capture
-def plot_infoplane_movie(measures_all_runs, epochs, dataset, architecture):
-    fig, ax = plt.subplots()
-
-    if(dataset == "datasets.mnist" or dataset ==  "datasets.fashion_mnist"):
-        ax.set(xlim=[0, 14], ylim=[0, 3.5], xlabel='I(X;M)', ylabel='I(Y;M)')
-    else:
-        ax.set(xlim=[0, 12], ylim=[0, 1], xlabel='I(X;M)', ylabel='I(Y;M)')
-
-    scatter = ax.scatter([], [], s=20, edgecolor='none', zorder=2)
-    layers_colors = np.random.rand(len(architecture) + 1)
-
-    writer = FFMpegWriter(fps=10)
-
-    with writer.saving(fig, "plots/writer_test.mp4", 600):
-        for epoch_number, mi_epoch in measures_all_runs.groupby(level=0):
-
-            # Drop outer index level corresponding to the epoch.
-            mi_epoch.index = mi_epoch.index.droplevel()
-
-            xmvals = mi_epoch['MI_XM']
-            ymvals = mi_epoch['MI_YM']
-            points = np.array([xmvals, ymvals]).transpose()
-            colors = layers_colors[mi_epoch.index]
-
-            scatter.set_offsets(points)
-            scatter.set_array(colors)
-
-            writer.grab_frame()
-
-
 @ex.automain
 def conduct(epochs, batch_size, n_runs, _run):
     training, test = load_dataset()
@@ -165,8 +131,6 @@ def conduct(epochs, batch_size, n_runs, _run):
         # Getting the current activations_summary from the logging_callback.
         activations_summary = callbacks[0].activations_summary
 
-        print(len(activations_summary))
-
         estimator = load_estimator(training_data=training, test_data=test)
         measures = estimator.compute_mi(activations_summary=activations_summary)
         measures['run'] = run_id
@@ -183,10 +147,9 @@ def conduct(epochs, batch_size, n_runs, _run):
     # compute mean of information measures over all runs
     mi_mean_over_runs = measures_all_runs.groupby(['epoch', 'layer']).mean()
 
-    measures_summary = {'mi_mean_over_runs': mi_mean_over_runs,
+    measures_summary = {'measures_all_runs': measures_all_runs,
+                        'mi_mean_over_runs': mi_mean_over_runs,
                         'activations_summary': activations_summary}
 
     plotter_objects = make_plotters()
     generate_plots(plotter_objects, measures_summary)
-
-    plot_infoplane_movie(measures_all_runs=measures_all_runs)
