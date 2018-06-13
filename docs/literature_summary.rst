@@ -1,7 +1,79 @@
 Literature Summary
 ==================
 
-1. ON THE INFORMATION BOTTLENECK THEORY OF DEEP LEARNING
+1. THE INFORMATION BOTTLENECK METHOD (Tishby 1999)
+--------------------------------------------------
+Tishby, N., Pereira, F. C., & Bialek, W. (2000). The information bottleneck method. arXiv preprint physics/0004057.
+
+1.1. Glossary
+^^^^^^^^^^^^^
+
+1.2. Structure
+^^^^^^^^^^^^^^
+
+1.3. Criticisim
+^^^^^^^^^^^^^^^
+
+1.4. Todo List
+^^^^^^^^^^^^^^
+
+
+
+2. DEEP LEARNING AND THE INFORMATION BOTTLENECK PRINCIPLE (Tishby 2015)
+-----------------------------------------------------------------------
+Tishby, N., & Zaslavsky, N. (2015, April). Deep learning and the information bottleneck principle. In Information Theory Workshop (ITW), 2015 IEEE (pp. 1-5). IEEE.
+
+2.1. Glossary
+^^^^^^^^^^^^^
+
+2.2. Structure
+^^^^^^^^^^^^^^
+
+2.3. Criticisim
+^^^^^^^^^^^^^^^
+
+2.4. Todo List
+^^^^^^^^^^^^^^
+
+
+
+3. OPENING THE BLACK BOX OF DEEP NEURAL NETWORKS VIA INFORMATION (Tishby 2017)
+------------------------------------------------------------------------------
+Shwartz-Ziv, R., & Tishby, N. (2017). Opening the black box of deep neural networks via information. arXiv preprint arXiv:1703.00810.
+
+3.1. Glossary
+^^^^^^^^^^^^^
+
+3.2. Structure
+^^^^^^^^^^^^^^
+
+3.3. Criticisim
+^^^^^^^^^^^^^^^
+
+3.4. Todo List
+^^^^^^^^^^^^^^
+
+
+
+4. ON THE INFORMATION BOTTLENECK THEORY OF DEEP LEARNING (Saxe 2018)
+--------------------------------------------------------------------
+Saxe, A. M., Bansal, Y., Dapello, J., Advani, M., Kolchinsky, A., Tracey, B. D., & Cox, D. D. (2018, May). On the information bottleneck theory of deep learning. In International Conference on Learning Representations.
+
+4.1. Glossary
+^^^^^^^^^^^^^
+
+4.2. Structure
+^^^^^^^^^^^^^^
+
+4.3. Criticisim
+^^^^^^^^^^^^^^^
+
+4.4. Todo List
+^^^^^^^^^^^^^^
+
+
+
+5. ON THE INFORMATION BOTTLENECK THEORY OF DEEP LEARNING
 --------------------------------------------------------
 
 :cite:`Andrew2017`
