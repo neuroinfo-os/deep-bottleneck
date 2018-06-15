@@ -14,6 +14,7 @@ def load(run, dataset):
 class InformationPlaneMoviePlotter(BasePlotter):
     """Plot the infoplane movie for several runs of the same network."""
     plotname = 'infoplane_movie'
+    filename = f'plots/{plotname}.mp4'
 
     def __init__(self, run, dataset):
         self.dataset = dataset
@@ -21,8 +22,7 @@ class InformationPlaneMoviePlotter(BasePlotter):
 
     def generate(self, measures_summary):
         self.plot(measures_summary)
-        filename = f'plots/{self.plotname}.mp4'
-        self.run.add_artifact(filename, name=self.plotname)
+        self.run.add_artifact(self.filename, name=self.plotname)
 
     def plot(self, measures_summary):
 
@@ -44,7 +44,7 @@ class InformationPlaneMoviePlotter(BasePlotter):
 
         writer = FFMpegWriter(fps=10)
 
-        with writer.saving(fig, f'plots/{self.plotname}.mp4', 600):
+        with writer.saving(fig, self.filename, 600):
             for epoch_number, mi_epoch in measures.groupby(level=0):
                 # Drop outer index level corresponding to the epoch.
                 mi_epoch.index = mi_epoch.index.droplevel()
