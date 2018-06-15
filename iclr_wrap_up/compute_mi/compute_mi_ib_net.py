@@ -58,20 +58,12 @@ class MutualInformationEstimator:
 
         labelprobs = np.mean(Y, axis=0)
 
-        info_measures = ['MI_XM_upper', 'MI_YM_upper', 'MI_XM_lower', 'MI_YM_lower', 'MI_XM_bin',  'MI_XM_bin2',
-                         'MI_YM_bin', 'MI_YM_bin2', 'H_M_upper', 'H_M_lower']
+        info_measures = ['MI_XM', 'MI_YM']
 
+        epoch_numbers = activations_summary.keys()
+        num_layers = len(self.architecture_name.split('-')) + 1  # + 1 for output layer
 
-        # Build up index and Data structure to store results.
-        epoch_nrs = []
-        for s in activations_summary.keys():
-            epoch_nrs.append(int((s[5:].lstrip('0'))))
-
-        epoch_nrs.sort()
-
-        num_layers = len(self.architecture_name.split('-'))
-
-        index_base_keys = [epoch_nrs, list(range(num_layers))]
+        index_base_keys = [epoch_numbers, list(range(num_layers))]
         index = pd.MultiIndex.from_product(index_base_keys, names=['epoch', 'layer'])
 
         measures = pd.DataFrame(index=index, columns=info_measures)
@@ -104,12 +96,11 @@ class MutualInformationEstimator:
                         hcond_upper = entropy_func_upper([activity[saved_labelixs[i], :], ])[0]
                         hM_given_Y_upper += labelprobs[i] * hcond_upper
 
-                    measures.loc[(epoch, layer_index), 'MI_XM_upper'] = nats2bits * (h_upper - hM_given_X)
-                    measures.loc[(epoch, layer_index), 'MI_YM_upper'] = nats2bits * (h_upper - hM_given_Y_upper)
-                    measures.loc[(epoch, layer_index), 'H_M_upper'] = nats2bits * h_upper
+                    measures.loc[(epoch, layer_index), 'MI_XM'] = nats2bits * (h_upper - hM_given_X)
+                    measures.loc[(epoch, layer_index), 'MI_YM'] = nats2bits * (h_upper - hM_given_Y_upper)
 
                     pstr = 'upper: MI(X;M)=%0.3f, MI(Y;M)=%0.3f' % (
-                        measures.loc[(epoch, layer_index), 'MI_XM_upper'], measures.loc[(epoch, layer_index), 'MI_YM_upper'])
+                        measures.loc[(epoch, layer_index), 'MI_XM'], measures.loc[(epoch, layer_index), 'MI_YM'])
 
                 if self.infoplane_measure == "lower":
 
@@ -124,28 +115,27 @@ class MutualInformationEstimator:
                         hcond_lower = entropy_func_lower([activity[saved_labelixs[i], :], ])[0]
                         hM_given_Y_lower += labelprobs[i] * hcond_lower
 
-                    measures.loc[(epoch, layer_index), 'MI_XM_lower'] = nats2bits * (h_lower - hM_given_X)
-                    measures.loc[(epoch, layer_index), 'MI_YM_lower'] = nats2bits * (h_lower - hM_given_Y_lower)
-                    measures.loc[(epoch, layer_index), 'H_M_lower'] = nats2bits * h_lower
+                    measures.loc[(epoch, layer_index), 'MI_XM'] = nats2bits * (h_lower - hM_given_X)
+                    measures.loc[(epoch, layer_index), 'MI_YM'] = nats2bits * (h_lower - hM_given_Y_lower)
 
                     pstr = ' | lower: MI(X;M)=%0.3f, MI(Y;M)=%0.3f' % (
-                        measures.loc[(epoch, layer_index), 'MI_XM_lower'], measures.loc[(epoch, layer_index), 'MI_YM_lower'])
+                        measures.loc[(epoch, layer_index), 'MI_XM'], measures.loc[(epoch, layer_index), 'MI_YM'])
 
                 if self.infoplane_measure == "bin":
                     binxm, binym = simplebinmi.bin_calc_information2(saved_labelixs, activity, binsize)
-                    measures.loc[(epoch, layer_index), 'MI_XM_bin'] = nats2bits * binxm
-                    measures.loc[(epoch, layer_index), 'MI_YM_bin'] = nats2bits * binym
+                    measures.loc[(epoch, layer_index), 'MI_XM'] = nats2bits * binxm
+                    measures.loc[(epoch, layer_index), 'MI_YM'] = nats2bits * binym
 
                     pstr = ' | bin: MI(X;M)=%0.3f, MI(Y;M)=%0.3f' % (
-                        measures.loc[(epoch, layer_index), 'MI_XM_bin'], measures.loc[(epoch, layer_index), 'MI_YM_bin'])
+                        measures.loc[(epoch, layer_index), 'MI_XM'], measures.loc[(epoch, layer_index), 'MI_YM'])
 
                 if self.infoplane_measure == "bin2":
                     binxm, binym = simplebinmi.bin_calc_information_evenbins(saved_labelixs, activity, numbins)
-                    measures.loc[(epoch, layer_index), 'MI_XM_bin'] = nats2bits * binxm
-                    measures.loc[(epoch, layer_index), 'MI_YM_bin'] = nats2bits * binym
+                    measures.loc[(epoch, layer_index), 'MI_XM'] = nats2bits * binxm
+                    measures.loc[(epoch, layer_index), 'MI_YM'] = nats2bits * binym
 
                     pstr = ' | bin: MI(X;M)=%0.3f, MI(Y;M)=%0.3f' % (
-                        measures.loc[(epoch, layer_index), 'MI_XM_bin'], measures.loc[(epoch, layer_index), 'MI_YM_bin'])
+                        measures.loc[(epoch, layer_index), 'MI_XM'], measures.loc[(epoch, layer_index), 'MI_YM'])
 
 
                 print(f'- Layer {layer_index} {pstr}')
