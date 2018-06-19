@@ -55,7 +55,6 @@ class Artifact:
         img = plt.imread(BytesIO(self.content))
         ax.imshow(img)
         ax.axis('off')
-        plt.close(self.fig)
 
     def _make_filename(self):
         parts = self.file.filename.split('/')
