@@ -11,6 +11,8 @@ from tensorflow.python.keras.callbacks import TensorBoard
 from iclr_wrap_up.callbacks.loggingreporter import LoggingReporter
 from iclr_wrap_up.callbacks.metrics_logger import MetricsLogger
 from iclr_wrap_up.callbacks.activityprojector import ActivityProjector
+import matplotlib
+matplotlib.use('agg')
 
 import iclr_wrap_up.credentials as credentials
 
@@ -23,17 +25,17 @@ ex.observers.append(MongoObserver.create(url=url,
 
 @ex.config
 def hyperparameters():
-    epochs = 1000
+    epochs = 10
     batch_size = 256
-    architecture = [10, 7, 5, 4, 3]
-    learning_rate = 0.0004
-    full_mi = False
+    architecture = [128, 64, 32, 16]
+    learning_rate = 0.001
+    full_mi = True
     infoplane_measure = 'upper'
     architecture_name = '-'.join(map(str, architecture))
     activation_fn = 'tanh'
     save_dir = 'rawdata/' + activation_fn + '_' + architecture_name
     model = 'models.feedforward'
-    dataset = 'datasets.harmonics'
+    dataset = 'datasets.mnist'
     estimator = 'compute_mi.compute_mi_ib_net'
     callbacks = []
     plotters = [('plotter.informationplane', [epochs]),

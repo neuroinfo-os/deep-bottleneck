@@ -8,3 +8,4 @@ seaborn
 sacred
 pymongo
 sacredboard
+pandas
