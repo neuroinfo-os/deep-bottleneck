@@ -37,10 +37,11 @@ def hyperparameters():
     model = 'models.feedforward'
     dataset = 'datasets.harmonics'
     estimator = 'compute_mi.compute_mi_ib_net'
-    callbacks = [('callbacks.earlystopping_manual', []), ]
-    plotters = [('plotter.informationplane', [infoplane_measure, epochs]),
-               ('plotter.snr', [architecture])]
-    n_runs = 1
+    callbacks = []
+    plotters = [('plotter.informationplane', [epochs]),
+               ('plotter.snr', [architecture]),
+               ('plotter.informationplane_movie', [])]
+    n_runs = 5
 
 
 @ex.capture
@@ -132,10 +133,9 @@ def conduct(epochs, batch_size, n_runs, _run):
         # Getting the current activations_summary from the logging_callback.
         activations_summary = callbacks[0].activations_summary
 
-        print(len(activations_summary))
-
         estimator = load_estimator(training_data=training, test_data=test)
         measures = estimator.compute_mi(activations_summary=activations_summary)
+        measures['run'] = run_id
         measures_all_runs.append(measures)
 
         # Clear the current Session to free current layer and model definition.
@@ -149,7 +149,8 @@ def conduct(epochs, batch_size, n_runs, _run):
     # compute mean of information measures over all runs
     mi_mean_over_runs = measures_all_runs.groupby(['epoch', 'layer']).mean()
 
-    measures_summary = {'mi_mean_over_runs': mi_mean_over_runs,
+    measures_summary = {'measures_all_runs': measures_all_runs,
+                        'mi_mean_over_runs': mi_mean_over_runs,
                         'activations_summary': activations_summary}
 
     plotter_objects = make_plotters()
