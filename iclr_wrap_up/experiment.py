@@ -11,6 +11,8 @@ from tensorflow.python.keras.callbacks import TensorBoard
 from iclr_wrap_up.callbacks.loggingreporter import LoggingReporter
 from iclr_wrap_up.callbacks.metrics_logger import MetricsLogger
 from iclr_wrap_up.callbacks.activityprojector import ActivityProjector
+import matplotlib
+matplotlib.use('agg')
 
 import iclr_wrap_up.credentials as credentials
 
@@ -23,7 +25,7 @@ ex.observers.append(MongoObserver.create(url=url,
 
 @ex.config
 def hyperparameters():
-    epochs = 5
+    epochs = 1000
     batch_size = 256
     architecture = [10, 7, 5, 4, 3]
     learning_rate = 0.0004

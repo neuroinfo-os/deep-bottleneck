@@ -17,7 +17,7 @@ conda config --set always_yes yes
 conda update -q conda
 conda info -a
 # Install environment.
-conda env create -q --file ../requirements/dev.txt
+conda env create -q --file ../../env.yml
 chmod --recursive 777  $CONDA_INSTALL_LOCATION
 # Set new conda path.
 echo "export CONDA_PATH=$CONDA_PATH" > $SETUP_FILE
@@ -27,5 +27,7 @@ echo "alias deactivate='source deactivate'" >> $SETUP_FILE
 chgrp cv_project18 $SETUP_FILE
 chmod g+rwx $SETUP_FILE
 source ~/.bashrc
+conda activate dneck
+pip install -r ../../requirements/dev.txt
 # Clean up.
 rm miniconda.sh
