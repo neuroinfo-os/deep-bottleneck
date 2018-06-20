@@ -1,12 +1,13 @@
 #!/bin/bash
 #$ -N dneck_sacred
-#$ -l mem=4G
+#$ -l mem=8G
 #$ -cwd
 #$ -l cuda=1
 #$ -l nv_mem_free=3.5G
 #$ -j y
 #$ -o ./output/
 #$ -pe default 3
+#$ -l h_rt=36:00:00
 #$ -l hostname=!*picture*
 
 echo "*** Start of SGE job ***"
@@ -15,7 +16,6 @@ date
 echo ""
 echo "Hostname"
 echo "$HOSTNAME"
-echo $JOB_ID
 echo 'Job-ID:'
 echo $JOB_ID
 echo 'user:'
@@ -40,7 +40,7 @@ echo $DNECK_ROOT
 source activate dneck
 
 echo "Sacred Experiment"
-PYTHONPATH=$DNECK_ROOT/$USER/deep-bottleneck WALLTIME=01:30:00 PYTHONHASHSEED=0 START_TIME=$(date +%s) python experiment.py
+PYTHONPATH=$DNECK_ROOT/$USER/deep-bottleneck WALLTIME=36:00:00 PYTHONHASHSEED=0 START_TIME=$(date +%s) python experiment.py
 
 
 echo ""
