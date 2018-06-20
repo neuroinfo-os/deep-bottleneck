@@ -4,41 +4,38 @@ import gridfs
 import matplotlib.pyplot as plt
 import numpy as np
 from iclr_wrap_up import credentials
+from IPython.display import HTML
 
 
 class ArtifactLoader:
     """Loads artifacts related to experiments."""
+
     def __init__(self, mongo_uri=credentials.MONGODB_URI, db_name=credentials.MONGODB_DBNAME):
         client = MongoClient(mongo_uri)
         db = client[db_name]
         self.runs = db.runs
         self.fs = gridfs.GridFS(db)
+        self.mapping = {'infoplane': PNGArtifact, 'snr': PNGArtifact, 'infoplane_movie': MP4Artifact}
         
     def load(self, experiment_id: int):
         experiment = self.runs.find_one({'_id': experiment_id})
-        artifacts = {artifact['name']: Artifact(artifact['name'], self.fs.get(artifact['file_id']))
+        artifacts = {artifact['name']: self.mapping[artifact['name']](artifact['name'], self.fs.get(artifact['file_id']))
                      for artifact in experiment['artifacts']}
         return artifacts
         
 
 class Artifact:
     """Displays or saves an artifact."""
+
+    extension = ""
+
     def __init__(self, name, file):
         self.name = name
         self.file = file
         self.content = None
-        self.fig = None
-    
-    def __repr__(self):
-        return f'Artifact(name={self.name})'
 
-    def show(self):
-        try:
-            if self.fig is None:
-                self._make_figure()
-            return self.fig
-        except:
-            raise ValueError('Something went wrong. Is the artifact a png file?')
+    def __repr__(self):
+        return f'{self.__class__}(name={self.name})'
 
     def save(self):
         self._read()
@@ -49,13 +46,51 @@ class Artifact:
         if self.content is None:
             self.content = self.file.read()
 
-    def _make_figure(self):
+    def _make_filename(self):
+        parts = self.file.filename.split('/')
+        return f'{parts[-2]}_{parts[-1]}.{self.extension}'
+
+
+class PNGArtifact(Artifact):
+    """Displays or saves a PNG artifact."""
+
+    extension = "png"
+
+    def __init__(self, name, file):
+        super().__init__(name, file)
+        self.fig = None
+
+    def show(self, figsize=(10, 10)):
+        if self.fig is None:
+            self._make_figure(figsize)
+        return self.fig
+
+    def _make_figure(self, figsize):
         self._read()
-        self.fig, ax = plt.subplots(figsize=(10, 10))
+        self.fig, ax = plt.subplots(figsize=figsize)
         img = plt.imread(BytesIO(self.content))
         ax.imshow(img)
         ax.axis('off')
 
-    def _make_filename(self):
-        parts = self.file.filename.split('/')
-        return f'{parts[-2]}_{parts[-1]}.png'
+
+class MP4Artifact(Artifact):
+    """Displays or saves a MP4 artifact"""
+
+    extension = "mp4"
+
+    def __init__(self, name, file):
+        super().__init__(name, file)
+        self.movie = None
+
+    def show(self):
+        if self.movie is None:
+            self._make_movie()
+        return self.movie
+
+    def _make_movie(self):
+        self.save()
+        self.movie = HTML(f"""
+        <video width="640" height="480" controls autoplay>
+          <source src="{self._make_filename()}" type="video/mp4">
+        </video>
+        """)
