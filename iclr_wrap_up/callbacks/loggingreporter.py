@@ -2,10 +2,9 @@ from tensorflow import keras
 from tensorflow.python.keras import backend as K
 import numpy as np
 
-import pickle
-import os
+
 from collections import OrderedDict
-import utils
+from iclr_wrap_up import utils
 
 
 class LoggingReporter(keras.callbacks.Callback):
@@ -84,7 +83,7 @@ class LoggingReporter(keras.callbacks.Callback):
 
         # Get gradients for this batch
         inputs = [self.trn.X[cur_ixs, :],  # Inputs
-                  [1, ] * len(cur_ixs),  # Uniform sample weights
+                  [1] * len(cur_ixs),  # Uniform sample weights
                   self.trn.Y[cur_ixs, :],  # Outputs
                   1  # Training phase
                   ]
@@ -124,4 +123,5 @@ class LoggingReporter(keras.callbacks.Callback):
             else:
                 data['activity_tst'].append(self.layerfuncs[lndx]([self.tst.X])[0])
 
+        # TODO why is the epoch saved in the key and the dict?
         self.activations_summary[epoch] = {'activation': self.activation_fn, 'epoch': epoch, 'data': data, 'loss': loss}

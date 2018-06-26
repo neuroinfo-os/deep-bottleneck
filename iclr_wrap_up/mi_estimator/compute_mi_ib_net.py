@@ -5,23 +5,23 @@ import pandas as pd
 import numpy as np
 from tensorflow.python.keras import backend as K
 
-from iclr_wrap_up import kde
-from iclr_wrap_up import simplebinmi
+from iclr_wrap_up.mi_estimator import kde
+from iclr_wrap_up.mi_estimator import simplebinmi
 from iclr_wrap_up import utils
 
-def load(training_data, test_data, epochs, architecture_name, full_mi, activation_fn, infoplane_measure):
+def load(training_data, test_data, epochs, architecture, full_mi, activation_fn, infoplane_measure):
     estimator = MutualInformationEstimator(training_data, test_data, epochs,
-                                           architecture_name, full_mi, activation_fn, infoplane_measure)
+                                           architecture, full_mi, activation_fn, infoplane_measure)
     return estimator
 
 
 class MutualInformationEstimator:
 
-    def __init__(self, training_data, test_data, epochs, architecture_name, full_mi, activation_fn, infoplane_measure):
+    def __init__(self, training_data, test_data, epochs, architecture, full_mi, activation_fn, infoplane_measure):
         self.training_data = training_data
         self.test_data = test_data
         self.epochs = epochs
-        self.architecture_name = architecture_name
+        self.architecture = architecture
         self.full_mi = full_mi
         self.activation_fn = activation_fn
         self.infoplane_measure = infoplane_measure
@@ -53,7 +53,7 @@ class MutualInformationEstimator:
             y = full.y
             Y = full.Y
 
-        for i in range(self.training_data.nb_classes):
+        for i in range(self.training_data.n_classes):
             saved_labelixs[i] = y == i
 
         labelprobs = np.mean(Y, axis=0)
@@ -61,7 +61,7 @@ class MutualInformationEstimator:
         info_measures = ['MI_XM', 'MI_YM']
 
         epoch_numbers = activations_summary.keys()
-        num_layers = len(self.architecture_name.split('-')) + 1  # + 1 for output layer
+        num_layers = len(self.architecture) + 1  # + 1 for output layer
 
         index_base_keys = [epoch_numbers, list(range(num_layers))]
         index = pd.MultiIndex.from_product(index_base_keys, names=['epoch', 'layer'])
@@ -92,7 +92,7 @@ class MutualInformationEstimator:
 
                     # Compute conditional entropies of layer activity given output
                     hM_given_Y_upper = 0.
-                    for i in range(self.training_data.nb_classes):
+                    for i in range(self.training_data.n_classes):
                         hcond_upper = entropy_func_upper([activity[saved_labelixs[i], :], ])[0]
                         hM_given_Y_upper += labelprobs[i] * hcond_upper
 
@@ -111,7 +111,7 @@ class MutualInformationEstimator:
 
                     hM_given_Y_lower = 0.
 
-                    for i in range(self.training_data.nb_classes):
+                    for i in range(self.training_data.n_classes):
                         hcond_lower = entropy_func_lower([activity[saved_labelixs[i], :], ])[0]
                         hM_given_Y_lower += labelprobs[i] * hcond_lower
 
