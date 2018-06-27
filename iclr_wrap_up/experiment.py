@@ -23,9 +23,9 @@ ex.observers.append(MongoObserver.create(url=url,
 
 @ex.config
 def hyperparameters():
-    epochs = 1000
+    epochs = 100
     batch_size = 256
-    architecture = [10, 7, 5, 4, 3]
+    architecture = [3]
     learning_rate = 0.0004
     full_mi = False
     infoplane_measure = 'upper'
@@ -39,7 +39,7 @@ def hyperparameters():
     plotters = [('plotter.informationplane', [epochs]),
                ('plotter.snr', [architecture]),
                ('plotter.informationplane_movie', [])]
-    n_runs = 5
+    n_runs = 1
 
 
 @ex.capture
