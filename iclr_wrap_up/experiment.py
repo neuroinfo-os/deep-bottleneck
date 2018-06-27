@@ -148,6 +148,12 @@ def conduct(epochs, batch_size, n_runs, _run):
     # Transform list of measurements into DataFrame with hierarchical index.
     measures_all_runs = pd.concat(measures_all_runs)
     measures_all_runs = measures_all_runs.fillna(0)
+
+    # Save information measures
+    mi_filename = "information_measures.csv"
+    measures_all_runs.to_csv(mi_filename)
+    _run.add_artifact(mi_filename, name="information_measures")
+
     # compute mean of information measures over all runs
     mi_mean_over_runs = measures_all_runs.groupby(['epoch', 'layer']).mean()
 
