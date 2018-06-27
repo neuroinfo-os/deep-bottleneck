@@ -45,7 +45,6 @@ def hyperparameters():
     architecture = h_data["architecture"]
     learning_rate = h_data["learning_rate"]
     full_mi = h_data["full_mi"]
-    infoplane_measure = h_data["infoplane_measure"]
     architecture_name = '-'.join(map(str, architecture))
     activation_fn = h_data["activation_fn"]
     save_dir = 'rawdata/' + activation_fn + '_' + architecture_name
@@ -124,10 +123,9 @@ def make_callbacks(callbacks, training, test, full_mi, save_dir, batch_size, act
 
 
 @ex.capture
-def load_estimator(estimator, training_data, test_data,
-                   full_mi, epochs, architecture_name, activation_fn, infoplane_measure):
+def load_estimator(estimator, training_data, test_data, full_mi, architecture):
     module = importlib.import_module(estimator)
-    return module.load(training_data, test_data, epochs, architecture_name, full_mi, activation_fn, infoplane_measure)
+    return module.load(training_data, test_data, architecture, full_mi)
 
 
 @ex.automain
@@ -136,7 +134,7 @@ def conduct(epochs, batch_size, n_runs, _run):
 
     measures_all_runs = []
     for run_id in range(n_runs):
-        model = load_model(input_size=training.X.shape[1], output_size=training.nb_classes)
+        model = load_model(input_size=training.X.shape[1], output_size=training.n_classes)
         callbacks = make_callbacks(training=training, test=test)
         model.fit(x=training.X, y=training.Y,
                   verbose=2,
@@ -151,7 +149,7 @@ def conduct(epochs, batch_size, n_runs, _run):
         activations_summary = callbacks[0].activations_summary
 
         estimator = load_estimator(training_data=training, test_data=test)
-        measures = estimator.compute_mi(activations_summary=activations_summary)
+        measures = estimator.compute_mi(epoch_summaries=activations_summary)
         measures['run'] = run_id
         measures_all_runs.append(measures)
 
@@ -163,6 +161,12 @@ def conduct(epochs, batch_size, n_runs, _run):
     # Transform list of measurements into DataFrame with hierarchical index.
     measures_all_runs = pd.concat(measures_all_runs)
     measures_all_runs = measures_all_runs.fillna(0)
+
+    # Save information measures
+    mi_filename = "information_measures.csv"
+    measures_all_runs.to_csv(mi_filename)
+    _run.add_artifact(mi_filename, name="information_measures")
+
     # compute mean of information measures over all runs
     mi_mean_over_runs = measures_all_runs.groupby(['epoch', 'layer']).mean()
 

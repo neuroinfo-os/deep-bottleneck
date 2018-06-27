@@ -116,5 +116,8 @@ credentials.py
 # outputfiles from the grid
 */output/
 
+# information measures csv file
+information_measures.csv
+
 # sacredboard starting script
 infrastructure/dneckboard

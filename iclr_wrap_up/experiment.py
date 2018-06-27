@@ -29,7 +29,6 @@ def hyperparameters():
     architecture = [4, 3]
     learning_rate = 0.0004
     full_mi = True
-    infoplane_measure = 'lower'
     architecture_name = '-'.join(map(str, architecture))
     activation_fn = 'tanh'
     save_dir = 'rawdata/' + activation_fn + '_' + architecture_name
