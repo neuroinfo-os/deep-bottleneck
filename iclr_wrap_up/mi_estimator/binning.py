@@ -26,3 +26,6 @@ class BinningMutualInformationEstimator(MutualInformationEstimator):
         _, unique_inverse, unique_counts = np.unique(uniqueids, return_index=False, return_inverse=True,
                                                      return_counts=True)
         return np.asarray(unique_counts / float(sum(unique_counts))), unique_inverse
+
+    def _estimate_conditional_entropy(self, data: np.array) -> float:
+        return 0
