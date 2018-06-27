@@ -18,30 +18,31 @@ import iclr_wrap_up.credentials as credentials
 
 ex = Experiment('sacred_keras_example')
 
-url = f'mongodb://{credentials.MONGODB_ADMINUSERNAME}:{credentials.MONGODB_ADMINPASSWORD}@{credentials.MONGODB_HOST}/?authMechanism=SCRAM-SHA-1'
-ex.observers.append(MongoObserver.create(url=url,
+ex.observers.append(MongoObserver.create(url=credentials.MONGODB_URI,
                                          db_name=credentials.MONGODB_DBNAME))
 
 
 @ex.config
 def hyperparameters():
-    epochs = 10
+    epochs = 15
     batch_size = 256
-    architecture = [10, 7, 5, 4, 3]
+    architecture = [4, 3]
     learning_rate = 0.0004
-    full_mi = False
-    infoplane_measure = 'upper'
+    full_mi = True
+    infoplane_measure = 'lower'
     architecture_name = '-'.join(map(str, architecture))
     activation_fn = 'tanh'
     save_dir = 'rawdata/' + activation_fn + '_' + architecture_name
     model = 'models.feedforward'
     dataset = 'datasets.harmonics'
-    estimator = 'compute_mi.compute_mi_ib_net'
+    estimator = 'mi_estimator.lower'
     callbacks = []
     plotters = [('plotter.informationplane', [epochs]),
                ('plotter.snr', [architecture]),
-               ('plotter.informationplane_movie', [])]
-    n_runs = 5
+               ('plotter.informationplane_movie', [])
+                ]
+    n_runs = 1
+
 
 
 @ex.capture
@@ -69,9 +70,9 @@ def do_report(epoch):
     else:  # Then every 100th
         return (epoch % 100) == 0
 
+
 @ex.capture
 def make_plotters(plotters, _run, dataset):
-
     plotter_objects = []
     for plotter in plotters:
         plotter_object = importlib.import_module(plotter[0]).load(_run, dataset, *plotter[1])
@@ -79,9 +80,9 @@ def make_plotters(plotters, _run, dataset):
 
     return plotter_objects
 
+
 @ex.capture
 def generate_plots(plotter_objects, measures_summary):
-
     for plotter in plotter_objects:
         plotter.generate(measures_summary)
 
@@ -103,16 +104,15 @@ def make_callbacks(callbacks, training, test, full_mi, save_dir, batch_size, act
     callback_objects.append(MetricsLogger(_run))
     callback_objects.append(TensorBoard(log_dir=f'./logs/{datestr}', histogram_freq=10))
     callback_objects.append(ActivityProjector(log_dir=f'./logs/{datestr}', train=training, test=test,
-                                   embeddings_freq=10))
+                                              embeddings_freq=10))
 
     return callback_objects
 
 
 @ex.capture
-def load_estimator(estimator, training_data, test_data,
-                   full_mi, epochs, architecture_name, activation_fn, infoplane_measure):
+def load_estimator(estimator, training_data, test_data, full_mi, architecture):
     module = importlib.import_module(estimator)
-    return module.load(training_data, test_data, epochs, architecture_name, full_mi, activation_fn, infoplane_measure)
+    return module.load(training_data, test_data, architecture, full_mi)
 
 
 @ex.automain
@@ -121,7 +121,7 @@ def conduct(epochs, batch_size, n_runs, _run):
 
     measures_all_runs = []
     for run_id in range(n_runs):
-        model = load_model(input_size=training.X.shape[1], output_size=training.nb_classes)
+        model = load_model(input_size=training.X.shape[1], output_size=training.n_classes)
         callbacks = make_callbacks(training=training, test=test)
         model.fit(x=training.X, y=training.Y,
                   verbose=2,
@@ -136,7 +136,7 @@ def conduct(epochs, batch_size, n_runs, _run):
         activations_summary = callbacks[0].activations_summary
 
         estimator = load_estimator(training_data=training, test_data=test)
-        measures = estimator.compute_mi(activations_summary=activations_summary)
+        measures = estimator.compute_mi(epoch_summaries=activations_summary)
         measures['run'] = run_id
         measures_all_runs.append(measures)
 

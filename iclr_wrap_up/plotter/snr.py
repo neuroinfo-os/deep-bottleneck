@@ -27,12 +27,11 @@ class SignalToNoiseRationPlotter(BasePlotter):
         stds = []
         wnorms = []
 
-        for epoch_number, epoch_values in activations_summary.items():
-            epoch = epoch_values['epoch']
+        for epoch, epoch_values in activations_summary.items():
             epochs.append(epoch)
-            wnorms.append(epoch_values['data']['weights_norm'])
-            means.append(epoch_values['data']['gradmean'])
-            stds.append(epoch_values['data']['gradstd'])
+            wnorms.append(epoch_values['weights_norm'])
+            means.append(epoch_values['gradmean'])
+            stds.append(epoch_values['gradstd'])
 
         wnorms, means, stds = map(np.array, [wnorms, means, stds])
         plot_layers = range(len(self.architecture) + 1)  # +1 for the last output layer.
