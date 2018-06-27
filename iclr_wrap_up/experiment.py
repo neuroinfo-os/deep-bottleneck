@@ -11,6 +11,8 @@ from tensorflow.python.keras.callbacks import TensorBoard
 from iclr_wrap_up.callbacks.loggingreporter import LoggingReporter
 from iclr_wrap_up.callbacks.metrics_logger import MetricsLogger
 from iclr_wrap_up.callbacks.activityprojector import ActivityProjector
+import matplotlib
+matplotlib.use('agg')
 
 import iclr_wrap_up.credentials as credentials
 
@@ -23,9 +25,9 @@ ex.observers.append(MongoObserver.create(url=url,
 
 @ex.config
 def hyperparameters():
-    epochs = 100
+    epochs = 10
     batch_size = 256
-    architecture = [3]
+    architecture = [10, 7, 5, 4, 3]
     learning_rate = 0.0004
     full_mi = False
     infoplane_measure = 'upper'
@@ -39,7 +41,7 @@ def hyperparameters():
     plotters = [('plotter.informationplane', [epochs]),
                ('plotter.snr', [architecture]),
                ('plotter.informationplane_movie', [])]
-    n_runs = 1
+    n_runs = 5
 
 
 @ex.capture

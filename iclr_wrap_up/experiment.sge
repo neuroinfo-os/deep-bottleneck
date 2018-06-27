@@ -1,0 +1,52 @@
+#!/bin/bash
+#$ -N dneck_sacred
+#$ -l mem=8G
+#$ -cwd
+#$ -l cuda=1
+#$ -l nv_mem_free=3.5G
+#$ -j y
+#$ -o ./output/
+#$ -pe default 3
+#$ -l h_rt=36:00:00
+#$ -l hostname=!*picture*
+
+echo "*** Start of SGE job ***"
+date
+# Identify Job-ID
+echo ""
+echo "Hostname"
+echo "$HOSTNAME"
+echo 'Job-ID:'
+echo $JOB_ID
+echo 'user:'
+echo $USER
+echo ""
+echo "Start"
+echo ""
+
+source /net/home/student/j/jrebstadt/conda_setup/dneck_setup.bash
+
+export PATH=/home/student/j/jschoening/local/cuda-9.0/bin:$PATH
+export LD_LIBRARY_PATH=/home/student/j/jschoening/local/cuda-9.0/lib64:$LD_LIBRARY_PATH
+export CUDA_HOME=/home/student/j/jschoening/local/cuda-9.0
+
+echo "CUDA VERSION (should be 9):"
+nvcc --version
+
+rm /tmp/* -R -f 2> /dev/null
+
+echo "ROOT"
+echo $DNECK_ROOT
+source activate dneck
+
+echo "Sacred Experiment"
+PYTHONPATH=$DNECK_ROOT/$USER/deep-bottleneck WALLTIME=36:00:00 PYTHONHASHSEED=0 START_TIME=$(date +%s) python experiment.py
+
+
+echo ""
+date
+echo "*** End of SGE job ***"
+
+source deactivate
+
+rm /tmp/* -R -f 2> /dev/null
