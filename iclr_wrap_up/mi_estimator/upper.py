@@ -5,11 +5,11 @@ from tensorflow.python.keras import backend as K
 
 
 def load(training_data, test_data, architecture, full_mi):
-    estimator = LowerBoundMutualInformationEstimator(training_data, test_data, architecture, full_mi)
+    estimator = UpperBoundMutualInformationEstimator(training_data, test_data, architecture, full_mi)
     return estimator
 
 
-class LowerBoundMutualInformationEstimator(BoundedMutualInformationEstimator):
+class UpperBoundMutualInformationEstimator(BoundedMutualInformationEstimator):
 
     def __init__(self, training_data, test_data, architecture, full_mi):
         super().__init__(training_data, test_data, architecture, full_mi)

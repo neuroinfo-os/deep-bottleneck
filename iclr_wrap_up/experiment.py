@@ -22,12 +22,12 @@ ex.observers.append(MongoObserver.create(url=credentials.MONGODB_URI,
 
 @ex.config
 def hyperparameters():
-    epochs = 5
+    epochs = 15
     batch_size = 256
     architecture = [4, 3]
     learning_rate = 0.0004
-    full_mi = False
-    infoplane_measure = 'upper'
+    full_mi = True
+    infoplane_measure = 'lower'
     architecture_name = '-'.join(map(str, architecture))
     activation_fn = 'tanh'
     save_dir = 'rawdata/' + activation_fn + '_' + architecture_name
@@ -35,10 +35,8 @@ def hyperparameters():
     dataset = 'datasets.harmonics'
     estimator = 'mi_estimator.lower'
     callbacks = []
-    plotters = [('plotter.informationplane', [epochs]),
-                ('plotter.snr', [architecture]),
-                ('plotter.informationplane_movie', [])]
-    n_runs = 2
+    plotters = [('plotter.informationplane', [epochs])]
+    n_runs = 1
 
 
 @ex.capture

@@ -106,7 +106,7 @@ class LoggingReporter(keras.callbacks.Callback):
             'weights_norm': [],  # L2 norm of weights
             'gradmean': [],  # Mean of gradients
             'gradstd': [],  # Std of gradients
-            'activity_tst': []  # Activity in each layer for test set
+            'activations': []  # Activity in each layer for test set
         }
 
         for lndx, layerix in enumerate(self.layerixs):
@@ -119,9 +119,9 @@ class LoggingReporter(keras.callbacks.Callback):
             data['gradstd'].append(np.linalg.norm(stackedgrads.std(axis=1)))
 
             if self.full_mi:
-                data['activity_tst'].append(self.layerfuncs[lndx]([self.full.X])[0])
+                data['activations'].append(self.layerfuncs[lndx]([self.full.X])[0])
             else:
-                data['activity_tst'].append(self.layerfuncs[lndx]([self.tst.X])[0])
+                data['activations'].append(self.layerfuncs[lndx]([self.tst.X])[0])
 
         # TODO why is the epoch saved in the key and the dict?
-        self.activations_summary[epoch] = {'activation': self.activation_fn, 'epoch': epoch, 'data': data, 'loss': loss}
+        self.activations_summary[epoch] = data
