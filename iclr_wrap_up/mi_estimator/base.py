@@ -5,6 +5,7 @@ import numpy as np
 
 from iclr_wrap_up import utils
 
+from iclr_wrap_up.mi_estimator import kde
 
 class MutualInformationEstimator:
     nats2bits = 1.0 / np.log(2)
@@ -22,11 +23,11 @@ class MutualInformationEstimator:
         labels, one_hot_labels = self._construct_dataset()
         # Proportion of instances that have a certain label.
         label_weights = np.mean(one_hot_labels, axis=0)
-
+        print(label_weights)
         label_masks = {}
         for target_class in range(self.training_data.n_classes):
             label_masks[target_class] = labels == target_class
-
+        print(label_masks)
         n_layers = len(self.architecture) + 1  # + 1 for output layer
         measures = self._init_dataframe(epoch_numbers=epoch_summaries.keys(), n_layers=n_layers)
 
@@ -63,10 +64,8 @@ class MutualInformationEstimator:
 
     def _compute_mi_per_epoch_and_layer(self, activations, label_weights, label_masks) -> Tuple[float, float]:
         H_of_M = self._estimate_entropy([activations])
-        H_of_M_given_X = self._estimate_entropy([activations])
+        H_of_M_given_X = kde.kde_condentropy(activations, self.noise_variance)
         H_of_M_given_Y = self._compute_H_of_M_given_Y(activations, label_weights, label_masks)
-        for label, mask in label_masks.items():
-            H_of_M_given_Y += label_weights[label] * self._estimate_entropy([activations[mask]])
         mi_with_input = self.nats2bits * (H_of_M - H_of_M_given_X)
         mi_with_label = self.nats2bits * (H_of_M - H_of_M_given_Y)
 
