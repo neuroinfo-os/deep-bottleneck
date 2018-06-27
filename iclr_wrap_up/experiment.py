@@ -11,6 +11,8 @@ from tensorflow.python.keras.callbacks import TensorBoard
 from iclr_wrap_up.callbacks.loggingreporter import LoggingReporter
 from iclr_wrap_up.callbacks.metrics_logger import MetricsLogger
 from iclr_wrap_up.callbacks.activityprojector import ActivityProjector
+import matplotlib
+matplotlib.use('agg')
 
 import iclr_wrap_up.credentials as credentials
 
@@ -24,10 +26,9 @@ ex.observers.append(MongoObserver.create(url=credentials.MONGODB_URI,
 def hyperparameters():
     epochs = 15
     batch_size = 256
-    architecture = [4, 3]
+    architecture = [10, 7, 5, 4, 3]
     learning_rate = 0.0004
-    full_mi = True
-    infoplane_measure = 'lower'
+    full_mi = False
     architecture_name = '-'.join(map(str, architecture))
     activation_fn = 'tanh'
     save_dir = 'rawdata/' + activation_fn + '_' + architecture_name
@@ -35,8 +36,10 @@ def hyperparameters():
     dataset = 'datasets.harmonics'
     estimator = 'mi_estimator.binning'
     callbacks = []
-    plotters = [('plotter.informationplane', [epochs])]
-    n_runs = 1
+    plotters = [('plotter.informationplane', [epochs]),
+               ('plotter.snr', [architecture]),
+               ('plotter.informationplane_movie', [])]
+    n_runs = 5
 
 
 @ex.capture
@@ -53,9 +56,11 @@ def load_model(model, architecture, activation_fn, learning_rate, input_size, ou
 
 def do_report(epoch):
     # Only log activity for some epochs.  Mainly this is to make things run faster.
-    if epoch < 20:  # Log for all first 20 epochs
+    if epoch < 50:  # Log for all first 50 epochs
         return True
-    elif epoch < 100:  # Then for every 5th epoch
+    elif epoch < 100:  # Then for every 2th epoch
+        return (epoch % 2) == 0
+    elif epoch < 500:  # Then for every 5th epoch
         return (epoch % 5) == 0
     elif epoch < 2000:  # Then every 20th
         return (epoch % 20) == 0
@@ -140,6 +145,12 @@ def conduct(epochs, batch_size, n_runs, _run):
     # Transform list of measurements into DataFrame with hierarchical index.
     measures_all_runs = pd.concat(measures_all_runs)
     measures_all_runs = measures_all_runs.fillna(0)
+
+    # Save information measures
+    mi_filename = "information_measures.csv"
+    measures_all_runs.to_csv(mi_filename)
+    _run.add_artifact(mi_filename, name="information_measures")
+
     # compute mean of information measures over all runs
     mi_mean_over_runs = measures_all_runs.groupby(['epoch', 'layer']).mean()
 
