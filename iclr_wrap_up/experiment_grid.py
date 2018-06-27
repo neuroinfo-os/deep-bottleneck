@@ -1,6 +1,8 @@
 import importlib
 import pandas as pd
 import datetime
+import os
+import json
 
 from sacred import Experiment
 from sacred.observers import MongoObserver
@@ -15,33 +17,45 @@ import matplotlib
 matplotlib.use('agg')
 
 import iclr_wrap_up.credentials as credentials
+if "HYPERPARAMID" in os.environ:
+    h_id = int(os.environ["HYPERPARAMID"])
+    h_file = open("hyperparameter.json")
+    h_data = json.load(h_file)["hyperparameter"][h_id]
+    exp_name = h_data["name"]
+else:
+    line = open('experiment_grid.sge').readlines()[1] #that's the line -N ...
+    exp_name = line[line.find("-N")+3:].strip()
 
-ex = Experiment('sacred_keras_example')
+ex = Experiment(exp_name)
 
-ex.observers.append(MongoObserver.create(url=credentials.MONGODB_URI,
+url = f'mongodb://{credentials.MONGODB_ADMINUSERNAME}:{credentials.MONGODB_ADMINPASSWORD}@{credentials.MONGODB_HOST}/?authMechanism=SCRAM-SHA-1'
+ex.observers.append(MongoObserver.create(url=url,
                                          db_name=credentials.MONGODB_DBNAME))
 
 
 @ex.config
 def hyperparameters():
-    epochs = 15
-    batch_size = 256
-    architecture = [4, 3]
-    learning_rate = 0.0004
-    full_mi = True
+    h_id = int(os.environ["HYPERPARAMID"])
+    h_file = open("hyperparameter.json")
+    h_data = json.load(h_file)["hyperparameter"][h_id]
+    h_name = h_data["name"]
+
+    epochs = h_data["epochs"]
+    batch_size = h_data["batch_size"]
+    architecture = h_data["architecture"]
+    learning_rate = h_data["learning_rate"]
+    full_mi = h_data["full_mi"]
     architecture_name = '-'.join(map(str, architecture))
-    activation_fn = 'tanh'
+    activation_fn = h_data["activation_fn"]
     save_dir = 'rawdata/' + activation_fn + '_' + architecture_name
-    model = 'models.feedforward'
-    dataset = 'datasets.harmonics'
-    estimator = 'mi_estimator.lower'
-    callbacks = []
+    model = h_data["model"]
+    dataset = h_data["dataset"]
+    estimator = h_data["estimator"]
+    callbacks = h_data["callbacks"]
     plotters = [('plotter.informationplane', [epochs]),
                ('plotter.snr', [architecture]),
-               ('plotter.informationplane_movie', [])
-                ]
-    n_runs = 1
-
+               ('plotter.informationplane_movie', [])]
+    n_runs = h_data["n_runs"]
 
 
 @ex.capture
@@ -69,9 +83,9 @@ def do_report(epoch):
     else:  # Then every 100th
         return (epoch % 100) == 0
 
-
 @ex.capture
 def make_plotters(plotters, _run, dataset):
+
     plotter_objects = []
     for plotter in plotters:
         plotter_object = importlib.import_module(plotter[0]).load(_run, dataset, *plotter[1])
@@ -79,9 +93,9 @@ def make_plotters(plotters, _run, dataset):
 
     return plotter_objects
 
-
 @ex.capture
 def generate_plots(plotter_objects, measures_summary):
+
     for plotter in plotter_objects:
         plotter.generate(measures_summary)
 
@@ -103,7 +117,7 @@ def make_callbacks(callbacks, training, test, full_mi, save_dir, batch_size, act
     callback_objects.append(MetricsLogger(_run))
     callback_objects.append(TensorBoard(log_dir=f'./logs/{datestr}', histogram_freq=10))
     callback_objects.append(ActivityProjector(log_dir=f'./logs/{datestr}', train=training, test=test,
-                                              embeddings_freq=10))
+                                   embeddings_freq=10))
 
     return callback_objects
 
