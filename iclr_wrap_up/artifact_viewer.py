@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from iclr_wrap_up import credentials
 from IPython.display import HTML
+import pandas as pd
 
 
 class ArtifactLoader:
@@ -15,7 +16,8 @@ class ArtifactLoader:
         db = client[db_name]
         self.runs = db.runs
         self.fs = gridfs.GridFS(db)
-        self.mapping = {'infoplane': PNGArtifact, 'snr': PNGArtifact, 'infoplane_movie': MP4Artifact}
+        self.mapping = {'infoplane': PNGArtifact, 'snr': PNGArtifact, 'infoplane_movie': MP4Artifact,
+                        'information_measures': CSVArtifact}
         
     def load(self, experiment_id: int):
         experiment = self.runs.find_one({'_id': experiment_id})
@@ -94,3 +96,21 @@ class MP4Artifact(Artifact):
           <source src="{self._make_filename()}" type="video/mp4">
         </video>
         """)
+
+class CSVArtifact(Artifact):
+    """Displays and saves a CSV artifact"""
+
+    extension = "csv"
+
+    def __init__(self, name, file):
+        super().__init__(name, file)
+        self.df = None
+
+    def _make_df(self):
+        self.df = pd.read_csv(self.file)
+
+    def show(self):
+        if self.df is None:
+            self._make_df()
+        return self.df
+
