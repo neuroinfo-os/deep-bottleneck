@@ -36,7 +36,7 @@ class SignalToNoiseRationPlotter(BasePlotter):
 
         wnorms, means, stds = map(np.array, [wnorms, means, stds])
         plot_layers = range(len(self.architecture) + 1)  # +1 for the last output layer.
-        print("Len Plot layers ", len(plot_layers))
+
         fig = plt.figure(figsize=(12, 5))
 
         for lndx, layerid in enumerate(plot_layers):
