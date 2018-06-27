@@ -7,8 +7,9 @@
 #$ -j y
 #$ -o ./output/
 #$ -pe default 3
-#$ -l h_rt=36:00:00
 #$ -l hostname=!*picture*
+
+# -l h_rt=36:00:00
 
 echo "*** Start of SGE job ***"
 date
@@ -40,7 +41,7 @@ echo $DNECK_ROOT
 source activate dneck
 
 echo "Sacred Experiment"
-PYTHONPATH=$DNECK_ROOT/$USER/deep-bottleneck WALLTIME=36:00:00 PYTHONHASHSEED=0 START_TIME=$(date +%s) python experiment.py
+PYTHONPATH=$DNECK_ROOT/$USER/deep-bottleneck HYPERPARAMID=${1-0} WALLTIME=36:00:00 PYTHONHASHSEED=0 START_TIME=$(date +%s) python experiment_grid.py
 
 
 echo ""

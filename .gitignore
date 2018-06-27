@@ -113,5 +113,8 @@ IDNNs/figure.jpg
 # credentials
 credentials.py
 
+# outputfiles from the grid
+*/output/
+
 # sacredboard starting script
 infrastructure/dneckboard
