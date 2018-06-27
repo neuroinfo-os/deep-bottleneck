@@ -60,7 +60,7 @@ class MutualInformationEstimator:
         return measures
 
     def _compute_mi_per_epoch_and_layer(self, activations, label_weights, label_masks) -> Tuple[float, float]:
-        H_of_M = self._estimate_entropy([activations])
+        H_of_M = self._estimate_entropy(activations)
         H_of_M_given_X = self._estimate_conditional_entropy(activations)
         H_of_M_given_Y = self._compute_H_of_M_given_Y(activations, label_weights, label_masks)
         mi_with_input = self.nats2bits * (H_of_M - H_of_M_given_X)
@@ -71,16 +71,15 @@ class MutualInformationEstimator:
     def _compute_H_of_M_given_Y(self, activations, label_weights, label_masks):
         H_of_M_given_Y = 0
         for label, mask in label_masks.items():
-            H_of_M_for_specific_y = self._estimate_entropy([activations[mask]])
+            H_of_M_for_specific_y = self._estimate_entropy(activations[mask])
             H_of_M_given_Y += label_weights[label] * H_of_M_for_specific_y
         return H_of_M_given_Y
 
-    def _estimate_entropy(self, data: list) -> float:
+    def _estimate_entropy(self, data: np.array) -> float:
         """
 
         Args:
-            data: Single element list, where the first item contains the actual values.
-                  This is required for now to use this with a keras function.
+            data: The data to estimate entropy for.
 
         Returns:
             The estimated entropy.

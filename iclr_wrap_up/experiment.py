@@ -35,7 +35,7 @@ def hyperparameters():
     save_dir = 'rawdata/' + activation_fn + '_' + architecture_name
     model = 'models.feedforward'
     dataset = 'datasets.harmonics'
-    estimator = 'mi_estimator.binning'
+    estimator = 'mi_estimator.lower'
     callbacks = []
     plotters = [('plotter.informationplane', [epochs]),
                ('plotter.snr', [architecture]),

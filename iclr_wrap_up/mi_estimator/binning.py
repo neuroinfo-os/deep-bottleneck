@@ -15,7 +15,6 @@ class BinningMutualInformationEstimator(MutualInformationEstimator):
         self.binsize = 0.07
 
     def _estimate_entropy(self, data):
-        data = data[0]
         digitized = np.floor(data / self.binsize).astype('int')
         p_ts, _ = self._get_unique_probs(digitized)
         return -np.sum(p_ts * np.log(p_ts))
