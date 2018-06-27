@@ -15,5 +15,5 @@ class UpperBoundMutualInformationEstimator(BoundedMutualInformationEstimator):
         super().__init__(training_data, test_data, architecture, full_mi)
         Klayer_activity = K.placeholder(ndim=2)  # Keras placeholder.
         self._K_estimate_entropy = K.function([Klayer_activity],
-                                              [kde.entropy_estimator_bd(Klayer_activity,
+                                              [kde.entropy_estimator_kl(Klayer_activity,
                                                                         self.noise_variance)])
