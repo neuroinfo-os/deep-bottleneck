@@ -27,15 +27,15 @@ ex.observers.append(MongoObserver.create(url=url,
 def hyperparameters():
     epochs = 10
     batch_size = 256
-    architecture = [128, 64, 32, 16]
-    learning_rate = 0.001
-    full_mi = True
+    architecture = [10, 7, 5, 4, 3]
+    learning_rate = 0.0004
+    full_mi = False
     infoplane_measure = 'upper'
     architecture_name = '-'.join(map(str, architecture))
     activation_fn = 'tanh'
     save_dir = 'rawdata/' + activation_fn + '_' + architecture_name
     model = 'models.feedforward'
-    dataset = 'datasets.mnist'
+    dataset = 'datasets.harmonics'
     estimator = 'compute_mi.compute_mi_ib_net'
     callbacks = []
     plotters = [('plotter.informationplane', [epochs]),
@@ -58,9 +58,11 @@ def load_model(model, architecture, activation_fn, learning_rate, input_size, ou
 
 def do_report(epoch):
     # Only log activity for some epochs.  Mainly this is to make things run faster.
-    if epoch < 20:  # Log for all first 20 epochs
+    if epoch < 50:  # Log for all first 50 epochs
         return True
-    elif epoch < 100:  # Then for every 5th epoch
+    elif epoch < 100:  # Then for every 2th epoch
+        return (epoch % 2) == 0
+    elif epoch < 500:  # Then for every 5th epoch
         return (epoch % 5) == 0
     elif epoch < 2000:  # Then every 20th
         return (epoch % 20) == 0

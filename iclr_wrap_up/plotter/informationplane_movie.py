@@ -37,7 +37,10 @@ class InformationPlaneMoviePlotter(BasePlotter):
         else:
             ax.set(xlim=[0, 12], ylim=[0, 1])
 
+        ax.set(xlabel='I(X;M)', ylabel='I(Y;M)')
+
         scatter = ax.scatter([], [], s=20, edgecolor='none')
+        text = ax.text(0, 1.05, "", fontsize=12)
 
         num_layers = measures.index.get_level_values(1).nunique()
         layers_colors = np.linspace(0, 1, num_layers)
@@ -58,6 +61,6 @@ class InformationPlaneMoviePlotter(BasePlotter):
                 scatter.set_offsets(points)
                 scatter.set_array(colors)
 
-                writer.grab_frame()
+                text.set_text(f"Epoch: {epoch_number}")
 
-        ax.set(xlabel='I(X;M)', ylabel='I(Y;M)')
+                writer.grab_frame()
