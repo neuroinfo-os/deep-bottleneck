@@ -2,14 +2,13 @@ from tensorflow import keras
 from tensorflow.python.keras import backend as K
 import numpy as np
 
-
 from collections import OrderedDict
 from iclr_wrap_up import utils
 
 
 class LoggingReporter(keras.callbacks.Callback):
     def __init__(self, trn, tst, full_mi, batch_size, activation_fn, do_save_func=None, *args, **kwargs):
-        super(LoggingReporter, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.trn = trn  # Train data
         self.tst = tst  # Test data
         self.full_mi = full_mi
@@ -123,5 +122,4 @@ class LoggingReporter(keras.callbacks.Callback):
             else:
                 data['activations'].append(self.layerfuncs[lndx]([self.tst.X])[0])
 
-        # TODO why is the epoch saved in the key and the dict?
         self.activations_summary[epoch] = data

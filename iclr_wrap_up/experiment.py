@@ -26,9 +26,10 @@ ex.observers.append(MongoObserver.create(url=credentials.MONGODB_URI,
 def hyperparameters():
     epochs = 15
     batch_size = 256
-    architecture = [10, 7, 5, 4, 3]
+    architecture = [4, 3]
     learning_rate = 0.0004
-    full_mi = False
+    full_mi = True
+    infoplane_measure = 'lower'
     architecture_name = '-'.join(map(str, architecture))
     activation_fn = 'tanh'
     save_dir = 'rawdata/' + activation_fn + '_' + architecture_name
@@ -38,8 +39,10 @@ def hyperparameters():
     callbacks = []
     plotters = [('plotter.informationplane', [epochs]),
                ('plotter.snr', [architecture]),
-               ('plotter.informationplane_movie', [])]
-    n_runs = 5
+               ('plotter.informationplane_movie', [])
+                ]
+    n_runs = 1
+
 
 
 @ex.capture
