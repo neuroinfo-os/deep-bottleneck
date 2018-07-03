@@ -1,7 +1,7 @@
 #!/bin/bash
 # Set environment for installation.
 SETUP_FILE="/net/home/student/j/jrebstadt/conda_setup/conda_setup.bash"
-DNECK_ROOT=/net/store/scratch/odd/valid_until_31_jul_2018/dneck/
+DNECK_ROOT=/net/store/scratch/odd/valid_until_31_jul_2018/dneck
 CONDA_INSTALL_LOCATION=$DNECK_ROOT/miniconda
 CONDA_PATH="$CONDA_INSTALL_LOCATION/bin"
 # Reset path to forget old conda installation.
@@ -23,8 +23,6 @@ chmod --recursive 777  $CONDA_INSTALL_LOCATION
 # Set new conda path.
 echo "export CONDA_PATH=$CONDA_PATH" > $SETUP_FILE
 echo 'export PATH=$CONDA_PATH:$PATH' >> $SETUP_FILE
-echo "alias activate='source $CONDA_PATH/activate'" >> $SETUP_FILE
-echo "alias deactivate='source deactivate'" >> $SETUP_FILE
 chmod 777 $SETUP_FILE
 source ~/.bashrc
 conda activate dneck
