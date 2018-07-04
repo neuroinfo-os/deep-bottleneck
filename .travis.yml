@@ -1,0 +1,12 @@
+sudo: required
+
+language: python
+
+services:
+  - docker
+
+before_install:
+- docker-compose -f infrastructure/mongo_db/test_setup.yml up
+
+script:
+- pytest iclr_wrap_up/ -v
