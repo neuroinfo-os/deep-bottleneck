@@ -7,14 +7,12 @@ def load(architecture, activation_fn, learning_rate, input_size, output_size):
     input_layer = keras.layers.Input((input_size,))
     clayer = input_layer
     for n in architecture:
-        layername = f'layer_{n}'
         clayer = keras.layers.Dense(n,
                                     activation=activation_fn,
                                     kernel_initializer=keras.initializers.TruncatedNormal(mean=0.0,
                                                                                           stddev=1 / np.sqrt(float(n)),
                                                                                           seed=None),
                                     bias_initializer='zeros',
-                                    name=layername
                                     )(clayer)
     output_layer = keras.layers.Dense(output_size, activation='softmax')(clayer)
 
