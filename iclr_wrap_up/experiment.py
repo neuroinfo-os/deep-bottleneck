@@ -23,26 +23,17 @@ ex.observers.append(MongoObserver.create(url=credentials.MONGODB_URI,
 
 
 @ex.config
-def hyperparameters():
-    epochs = 15
-    batch_size = 256
-    architecture = [4, 3]
-    learning_rate = 0.0004
-    full_mi = True
-    infoplane_measure = 'lower'
-    architecture_name = '-'.join(map(str, architecture))
-    activation_fn = 'tanh'
-    save_dir = 'rawdata/' + activation_fn + '_' + architecture_name
-    model = 'models.feedforward'
-    dataset = 'datasets.harmonics'
-    estimator = 'mi_estimator.lower'
-    callbacks = []
+def hyperparams():
+    # Never change this values!
+    epochs = 10000
+    architecture = []
     plotters = [('plotter.informationplane', [epochs]),
-               ('plotter.snr', [architecture]),
-               ('plotter.informationplane_movie', [])
+                ('plotter.snr', [architecture]),
+                ('plotter.informationplane_movie', [])
                 ]
-    n_runs = 1
 
+
+ex.add_config('configs/basic.json')
 
 
 @ex.capture
@@ -88,7 +79,7 @@ def generate_plots(plotter_objects, measures_summary):
 
 
 @ex.capture
-def make_callbacks(callbacks, training, test, full_mi, save_dir, batch_size, activation_fn, _run):
+def make_callbacks(callbacks, training, test, full_mi, batch_size, activation_fn, _run):
     datestr = str(datetime.datetime.now()).split(sep='.')[0]
     datestr = datestr.replace(':', '-')
     datestr = datestr.replace(' ', '_')

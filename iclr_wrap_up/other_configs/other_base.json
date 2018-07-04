@@ -1,0 +1,14 @@
+{
+"epochs": 15,
+"batch_size" : 256,
+"architecture" : [128, 64, 32],
+"learning_rate" : 0.001,
+"full_mi" : true,
+"infoplane_measure" : "lower",
+"activation_fn" :"tanh",
+"model" : "models.feedforward",
+"dataset" : "datasets.harmonics",
+"estimator" : "mi_estimator.lower",
+"callbacks" : [],
+"n_runs" : 1
+}
