@@ -43,9 +43,9 @@ def load_dataset(dataset):
 
 
 @ex.capture
-def load_model(model, architecture, activation_fn, learning_rate, input_size, output_size):
+def load_model(model, architecture, activation_fn, optimizer, learning_rate, input_size, output_size):
     module = importlib.import_module(model)
-    return module.load(architecture, activation_fn, learning_rate, input_size, output_size)
+    return module.load(architecture, activation_fn, optimizer, learning_rate, input_size, output_size)
 
 
 def do_report(epoch):

@@ -2,8 +2,12 @@ from tensorflow import keras
 import tensorflow as tf
 import numpy as np
 
+optimizer_map = {
+    'sgd': tf.train.GradientDescentOptimizer,
+    'adam': tf.train.AdamOptimizer,
+}
 
-def load(architecture, activation_fn, learning_rate, input_size, output_size):
+def load(architecture, activation_fn, optimizer, learning_rate, input_size, output_size):
     input_layer = keras.layers.Input((input_size,))
     clayer = input_layer
     for n in architecture:
@@ -17,7 +21,7 @@ def load(architecture, activation_fn, learning_rate, input_size, output_size):
     output_layer = keras.layers.Dense(output_size, activation='softmax')(clayer)
 
     model = keras.models.Model(inputs=input_layer, outputs=output_layer)
-    optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate)
+    optimizer = optimizer_map[optimizer](learning_rate=learning_rate)
 
     model.compile(loss='categorical_crossentropy', optimizer=optimizer, metrics=['accuracy'])
 
