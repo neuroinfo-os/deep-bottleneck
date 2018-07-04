@@ -101,9 +101,9 @@ def make_callbacks(callbacks, training, test, full_mi, batch_size, activation_fn
 
 
 @ex.capture
-def load_estimator(estimator, training_data, test_data, full_mi, architecture):
+def load_estimator(estimator, discretization_range, training_data, test_data, full_mi, architecture):
     module = importlib.import_module(estimator)
-    return module.load(training_data, test_data, architecture, full_mi)
+    return module.load(discretization_range, training_data, test_data, architecture, full_mi)
 
 
 @ex.automain
