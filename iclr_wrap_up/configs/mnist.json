@@ -1,14 +1,16 @@
 {
-"epochs": 15,
-"batch_size" : 256,
-"architecture" : [64, 32],
-"learning_rate" : 0.001,
-"calculate_mi_for" : "test",
-"infoplane_measure" : "lower",
-"activation_fn" :"tanh",
-"model" : "models.feedforward",
-"dataset" : "datasets.mnist",
-"estimator" : "mi_estimator.lower",
-"callbacks" : [],
-"n_runs" : 1
+  "epochs": 15,
+  "batch_size": 256,
+  "architecture": [64, 32],
+  "optimizer": "sgd",
+  "learning_rate": 0.001,
+  "calculate_mi_for": "test",
+  "infoplane_measure": "lower",
+  "activation_fn": "tanh",
+  "model": "models.feedforward",
+  "dataset": "datasets.mnist",
+  "estimator": "mi_estimator.lower",
+  "discretization_range": 1e-3,
+  "callbacks": [],
+  "n_runs": 1
 }
