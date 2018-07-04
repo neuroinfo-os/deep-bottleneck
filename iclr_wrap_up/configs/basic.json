@@ -9,7 +9,8 @@
   "activation_fn": "tanh",
   "model": "models.feedforward",
   "dataset": "datasets.harmonics",
-  "estimator": "mi_estimator.lower",
+  "estimator": "mi_estimator.upper",
+  "discretization_range": 1e-3,
   "callbacks": [],
   "n_runs": 1
 }

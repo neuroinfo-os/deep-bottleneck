@@ -3,16 +3,16 @@ import numpy as np
 from iclr_wrap_up.mi_estimator.base import MutualInformationEstimator
 
 
-def load(training_data, test_data, architecture, full_mi):
-    estimator = BinningMutualInformationEstimator(training_data, test_data, architecture, full_mi)
+def load(discretization_range, training_data, test_data, architecture, full_mi):
+    estimator = BinningMutualInformationEstimator(discretization_range, training_data, test_data, architecture, full_mi)
     return estimator
 
 
 class BinningMutualInformationEstimator(MutualInformationEstimator):
 
-    def __init__(self, training_data, test_data, architecture, full_mi):
-        super().__init__(training_data, test_data, architecture, full_mi)
-        self.binsize = 0.07
+    def __init__(self, discretization_range, training_data, test_data, architecture, full_mi):
+        super().__init__(discretization_range, training_data, test_data, architecture, full_mi)
+        self.binsize = discretization_range
 
     def _estimate_entropy(self, data):
         digitized = np.floor(data / self.binsize).astype('int')
