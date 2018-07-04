@@ -11,7 +11,7 @@ class MutualInformationEstimator:
     nats2bits = 1.0 / np.log(2)
     """Nats to bits conversion factor."""
 
-    def __init__(self, training_data, test_data, architecture, full_mi):
+    def __init__(self, discretization_range, training_data, test_data, architecture, full_mi):
         self.training_data = training_data
         self.test_data = test_data
         self.architecture = architecture
