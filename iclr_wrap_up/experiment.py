@@ -79,14 +79,14 @@ def generate_plots(plotter_objects, measures_summary):
 
 
 @ex.capture
-def make_callbacks(callbacks, training, test, full_mi, batch_size, activation_fn, _run):
+def make_callbacks(callbacks, training, test, calculate_mi_for, batch_size, activation_fn, _run):
     datestr = str(datetime.datetime.now()).split(sep='.')[0]
     datestr = datestr.replace(':', '-')
     datestr = datestr.replace(' ', '_')
 
     callback_objects = []
     # The logging reporter needs to be at position 0 to access the correct one for the further processing.
-    callback_objects.append(LoggingReporter(trn=training, tst=test, full_mi=full_mi,
+    callback_objects.append(LoggingReporter(trn=training, tst=test, calculate_mi_for=calculate_mi_for,
                                             batch_size=batch_size, activation_fn=activation_fn,
                                             do_save_func=do_report))
     for callback in callbacks:
@@ -101,9 +101,9 @@ def make_callbacks(callbacks, training, test, full_mi, batch_size, activation_fn
 
 
 @ex.capture
-def load_estimator(estimator, training_data, test_data, full_mi, architecture):
+def load_estimator(estimator, training_data, test_data, calculate_mi_for, architecture):
     module = importlib.import_module(estimator)
-    return module.load(training_data, test_data, architecture, full_mi)
+    return module.load(training_data, test_data, architecture, calculate_mi_for)
 
 
 @ex.automain

@@ -3,7 +3,7 @@
 "batch_size" : 256,
 "architecture" : [64, 32],
 "learning_rate" : 0.001,
-"full_mi" : true,
+"calculate_mi_for" : "test",
 "infoplane_measure" : "lower",
 "activation_fn" :"tanh",
 "model" : "models.feedforward",

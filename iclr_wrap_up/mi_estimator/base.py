@@ -11,11 +11,11 @@ class MutualInformationEstimator:
     nats2bits = 1.0 / np.log(2)
     """Nats to bits conversion factor."""
 
-    def __init__(self, training_data, test_data, architecture, full_mi):
+    def __init__(self, training_data, test_data, architecture, calculate_mi_for):
         self.training_data = training_data
         self.test_data = test_data
         self.architecture = architecture
-        self.full_mi = full_mi
+        self.calculate_mi_for = calculate_mi_for
 
     def compute_mi(self, epoch_summaries) -> pd.DataFrame:
         print(f'*** Start running {self.__class__.__name__}. ***')
@@ -42,13 +42,16 @@ class MutualInformationEstimator:
 
     def _construct_dataset(self):
         # Y is a one-hot vector, y is a label vector.
-        if self.full_mi:
+        if self.calculate_mi_for == "full_dataset":
             full = utils.construct_full_dataset(self.training_data, self.test_data)
             labels = full.y
             one_hot_labels = full.Y
-        else:
+        elif self.calculate_mi_for == "test":
             labels = self.test_data.y
             one_hot_labels = self.test_data.Y
+        elif self.calculate_mi_for == "training":
+            labels = self.training_data.y
+            one_hot_labels = self.training_data.Y
 
         return labels, one_hot_labels
 

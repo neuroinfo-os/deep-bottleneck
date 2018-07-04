@@ -3,15 +3,15 @@ import numpy as np
 from iclr_wrap_up.mi_estimator.base import MutualInformationEstimator
 
 
-def load(training_data, test_data, architecture, full_mi):
-    estimator = BinningMutualInformationEstimator(training_data, test_data, architecture, full_mi)
+def load(training_data, test_data, architecture, calculate_mi_for):
+    estimator = BinningMutualInformationEstimator(training_data, test_data, architecture, calculate_mi_for)
     return estimator
 
 
 class BinningMutualInformationEstimator(MutualInformationEstimator):
 
-    def __init__(self, training_data, test_data, architecture, full_mi):
-        super().__init__(training_data, test_data, architecture, full_mi)
+    def __init__(self, training_data, test_data, architecture, calculate_mi_for):
+        super().__init__(training_data, test_data, architecture, calculate_mi_for)
         self.binsize = 0.07
 
     def _estimate_entropy(self, data):
