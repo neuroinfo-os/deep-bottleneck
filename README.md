@@ -1,5 +1,7 @@
 [![Documentation Status](https://readthedocs.org/projects/deep-bottleneck/badge/?version=latest)](http://deep-bottleneck.readthedocs.io/en/latest/?badge=latest)
 
+[![Build status](https://travis-ci.com/neuroinfo-os/deep-bottleneck.svg?branch=master)](https://travis-ci.com/neuroinfo-os/deep-bottleneck)
+
 ## Documentation
 
 To build the documentation locally run
