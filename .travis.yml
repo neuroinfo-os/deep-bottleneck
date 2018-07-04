@@ -6,7 +6,10 @@ services:
   - docker
 
 before_install:
-- docker-compose -f infrastructure/mongo_db/test_setup.yml up
+- docker-compose -f infrastructure/mongo_db/test_setup.yml up -d
+
+install:
+  - pip install requirements/dev.txt
 
 script:
 - pytest iclr_wrap_up/ -v
