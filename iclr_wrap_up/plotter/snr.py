@@ -4,8 +4,8 @@ import numpy as np
 from iclr_wrap_up.plotter.base import BasePlotter
 
 
-def load(run, dataset, architecture):
-    return SignalToNoiseRationPlotter(run, dataset, architecture)
+def load(run, dataset):
+    return SignalToNoiseRationPlotter(run, dataset)
 
 
 # TODO think about whether plotting snr ratio averaged over multiple runs does make sense
@@ -13,14 +13,14 @@ def load(run, dataset, architecture):
 class SignalToNoiseRationPlotter(BasePlotter):
     plotname = 'snr'
 
-    def __init__(self, run, dataset, architecture):
+    def __init__(self, run, dataset):
         self.dataset = dataset
         self.run = run
-        self.architecture = architecture
 
     def plot(self, measures_summary):
 
         activations_summary = measures_summary['activations_summary']
+        num_layers = len(activations_summary[0]['weights_norm'])  # get number of layers indirectly via number of values
 
         epochs = []
         means = []
@@ -34,7 +34,7 @@ class SignalToNoiseRationPlotter(BasePlotter):
             stds.append(epoch_values['gradstd'])
 
         wnorms, means, stds = map(np.array, [wnorms, means, stds])
-        plot_layers = range(len(self.architecture) + 1)  # +1 for the last output layer.
+        plot_layers = range(num_layers)
 
         fig = plt.figure(figsize=(12, 5))
 

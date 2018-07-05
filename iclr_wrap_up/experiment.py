@@ -24,12 +24,11 @@ ex.observers.append(MongoObserver.create(url=credentials.MONGODB_URI,
 
 @ex.config
 def hyperparams():
-    # Never change this values!
-    epochs = 10000
-    architecture = []
-    plotters = [('plotter.informationplane', [epochs]),
-                ('plotter.snr', [architecture]),
-                ('plotter.informationplane_movie', [])
+
+    plotters = [('plotter.informationplane', []),
+                ('plotter.snr', []),
+                ('plotter.informationplane_movie', []),
+                ('plotter.activations', [])
                 ]
 
 
