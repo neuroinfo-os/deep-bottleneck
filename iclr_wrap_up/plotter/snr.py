@@ -5,12 +5,12 @@ from iclr_wrap_up.plotter.base import BasePlotter
 
 
 def load(run, dataset):
-    return SignalToNoiseRationPlotter(run, dataset)
+    return SignalToNoiseRatioPlotter(run, dataset)
 
 
 # TODO think about whether plotting snr ratio averaged over multiple runs does make sense
 
-class SignalToNoiseRationPlotter(BasePlotter):
+class SignalToNoiseRatioPlotter(BasePlotter):
     plotname = 'snr'
 
     def __init__(self, run, dataset):
