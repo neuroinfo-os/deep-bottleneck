@@ -8,7 +8,8 @@
 #$ -o ./output/
 #$ -pe default 3
 #$ -l h_rt=01:30:00
-#$ -l hostname=!*picture*
+#$ -l h=*cippy*
+# -l hostname=!*picture*
 
 echo "*** Start of SGE job ***"
 date
