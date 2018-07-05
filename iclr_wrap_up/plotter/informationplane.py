@@ -5,27 +5,27 @@ import numpy as np
 from iclr_wrap_up.plotter.base import BasePlotter
 
 
-def load(run, dataset, epochs):
-    return InformationPlanePlotter(run, dataset, epochs)
+def load(run, dataset):
+    return InformationPlanePlotter(run, dataset)
 
 
 class InformationPlanePlotter(BasePlotter):
     """Plot the infoplane for average MI estimates."""
     plotname = 'infoplane'
 
-    def __init__(self, run, dataset, epochs):
+    def __init__(self, run, dataset):
         self.dataset = dataset
-        self.epochs = epochs
         self.run = run
 
     def plot(self, measures_summary):
 
         measures = measures_summary['mi_mean_over_runs']
 
-        os.makedirs('plots/', exist_ok=True)
-
-        sm = plt.cm.ScalarMappable(cmap='gnuplot', norm=plt.Normalize(vmin=0, vmax=self.epochs))
+        total_epochs = measures.index.get_level_values(0)[-1] + 1  # epoch index starts at 0
+        sm = plt.cm.ScalarMappable(cmap='gnuplot', norm=plt.Normalize(vmin=0, vmax=total_epochs))
         sm.set_array([])
+
+        os.makedirs('plots/', exist_ok=True)
 
         fig, ax = plt.subplots()
 
