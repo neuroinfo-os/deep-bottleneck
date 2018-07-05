@@ -17,7 +17,7 @@ class ArtifactLoader:
         self.runs = db.runs
         self.fs = gridfs.GridFS(db)
         self.mapping = {'infoplane': PNGArtifact, 'snr': PNGArtifact, 'infoplane_movie': MP4Artifact,
-                        'information_measures': CSVArtifact}
+                        'information_measures': CSVArtifact, 'activations': PNGArtifact}
         
     def load(self, experiment_id: int):
         experiment = self.runs.find_one({'_id': experiment_id})
