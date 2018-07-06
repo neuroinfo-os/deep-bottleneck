@@ -7,12 +7,27 @@ optimizer_map = {
     'adam': tf.train.AdamOptimizer,
 }
 
+activation_fn_map = {
+    'tanh': tf.nn.tanh,
+    'relu': tf.nn.relu,
+    'sigmoid': tf.nn.sigmoid,
+    'softsign': tf.nn.softsign,
+    'softplus': tf.nn.softplus,
+    'leaky_relu': tf.nn.leaky_relu,
+    'hard_sigmoid': 'hard_sigmoid',
+    'selu': tf.nn.selu,
+    'relu6': tf.nn.relu6,
+    'elu': tf.nn.elu,
+    'linear': 'linear'
+}
+
+
 def load(architecture, activation_fn, optimizer, learning_rate, input_size, output_size):
     input_layer = keras.layers.Input((input_size,))
     clayer = input_layer
     for n in architecture:
         clayer = keras.layers.Dense(n,
-                                    activation=activation_fn,
+                                    activation=activation_fn_map[activation_fn],
                                     kernel_initializer=keras.initializers.TruncatedNormal(mean=0.0,
                                                                                           stddev=1 / np.sqrt(float(n)),
                                                                                           seed=None),
