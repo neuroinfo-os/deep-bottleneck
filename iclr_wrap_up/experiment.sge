@@ -41,7 +41,7 @@ echo $DNECK_ROOT
 source activate dneck
 
 echo "Sacred Experiment"
-PYTHONPATH=$DNECK_ROOT/$USER/deep-bottleneck WALLTIME=01:30:00 PYTHONHASHSEED=0 START_TIME=$(date +%s) python experiment.py --name ${1-noname} with ${2-ingredients/basic.json} seed=0
+PYTHONPATH=$DNECK_ROOT/$USER/deep-bottleneck WALLTIME=01:30:00 PYTHONHASHSEED=0 START_TIME=$(date +%s) python experiment.py --name ${1-noname} with ${2-configs/basic.json} seed=0
 
 
 echo ""
