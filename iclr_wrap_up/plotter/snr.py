@@ -13,7 +13,7 @@ def load(run, dataset):
 class SignalToNoiseRatioPlotter(BasePlotter):
     plotname = 'snr'
 
-    def __init__(self, run, dataset, architecture):
+    def __init__(self, run, dataset):
         self.dataset = dataset
         self.run = run
 
