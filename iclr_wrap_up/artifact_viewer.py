@@ -21,9 +21,12 @@ class ArtifactLoader:
         
     def load(self, experiment_id: int):
         experiment = self.runs.find_one({'_id': experiment_id})
+        val_acc = experiment["captured_out"][experiment["captured_out"].rfind("val_acc")+9:]
+        val_acc = val_acc[:val_acc.find(" ")]; val_acc = val_acc[:val_acc.find("\n")]; val_acc = float(val_acc)
         artifacts = {artifact['name']: self.mapping[artifact['name']](artifact['name'], self.fs.get(artifact['file_id']))
                      for artifact in experiment['artifacts']}
         artifacts['name'] = experiment["experiment"]["name"]
+        artifacts['val_acc'] = val_acc
         return artifacts
         
 
