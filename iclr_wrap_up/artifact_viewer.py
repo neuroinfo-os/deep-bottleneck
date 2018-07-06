@@ -21,7 +21,6 @@ class ArtifactLoader:
         
     def load(self, experiment_id: int):
         experiment = self.runs.find_one({'_id': experiment_id})
-        print("!!!!", experiment)
         artifacts = {artifact['name']: self.mapping[artifact['name']](artifact['name'], self.fs.get(artifact['file_id']))
                      for artifact in experiment['artifacts']}
         artifacts['name'] = experiment["experiment"]["name"]
