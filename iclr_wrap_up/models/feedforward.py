@@ -1,4 +1,6 @@
 from tensorflow import keras
+from tensorflow.python.keras import regularizers
+from keras.constraints import max_norm
 import tensorflow as tf
 import numpy as np
 
@@ -32,6 +34,7 @@ def load(architecture, activation_fn, optimizer, learning_rate, input_size, outp
                                                                                           stddev=1 / np.sqrt(float(n)),
                                                                                           seed=None),
                                     bias_initializer='zeros',
+                                    kernel_constraint=max_norm(max_value=0.8)
                                     )(clayer)
     output_layer = keras.layers.Dense(output_size, activation='softmax')(clayer)
 
