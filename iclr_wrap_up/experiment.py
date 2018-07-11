@@ -28,7 +28,8 @@ def hyperparams():
     plotters = [('plotter.informationplane', []),
                 ('plotter.snr', []),
                 ('plotter.informationplane_movie', []),
-                ('plotter.activations', [])
+                ('plotter.activations', []),
+                ('plotter.activations_single_neuron', [])
                 ]
 
 
