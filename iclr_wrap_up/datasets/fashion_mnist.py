@@ -26,7 +26,7 @@ def load():
     Y_train = keras_utils.to_categorical(y_train, nb_classes).astype('float32')
     Y_test = keras_utils.to_categorical(y_test, nb_classes).astype('float32')
 
-    Dataset = namedtuple('Dataset', ['X', 'Y', 'y', 'nb_classes'])
+    Dataset = namedtuple('Dataset', ['X', 'Y', 'y', 'n_classes'])
     training = Dataset(X_train, Y_train, y_train, nb_classes)
     test = Dataset(X_test, Y_test, y_test, nb_classes)
 

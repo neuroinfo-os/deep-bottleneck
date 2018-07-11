@@ -18,7 +18,7 @@ def load():
         - Y is class, but coded as a 2-dim vector with one entry set to 1 at the column index corresponding to the class
     """
     ID = '2017_12_21_16_51_3_275766'
-    nb_classes = 2
+    n_classes = 2
     data_file = Path('datasets/IB_data_' + str(ID) + '.npz')
     if data_file.is_file():
         data = np.load('datasets/IB_data_' + str(ID) + '.npz')
@@ -31,12 +31,12 @@ def load():
     X_test  = data['X_test']
     y_test  = data['y_test']
 
-    Y_train = keras_utils.to_categorical(y_train, nb_classes).astype('float32')
-    Y_test = keras_utils.to_categorical(y_test, nb_classes).astype('float32')
+    Y_train = keras_utils.to_categorical(y_train, n_classes).astype('float32')
+    Y_test = keras_utils.to_categorical(y_test, n_classes).astype('float32')
 
-    Dataset = namedtuple('Dataset', ['X', 'Y', 'y', 'nb_classes'])
-    training = Dataset(X_train, Y_train, y_train, nb_classes)
-    test = Dataset(X_test, Y_test, y_test, nb_classes)
+    Dataset = namedtuple('Dataset', ['X', 'Y', 'y', 'n_classes'])
+    training = Dataset(X_train, Y_train, y_train, int(n_classes))
+    test = Dataset(X_test, Y_test, y_test, int(n_classes))
     return training, test
 
 

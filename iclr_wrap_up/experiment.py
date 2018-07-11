@@ -18,30 +18,21 @@ import iclr_wrap_up.credentials as credentials
 
 ex = Experiment('sacred_keras_example')
 
-url = f'mongodb://{credentials.MONGODB_ADMINUSERNAME}:{credentials.MONGODB_ADMINPASSWORD}@{credentials.MONGODB_HOST}/?authMechanism=SCRAM-SHA-1'
-ex.observers.append(MongoObserver.create(url=url,
+ex.observers.append(MongoObserver.create(url=credentials.MONGODB_URI,
                                          db_name=credentials.MONGODB_DBNAME))
 
 
 @ex.config
-def hyperparameters():
-    epochs = 10
-    batch_size = 256
-    architecture = [10, 7, 5, 4, 3]
-    learning_rate = 0.0004
-    full_mi = False
-    infoplane_measure = 'upper'
-    architecture_name = '-'.join(map(str, architecture))
-    activation_fn = 'tanh'
-    save_dir = 'rawdata/' + activation_fn + '_' + architecture_name
-    model = 'models.feedforward'
-    dataset = 'datasets.harmonics'
-    estimator = 'compute_mi.compute_mi_ib_net'
-    callbacks = []
-    plotters = [('plotter.informationplane', [epochs]),
-               ('plotter.snr', [architecture]),
-               ('plotter.informationplane_movie', [])]
-    n_runs = 5
+def hyperparams():
+
+    plotters = [('plotter.informationplane', []),
+                ('plotter.snr', []),
+                ('plotter.informationplane_movie', []),
+                ('plotter.activations', [])
+                ]
+
+
+ex.add_config('configs/basic.json')
 
 
 @ex.capture
@@ -51,9 +42,9 @@ def load_dataset(dataset):
 
 
 @ex.capture
-def load_model(model, architecture, activation_fn, learning_rate, input_size, output_size):
+def load_model(model, architecture, activation_fn, optimizer, learning_rate, input_size, output_size):
     module = importlib.import_module(model)
-    return module.load(architecture, activation_fn, learning_rate, input_size, output_size)
+    return module.load(architecture, activation_fn, optimizer, learning_rate, input_size, output_size)
 
 
 def do_report(epoch):
@@ -69,9 +60,9 @@ def do_report(epoch):
     else:  # Then every 100th
         return (epoch % 100) == 0
 
+
 @ex.capture
 def make_plotters(plotters, _run, dataset):
-
     plotter_objects = []
     for plotter in plotters:
         plotter_object = importlib.import_module(plotter[0]).load(_run, dataset, *plotter[1])
@@ -79,22 +70,22 @@ def make_plotters(plotters, _run, dataset):
 
     return plotter_objects
 
+
 @ex.capture
 def generate_plots(plotter_objects, measures_summary):
-
     for plotter in plotter_objects:
         plotter.generate(measures_summary)
 
 
 @ex.capture
-def make_callbacks(callbacks, training, test, full_mi, save_dir, batch_size, activation_fn, _run):
+def make_callbacks(callbacks, training, test, calculate_mi_for, batch_size, activation_fn, _run):
     datestr = str(datetime.datetime.now()).split(sep='.')[0]
     datestr = datestr.replace(':', '-')
     datestr = datestr.replace(' ', '_')
 
     callback_objects = []
     # The logging reporter needs to be at position 0 to access the correct one for the further processing.
-    callback_objects.append(LoggingReporter(trn=training, tst=test, full_mi=full_mi,
+    callback_objects.append(LoggingReporter(trn=training, tst=test, calculate_mi_for=calculate_mi_for,
                                             batch_size=batch_size, activation_fn=activation_fn,
                                             do_save_func=do_report))
     for callback in callbacks:
@@ -103,16 +94,15 @@ def make_callbacks(callbacks, training, test, full_mi, save_dir, batch_size, act
     callback_objects.append(MetricsLogger(_run))
     callback_objects.append(TensorBoard(log_dir=f'./logs/{datestr}', histogram_freq=10))
     callback_objects.append(ActivityProjector(log_dir=f'./logs/{datestr}', train=training, test=test,
-                                   embeddings_freq=10))
+                                              embeddings_freq=10))
 
     return callback_objects
 
 
 @ex.capture
-def load_estimator(estimator, training_data, test_data,
-                   full_mi, epochs, architecture_name, activation_fn, infoplane_measure):
+def load_estimator(estimator, discretization_range, training_data, test_data, calculate_mi_for, architecture):
     module = importlib.import_module(estimator)
-    return module.load(training_data, test_data, epochs, architecture_name, full_mi, activation_fn, infoplane_measure)
+    return module.load(discretization_range, training_data, test_data, architecture, calculate_mi_for)
 
 
 @ex.automain
@@ -121,7 +111,7 @@ def conduct(epochs, batch_size, n_runs, _run):
 
     measures_all_runs = []
     for run_id in range(n_runs):
-        model = load_model(input_size=training.X.shape[1], output_size=training.nb_classes)
+        model = load_model(input_size=training.X.shape[1], output_size=training.n_classes)
         callbacks = make_callbacks(training=training, test=test)
         model.fit(x=training.X, y=training.Y,
                   verbose=2,
@@ -136,7 +126,7 @@ def conduct(epochs, batch_size, n_runs, _run):
         activations_summary = callbacks[0].activations_summary
 
         estimator = load_estimator(training_data=training, test_data=test)
-        measures = estimator.compute_mi(activations_summary=activations_summary)
+        measures = estimator.compute_mi(epoch_summaries=activations_summary)
         measures['run'] = run_id
         measures_all_runs.append(measures)
 
@@ -148,6 +138,12 @@ def conduct(epochs, batch_size, n_runs, _run):
     # Transform list of measurements into DataFrame with hierarchical index.
     measures_all_runs = pd.concat(measures_all_runs)
     measures_all_runs = measures_all_runs.fillna(0)
+
+    # Save information measures
+    mi_filename = "information_measures.csv"
+    measures_all_runs.to_csv(mi_filename)
+    _run.add_artifact(mi_filename, name="information_measures")
+
     # compute mean of information measures over all runs
     mi_mean_over_runs = measures_all_runs.groupby(['epoch', 'layer']).mean()
 

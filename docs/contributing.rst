@@ -104,3 +104,21 @@ And here our non exhaustive list to guidelines to write cleaner code.
 
 
 `PEP8 <https://www.python.org/dev/peps/pep-0008/>`_
+
+
+Experiment workflow
+===================
+
+#. Define a hypothesis
+#. Define set of parameters that is going to stay fixed
+#. Define parameter to change (including possible values for the parameter)
+#. Create a meaningful name for the experiment (group of experiment, name of parameter tested)
+#. Make sure you set a seed (Pycharm: in run options append: "with seed=0")
+#. Program experiment (set parameters) using our framework
+#. Commit your changes locally to obtain commit hash: this is going to be logged by sacredboard
+#. Make sure your experiment is logged to the database
+#. Start the experiment
+#. Interpret and document results in the docs: Please include Sacred- IDs of the runs
+#. Push your local branch to github - to make all commits available to everyone
+
+

@@ -17,11 +17,11 @@ def construct_full_dataset(training, test):
     Returns:
         A new Namedtuple with fields X, y and Y containing the concatenation of training and test data
     """
-    Dataset = namedtuple('Dataset',['X','Y','y','nb_classes'])
+    Dataset = namedtuple('Dataset',['X','Y','y','n_classes'])
     X = np.concatenate((training.X, test.X))
     y = np.concatenate((training.y, test.y))
     Y = np.concatenate((training.Y, test.Y))
-    return Dataset(X, Y, y, training.nb_classes)
+    return Dataset(X, Y, y, training.n_classes)
 
 
 def shuffle_in_unison_inplace(a, b):
