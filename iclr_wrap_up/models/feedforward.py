@@ -1,5 +1,5 @@
 from tensorflow import keras
-from keras.constraints import max_norm
+from tensorflow.python.keras.constraints import max_norm
 import tensorflow as tf
 import numpy as np
 
