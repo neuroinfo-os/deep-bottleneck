@@ -25,7 +25,7 @@ ex.observers.append(MongoObserver.create(url=credentials.MONGODB_URI,
 @ex.config
 def hyperparams():
     # For downwards compatibility
-    max_norm_weights = 10000.0
+    max_norm_weights = False
     plotters = [('plotter.informationplane', []),
                 ('plotter.snr', []),
                 ('plotter.informationplane_movie', []),
