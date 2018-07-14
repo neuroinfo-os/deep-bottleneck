@@ -43,6 +43,9 @@ class SingleNeuronActivityPlotter(BasePlotter):
             for neuron_number in range(neurons_in_layer):
                 hist_df = pd.DataFrame(hist[neuron_number])
 
+                # testing to set 0 activations to 0 frequency, to see structure in relu plots
+                #hist_df[:][0] = 0
+
                 # vertical offset for plotting optic
                 plotting_offset = (neurons_in_first_layer - neurons_in_layer) / 2
                 gs_y_index = int((neuron_number + plotting_offset) * 2)
@@ -58,7 +61,6 @@ class SingleNeuronActivityPlotter(BasePlotter):
                 xticks = np.arange(0, hist_df.shape[0], 5)
                 ax.set_xticks(xticks)
                 ax.set_xticklabels(all_activations.index[xticks], rotation=90)
-
 
                 activity_map = ax.imshow(hist_df.transpose(), cmap="viridis", interpolation='nearest')
                 counts_colorbar = fig.colorbar(activity_map)
