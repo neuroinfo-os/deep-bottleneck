@@ -7,14 +7,14 @@ from iclr_wrap_up import utils
 
 
 class LoggingReporter(keras.callbacks.Callback):
-    def __init__(self, trn, tst, calculate_mi_for, batch_size, activation_fn, do_save_func=None, *args, **kwargs):
+    def __init__(self, trn, tst, calculate_mi_for, batch_size, activation_fn, file_all_activations, do_save_func=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.trn = trn  # Train data
         self.tst = tst  # Test data
         self.calculate_mi_for = calculate_mi_for
         self.batch_size = batch_size
         self.activation_fn = activation_fn
-        self.activations_summary = OrderedDict()
+        self.file_all_activations = file_all_activations
 
         if self.calculate_mi_for == "full_dataset":
             self.full = utils.construct_full_dataset(trn, tst)
@@ -101,6 +101,14 @@ class LoggingReporter(keras.callbacks.Callback):
         for cdata, cdataname, istrain in ((self.trn, 'trn', 1), (self.tst, 'tst', 0)):
             loss[cdataname] = self.get_loss([cdata.X, [1] * len(cdata.X), cdata.Y, istrain])[0].flat[0]
 
+        self.file_all_activations.create_group(str(epoch))
+        self.file_all_activations[str(epoch)].create_dataset('weights_norm', (len(self.layerixs),))
+        self.file_all_activations[str(epoch)].create_dataset('gradmean', (len(self.layerixs),))
+        self.file_all_activations[str(epoch)].create_dataset('gradstd', (len(self.layerixs),))
+        self.file_all_activations[str(epoch)].create_group('activations')
+
+        print('layerixs: ', len(self.layerixs))
+
         data = {
             'weights_norm': [],  # L2 norm of weights
             'gradmean': [],  # Mean of gradients
@@ -111,19 +119,24 @@ class LoggingReporter(keras.callbacks.Callback):
         for lndx, layerix in enumerate(self.layerixs):
             clayer = self.model.layers[layerix]
 
-            data['weights_norm'].append(np.linalg.norm(K.get_value(clayer.kernel)))
+            self.file_all_activations[str(epoch)+'/weights_norm'][lndx] = np.linalg.norm(K.get_value(clayer.kernel))
+            #data['weights_norm'].append(np.linalg.norm(K.get_value(clayer.kernel)))
 
             stackedgrads = np.stack(self._batch_gradients[lndx], axis=1)
-            data['gradmean'].append(np.linalg.norm(stackedgrads.mean(axis=1)))
-            data['gradstd'].append(np.linalg.norm(stackedgrads.std(axis=1)))
+            self.file_all_activations[str(epoch) + '/gradmean'][lndx] = np.linalg.norm(stackedgrads.mean(axis=1))
+            #data['gradmean'].append(np.linalg.norm(stackedgrads.mean(axis=1)))
+            self.file_all_activations[str(epoch) + '/gradstd'][lndx] = np.linalg.norm(stackedgrads.std(axis=1))
+            #data['gradstd'].append(np.linalg.norm(stackedgrads.std(axis=1)))
 
             # TODO Same "if" clause is in the estimatior, remove code duplication
             if self.calculate_mi_for == "full_dataset":
-                data['activations'].append(self.layerfuncs[lndx]([self.full.X])[0])
+                #data['activations'].append(self.layerfuncs[lndx]([self.full.X])[0])
+                self.file_all_activations[str(epoch) + '/activations/'].create_dataset(str(lndx), data=
+                self.layerfuncs[lndx]([self.full.X])[0])
             elif self.calculate_mi_for == "test":
-                data['activations'].append(self.layerfuncs[lndx]([self.tst.X])[0])
+                #data['activations'].append(self.layerfuncs[lndx]([self.tst.X])[0])
+                self.file_all_activations[str(epoch) + '/activations/'].create_dataset(str(lndx), data=self.layerfuncs[lndx]([self.tst.X])[0])
             elif self.calculate_mi_for == "training":
-                data['activations'].append(self.layerfuncs[lndx]([self.trn.X])[0])
-
-
-        self.activations_summary[epoch] = data
+                #data['activations'].append(self.layerfuncs[lndx]([self.trn.X])[0])
+                self.file_all_activations[str(epoch) + '/activations/'].create_dataset(str(lndx), data=
+                self.layerfuncs[lndx]([self.trn.X])[0])

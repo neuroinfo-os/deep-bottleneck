@@ -17,8 +17,10 @@ class MutualInformationEstimator:
         self.architecture = architecture
         self.calculate_mi_for = calculate_mi_for
 
-    def compute_mi(self, epoch_summaries) -> pd.DataFrame:
+    def compute_mi(self, file_activations) -> pd.DataFrame:
         print(f'*** Start running {self.__class__.__name__}. ***')
+
+        print(file_activations[2])
 
         labels, one_hot_labels = self._construct_dataset()
         # Proportion of instances that have a certain label.
