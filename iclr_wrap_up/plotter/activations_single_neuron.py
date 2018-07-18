@@ -24,20 +24,18 @@ class SingleNeuronActivityPlotter(BasePlotter):
         return all_activations
 
     def _get_number_of_layers(self, all_activations):
-        num_layers = len(all_activations[0])
-        return num_layers
+        return len(all_activations[0])
 
     def _get_number_of_neurons_in_layer(self, all_activations, layer):
-        neurons_in_first_layer = all_activations[0][layer].shape[1]
-        return neurons_in_first_layer
+        return all_activations[0][layer].shape[1]
 
     def _create_histogram(self, all_activations, layer_number):
-        neurons_in_layer = all_activations[0][layer_number].shape[1]
+        neurons_in_layer = self._get_number_of_neurons_in_layer(all_activations, layer_number)
         hist = [[] for x in range(neurons_in_layer)]
-        for epoch, epoch_values in all_activations.items():
-            layer_activations = epoch_values[layer_number].transpose()
+        for epoch, activations in all_activations.items():
+            layer_activations = activations[layer_number].transpose()
             for neuron_number in range(neurons_in_layer):
-                histogram_per_neuron = np.histogram(layer_activations[neuron_number], bins=30)[0]
+                histogram_per_neuron, _ = np.histogram(layer_activations[neuron_number], bins=30)
                 hist[neuron_number].append(histogram_per_neuron)
         return hist
 
