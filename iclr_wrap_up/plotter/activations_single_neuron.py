@@ -15,31 +15,47 @@ class SingleNeuronActivityPlotter(BasePlotter):
 
     def __init__(self, run, dataset):
         self.dataset = dataset
+
         self.run = run
 
-    def plot(self, measures_summary):
+    def _grab_activations(self, measures_summary):
         activations_summary = measures_summary['activations_summary']
-
         activations_df = pd.DataFrame(activations_summary).transpose()
         all_activations = activations_df['activations']
+        return all_activations
 
-        num_layers = len(activations_summary[0]['weights_norm'])  # get number of layers indirectly via number of values
-        neurons_in_first_layer = all_activations[0][0].shape[1]  # get number of neurons in first layer
+    def _get_number_of_layers(self, activations_summary):
+        num_layers = len(activations_summary[0]['weights_norm'])
+        return num_layers
+
+    def _get_number_of_neurons_in_layer(self, all_activations, layer):
+        neurons_in_first_layer = all_activations[0][layer].shape[1]
+        return neurons_in_first_layer
+
+    def _create_histogram(self, all_activations, layer_number):
+        neurons_in_layer = all_activations[0][layer_number].shape[1]
+        hist = [[] for x in range(neurons_in_layer)]
+        for epoch, epoch_values in all_activations.items():
+            layer_activations = epoch_values[layer_number].transpose()
+            for neuron_number in range(neurons_in_layer):
+                histogram_per_neuron = np.histogram(layer_activations[neuron_number], bins=30)[0]
+                hist[neuron_number].append(histogram_per_neuron)
+        return hist
+
+    def plot(self, measures_summary):
+
+        all_activations = self._grab_activations(measures_summary)
+        neurons_in_first_layer = self._get_number_of_neurons_in_layer(all_activations, 1)
+        num_layers = self._get_number_of_layers(measures_summary)
 
         fig = plt.figure()
         gs = gridspec.GridSpec(neurons_in_first_layer * 2, num_layers)
 
         for layer_number in range(num_layers):
-            neurons_in_layer = all_activations[0][layer_number].shape[1]
-            hist = [[] for x in range(neurons_in_layer)]
-            # grab activations over epoch for every neuron and create histogram
-            for epoch, epoch_values in all_activations.items():
-                layer_activations = epoch_values[layer_number].transpose()
-                for neuron_number in range(neurons_in_layer):
-                    histogram_per_neuron = np.histogram(layer_activations[neuron_number], bins=30)[0]
-                    hist[neuron_number].append(histogram_per_neuron)
 
-            # plot histogram for every neuron
+            neurons_in_layer = self._get_number_of_neurons_in_layer(all_activations, layer_number)
+            hist = self._create_histogram(all_activations, layer_number)
+
             for neuron_number in range(neurons_in_layer):
                 hist_df = pd.DataFrame(hist[neuron_number])
 
