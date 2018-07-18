@@ -123,3 +123,12 @@ output/
 
 # Information measures
 information_measures.csv
+
+# Activations
+activations/
+
+# core-file
+core
+
+# Logs
+logs/
