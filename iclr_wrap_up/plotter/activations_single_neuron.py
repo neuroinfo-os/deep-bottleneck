@@ -24,27 +24,24 @@ class SingleNeuronActivityPlotter(BasePlotter):
         all_activations = activations_df['activations']
 
         num_layers = len(activations_summary[0]['weights_norm'])  # get number of layers indirectly via number of values
-        neurons_in_first_layer = all_activations[0][0].shape[1]   # get number of neurons in first layer
+        neurons_in_first_layer = all_activations[0][0].shape[1]  # get number of neurons in first layer
 
         fig = plt.figure()
         gs = gridspec.GridSpec(neurons_in_first_layer * 2, num_layers)
 
         for layer_number in range(num_layers):
             neurons_in_layer = all_activations[0][layer_number].shape[1]
-            hist = [[] for x in range(10)]
+            hist = [[] for x in range(neurons_in_layer)]
+            # grab activations over epoch for every neuron and create histogram
             for epoch, epoch_values in all_activations.items():
                 layer_activations = epoch_values[layer_number].transpose()
                 for neuron_number in range(neurons_in_layer):
                     histogram_per_neuron = np.histogram(layer_activations[neuron_number], bins=30)[0]
                     hist[neuron_number].append(histogram_per_neuron)
 
-
             # plot histogram for every neuron
             for neuron_number in range(neurons_in_layer):
                 hist_df = pd.DataFrame(hist[neuron_number])
-
-                # testing to set 0 activations to 0 frequency, to see structure in relu plots
-                #hist_df[:][0] = 0
 
                 # vertical offset for plotting optic
                 plotting_offset = (neurons_in_first_layer - neurons_in_layer) / 2
