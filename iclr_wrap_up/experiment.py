@@ -24,7 +24,8 @@ ex.observers.append(MongoObserver.create(url=credentials.MONGODB_URI,
 
 @ex.config
 def hyperparams():
-
+    # For downwards compatibility
+    max_norm_weights = False
     plotters = [('plotter.informationplane', []),
                 ('plotter.snr', []),
                 ('plotter.informationplane_movie', []),
@@ -42,9 +43,9 @@ def load_dataset(dataset):
 
 
 @ex.capture
-def load_model(model, architecture, activation_fn, optimizer, learning_rate, input_size, output_size):
+def load_model(model, architecture, activation_fn, optimizer, learning_rate, input_size, output_size, max_norm_weights):
     module = importlib.import_module(model)
-    return module.load(architecture, activation_fn, optimizer, learning_rate, input_size, output_size)
+    return module.load(architecture, activation_fn, optimizer, learning_rate, input_size, output_size, max_norm_weights)
 
 
 def do_report(epoch):
