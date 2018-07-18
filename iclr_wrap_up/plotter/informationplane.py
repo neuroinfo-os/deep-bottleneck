@@ -21,7 +21,7 @@ class InformationPlanePlotter(BasePlotter):
 
         measures = measures_summary['mi_mean_over_runs']
 
-        total_epochs = measures.index.get_level_values(0)[-1] + 1  # epoch index starts at 0
+        total_epochs = measures.index.get_level_values('epoch')[-1] + 1  # epoch index starts at 0
         sm = plt.cm.ScalarMappable(cmap='gnuplot', norm=plt.Normalize(vmin=0, vmax=total_epochs))
         sm.set_array([])
 

@@ -129,7 +129,7 @@ def conduct(epochs, batch_size, n_runs, _run):
         print('fit successful')
 
         estimator = load_estimator(training_data=training, test_data=test)
-        measures = estimator.compute_mi(file_activations=file_all_activations)
+        measures = estimator.compute_mi(file_all_activations=file_all_activations)
         measures['run'] = run_id
         measures_all_runs.append(measures)
 
@@ -152,7 +152,7 @@ def conduct(epochs, batch_size, n_runs, _run):
 
     measures_summary = {'measures_all_runs': measures_all_runs,
                         'mi_mean_over_runs': mi_mean_over_runs,
-                        'activations_summary': activations_summary}
+                        'activations_summary': file_all_activations}
 
     plotter_objects = make_plotters()
     generate_plots(plotter_objects, measures_summary)

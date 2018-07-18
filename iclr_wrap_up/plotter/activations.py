@@ -18,7 +18,7 @@ class ActivityPlotter(BasePlotter):
 
     def plot(self, measures_summary):
         activations_summary = measures_summary['activations_summary']
-        num_layers = len(activations_summary[0]['weights_norm'])  # get number of layers indirectly via number of values
+        num_layers = len(activations_summary["0"]['weights_norm'])  # get number of layers indirectly via number of values
 
         activations_df = pd.DataFrame(activations_summary).transpose()
         all_activations = activations_df['activations']
