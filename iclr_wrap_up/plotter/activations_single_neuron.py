@@ -15,7 +15,6 @@ class SingleNeuronActivityPlotter(BasePlotter):
 
     def __init__(self, run, dataset):
         self.dataset = dataset
-
         self.run = run
 
     def _grab_activations(self, measures_summary):
@@ -24,8 +23,8 @@ class SingleNeuronActivityPlotter(BasePlotter):
         all_activations = activations_df['activations']
         return all_activations
 
-    def _get_number_of_layers(self, activations_summary):
-        num_layers = len(activations_summary[0]['weights_norm'])
+    def _get_number_of_layers(self, all_activations):
+        num_layers = len(all_activations[0])
         return num_layers
 
     def _get_number_of_neurons_in_layer(self, all_activations, layer):
@@ -45,8 +44,8 @@ class SingleNeuronActivityPlotter(BasePlotter):
     def plot(self, measures_summary):
 
         all_activations = self._grab_activations(measures_summary)
-        neurons_in_first_layer = self._get_number_of_neurons_in_layer(all_activations, 1)
-        num_layers = self._get_number_of_layers(measures_summary)
+        neurons_in_first_layer = self._get_number_of_neurons_in_layer(all_activations, 0)
+        num_layers = self._get_number_of_layers(all_activations)
 
         fig = plt.figure()
         gs = gridspec.GridSpec(neurons_in_first_layer * 2, num_layers)
