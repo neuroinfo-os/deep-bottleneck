@@ -1,7 +1,7 @@
 {
   "epochs": 1000,
   "batch_size": 256,
-  "architecture": [128, 64, 32],
+  "architecture": [128, 64, 32, 16],
   "optimizer": "adam",
   "learning_rate": 0.001,
   "calculate_mi_for": "test",

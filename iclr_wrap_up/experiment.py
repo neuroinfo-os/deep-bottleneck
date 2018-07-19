@@ -108,10 +108,16 @@ def load_estimator(estimator, discretization_range, training_data, test_data, ca
 
 
 @ex.automain
-def conduct(epochs, batch_size, n_runs, _run):
+def conduct(epochs, batch_size, dataset, n_runs, _run):
     training, test = load_dataset()
 
     measures_all_runs = []
+
+    steps_per_epoch = None
+
+    # Introduced because mnist is already after the first epoch to close to its maximal accuracy compute meaningful MI
+    if dataset == 'mnist':
+        steps_per_epoch = 5
 
     for run_id in range(n_runs):
         model = load_model(input_size=training.X.shape[1], output_size=training.n_classes)
@@ -122,6 +128,7 @@ def conduct(epochs, batch_size, n_runs, _run):
         model.fit(x=training.X, y=training.Y,
                   verbose=2,
                   batch_size=batch_size,
+                  steps_per_epoch=steps_per_epoch,
                   epochs=epochs,
                   validation_data=(test.X, test.Y),
                   callbacks=callbacks)

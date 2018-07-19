@@ -36,10 +36,9 @@ class MutualInformationEstimator:
         measures = self._init_dataframe(epoch_numbers=epoch_numbers, n_layers=n_layers)
 
         #for epoch, summary in epoch_summaries.items():
-        for epoch in file_all_activations:
+        for epoch in epoch_numbers:
             print(f'Estimating mutual information for epoch {epoch}.')
-            summary = file_all_activations[epoch]
-            epoch = int(epoch)
+            summary = file_all_activations[str(epoch)]
             for layer_index in range(n_layers):
                 layer_activations = summary['activations'][str(layer_index)]
                 mi_with_input, mi_with_label = self._compute_mi_per_epoch_and_layer(layer_activations, label_weights,

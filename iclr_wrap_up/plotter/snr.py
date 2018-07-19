@@ -27,9 +27,12 @@ class SignalToNoiseRatioPlotter(BasePlotter):
         stds = []
         wnorms = []
 
-        for epoch in activations_summary:
+        epochs_in_activation_summary = [int(epoch) for epoch in activations_summary]
+        epochs_in_activation_summary = np.asarray(sorted(epochs_in_activation_summary))
+
+        for epoch in epochs_in_activation_summary:
             epochs.append(epoch)
-            epoch_values = activations_summary[epoch]
+            epoch_values = activations_summary[str(epoch)]
             wnorms.append(epoch_values['weights_norm'])
             means.append(epoch_values['gradmean'])
             stds.append(epoch_values['gradstd'])
