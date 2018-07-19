@@ -24,11 +24,20 @@ class ArtifactLoader:
     # their content is not unnecessarily done more than once.
     @lru_cache(maxsize=32)
     def load(self, experiment_id: int):
-        experiment = self.runs.find_one({'_id': experiment_id})
+        experiment = self._find_experiment(experiment_id)
         artifacts = {
             artifact['name']: self.mapping[artifact['name']](artifact['name'], self.fs.get(artifact['file_id']))
             for artifact in experiment['artifacts']}
         return artifacts
+
+    @lru_cache(maxsize=32)
+    def load_config(self, experiment_id: int):
+        experiment = self._find_experiment(experiment_id)
+        return experiment['config']
+
+    @lru_cache(maxsize=32)
+    def _find_experiment(self, experiment_id: int):
+        return self.runs.find_one({'_id': experiment_id})
 
 
 class Artifact:
@@ -42,7 +51,7 @@ class Artifact:
         self._content = None
 
     def __repr__(self):
-        return f'{self.__class__}(name={self.name})'
+        return f'{self.__class__.__name__}(name={self.name})'
 
     def save(self):
         with open(self._make_filename(), 'wb') as file:
