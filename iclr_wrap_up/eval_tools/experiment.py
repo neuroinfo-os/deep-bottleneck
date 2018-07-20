@@ -1,58 +1,17 @@
-from pymongo import MongoClient
-import gridfs
-
-from iclr_wrap_up import credentials
 from bson import ObjectId
 import pandas as pd
-from functools import lru_cache
-
-from iclr_wrap_up import artifact_viewer
-
 from typing import *
 
-
-class ExperimentLoader:
-    """Loads artifacts related to experiments."""
-
-    def __init__(self, mongo_uri=credentials.MONGODB_URI, db_name=credentials.MONGODB_DBNAME):
-        client = MongoClient(mongo_uri)
-        self.db = client[db_name]
-        self.runs = self.db.runs
-        self.fs = gridfs.GridFS(self.db)
-
-    # The cache makes sure that both retrieval of the artifacts and
-    # their content is not unnecessarily done more than once.
-    @lru_cache(maxsize=32)
-    def find_by_id(self, experiment_id: int):
-        experiment = self._find_experiment(experiment_id)
-
-        return self._make_experiment(experiment)
-
-    @lru_cache(maxsize=32)
-    def find_by_name(self, name):
-        return self.find_by_config_key('experiment.name', name)
-
-    @lru_cache(maxsize=32)
-    def find_by_config_key(self, key, value):
-        cursor = self.runs.find({key: {rf'{value}'}})
-        experiments = [self._make_experiment(experiment) for experiment in cursor]
-        return experiments
-
-    @lru_cache(maxsize=32)
-    def _find_experiment(self, experiment_id: int):
-        return self.runs.find_one({'_id': experiment_id})
-
-    def _make_experiment(self, experiment):
-        return Experiment.from_db_object(self.db, self.fs, experiment)
+from iclr_wrap_up.eval_tools import artifact
 
 
 class Experiment:
     artifact_name_to_cls = {
-        'infoplane': artifact_viewer.PNGArtifact,
-        'snr': artifact_viewer.PNGArtifact,
-        'infoplane_movie': artifact_viewer.MP4Artifact,
-        'information_measures': artifact_viewer.CSVArtifact,
-        'activations': artifact_viewer.PNGArtifact}
+        'infoplane': artifact.PNGArtifact,
+        'snr': artifact.PNGArtifact,
+        'infoplane_movie': artifact.MP4Artifact,
+        'information_measures': artifact.CSVArtifact,
+        'activations': artifact.PNGArtifact}
 
     def __init__(self, id_, db, fs, config, artifact_links, metric_links):
         self.id = id_
@@ -76,7 +35,14 @@ class Experiment:
         return cls(id_, db, fs, config, artifacts_links, metric_links)
 
     @property
-    def artifacts(self) -> Dict[str, artifact_viewer.Artifact]:
+    def artifacts(self) -> Dict[str, artifact.Artifact]:
+        """
+        The artifacts belonging to the experiment.
+
+        Returns:
+            A mapping from artifact names to artifact objects, that
+            belong to the experiment.
+        """
         if self._artifacts is None:
             self._artifacts = self._load_artifacts()
 
@@ -84,6 +50,13 @@ class Experiment:
 
     @property
     def metrics(self) -> Dict[str, pd.Series]:
+        """
+        The metrics belonging to the experiment.
+
+        Returns:
+            A mapping from metric names to pandas Series objects, that
+            belong to the experiment.
+        """
         if self._metrics is None:
             self._metrics = self._load_metrics()
 

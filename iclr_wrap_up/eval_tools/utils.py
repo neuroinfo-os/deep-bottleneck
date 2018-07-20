@@ -1,6 +1,6 @@
 from functools import reduce
 from operator import and_, or_
-from iclr_wrap_up.experiment_loader import Experiment
+from iclr_wrap_up.eval_tools.experiment import Experiment
 from typing import *
 
 
