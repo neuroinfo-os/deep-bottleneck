@@ -118,7 +118,14 @@ Experiment workflow
 #. Commit your changes locally to obtain commit hash: this is going to be logged by sacredboard
 #. Make sure your experiment is logged to the database
 #. Start the experiment
-#. Interpret and document results in the docs: Please include Sacred- IDs of the runs
+#. Interpret and document results in a notebook. Include relevant plots using the artifact viewer.
+   Make sure the notebook is completely executed.
+#. Move your notebook to `docs/experiments`, so it will be automatically included in the documentation.   
 #. Push your local branch to github - to make all commits available to everyone
 
 
+Documentation
+=============
+
+A short restructeredText `reference <https://github.com/ralsina/rst-cheatsheet/blob/master/rst-cheatsheet.rst>`_.
+There is also a longer `video tutorial <https://www.youtube.com/watch?v=hM4I58TA72g>`_

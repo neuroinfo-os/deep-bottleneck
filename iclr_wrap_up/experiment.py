@@ -26,11 +26,13 @@ ex.observers.append(MongoObserver.create(url=credentials.MONGODB_URI,
 
 @ex.config
 def hyperparams():
-
+    # For downwards compatibility
+    max_norm_weights = False
     plotters = [('plotter.informationplane', []),
                 ('plotter.snr', []),
                 ('plotter.informationplane_movie', []),
-                ('plotter.activations', [])
+                ('plotter.activations', []),
+                ('plotter.activations_single_neuron', [])
                 ]
 
 
@@ -44,9 +46,9 @@ def load_dataset(dataset):
 
 
 @ex.capture
-def load_model(model, architecture, activation_fn, optimizer, learning_rate, input_size, output_size):
+def load_model(model, architecture, activation_fn, optimizer, learning_rate, input_size, output_size, max_norm_weights):
     module = importlib.import_module(model)
-    return module.load(architecture, activation_fn, optimizer, learning_rate, input_size, output_size)
+    return module.load(architecture, activation_fn, optimizer, learning_rate, input_size, output_size, max_norm_weights)
 
 
 def do_report(epoch):
@@ -115,7 +117,7 @@ def conduct(epochs, batch_size, dataset, n_runs, _run):
 
     steps_per_epoch = None
 
-    # Introduced because mnist is already after the first epoch to close to its maximal accuracy compute meaningful MI
+    # Introduced because already after the first epoch mnist is to close to its maximal accuracy compute meaningful MI
     if dataset == 'mnist':
         steps_per_epoch = 5
 

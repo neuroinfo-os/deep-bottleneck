@@ -1,5 +1,5 @@
 {
-  "epochs": 60,
+  "epochs": 15,
   "batch_size": 256,
   "architecture": [10, 7, 5, 4, 3],
   "optimizer": "adam",
