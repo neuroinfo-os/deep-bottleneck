@@ -11,7 +11,9 @@ class Experiment:
         'snr': artifact.PNGArtifact,
         'infoplane_movie': artifact.MP4Artifact,
         'information_measures': artifact.CSVArtifact,
-        'activations': artifact.PNGArtifact}
+        'activations': artifact.PNGArtifact,
+        'single_neuron_activations': artifact.PNGArtifact
+    }
 
     def __init__(self, id_, database, grid_filesystem, config, artifact_links, metric_links):
         self.id = id_
