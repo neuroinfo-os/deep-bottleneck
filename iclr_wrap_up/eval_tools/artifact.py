@@ -47,6 +47,7 @@ class PNGArtifact(Artifact):
             self._make_figure(figsize)
         return self.fig
 
+    @property
     def img(self):
         if self._img is None:
             self._img = plt.imread(BytesIO(self.content))
