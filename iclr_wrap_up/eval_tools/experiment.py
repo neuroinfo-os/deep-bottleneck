@@ -13,13 +13,13 @@ class Experiment:
         'information_measures': artifact.CSVArtifact,
         'activations': artifact.PNGArtifact}
 
-    def __init__(self, id_, db, fs, config, artifact_links, metric_links):
+    def __init__(self, id_, database, grid_filesystem, config, artifact_links, metric_links):
         self.id = id_
         self.config = config
         self._artifacts_links = artifact_links
         self._metrics_links = metric_links
-        self._db = db
-        self._fs = fs
+        self._database = database
+        self._grid_filesystem = grid_filesystem
         self._artifacts = None
         self._metrics = None
 
@@ -27,12 +27,12 @@ class Experiment:
         return f'{self.__class__.__name__}(id={self.id})'
 
     @classmethod
-    def from_db_object(cls, db, fs, experiment_data: dict):
+    def from_db_object(cls, database, grid_filesystem, experiment_data: dict):
         config = experiment_data['config']
         artifacts_links = experiment_data['artifacts']
         metric_links = experiment_data['info']['metrics']
         id_ = experiment_data['_id']
-        return cls(id_, db, fs, config, artifacts_links, metric_links)
+        return cls(id_, database, grid_filesystem, config, artifacts_links, metric_links)
 
     @property
     def artifacts(self) -> Dict[str, artifact.Artifact]:
@@ -65,7 +65,7 @@ class Experiment:
     def _load_artifacts(self):
         artifacts = {
             artifact['name']: self.artifact_name_to_cls[artifact['name']](
-                artifact['name'], self._fs.get(artifact['file_id'])
+                artifact['name'], self._grid_filesystem.get(artifact['file_id'])
             )
             for artifact in self._artifacts_links}
         return artifacts
@@ -73,7 +73,7 @@ class Experiment:
     def _load_metrics(self):
         metrics = {}
         for metric_link in self._metrics_links:
-            metric_db_entry = self._db.metrics.find_one({'_id': ObjectId(metric_link['id'])})
+            metric_db_entry = self._database.metrics.find_one({'_id': ObjectId(metric_link['id'])})
             metrics[metric_link['name']] = pd.Series(data=metric_db_entry['values'],
                                                      index=pd.Index(metric_db_entry['steps'], name='step'),
                                                      name=metric_link['name'])

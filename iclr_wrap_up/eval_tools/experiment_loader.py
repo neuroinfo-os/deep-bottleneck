@@ -1,14 +1,10 @@
 from pymongo import MongoClient
 import gridfs
+from functools import lru_cache
+from typing import *
 
 from iclr_wrap_up import credentials
-from bson import ObjectId
-import pandas as pd
-from functools import lru_cache
-
 from iclr_wrap_up.eval_tools.experiment import Experiment
-
-from typing import *
 
 
 class ExperimentLoader:
@@ -16,9 +12,9 @@ class ExperimentLoader:
 
     def __init__(self, mongo_uri=credentials.MONGODB_URI, db_name=credentials.MONGODB_DBNAME):
         client = MongoClient(mongo_uri)
-        self.db = client[db_name]
-        self.runs = self.db.runs
-        self.fs = gridfs.GridFS(self.db)
+        self._database = client[db_name]
+        self._runs = self._database.runs
+        self._grid_filesystem = gridfs.GridFS(self._database)
 
     def find_by_ids(self, experiment_ids: Iterable[int]) -> List[Experiment]:
         """
@@ -76,18 +72,19 @@ class ExperimentLoader:
         to find the experiment.
 
         Args:
-            name: Regex that is matched against the experiment's configuration.
+            key: Configuration key to search on.
+            value: Regex that is matched against the experiment's configuration.
 
         Returns:
             The matched experiments.
         """
-        cursor = self.runs.find({key: {'$regex': rf'{value}'}})
+        cursor = self._runs.find({key: {'$regex': rf'{value}'}})
         experiments = [self._make_experiment(experiment) for experiment in cursor]
         return experiments
 
     @lru_cache(maxsize=32)
     def _find_experiment(self, experiment_id: int):
-        return self.runs.find_one({'_id': experiment_id})
+        return self._runs.find_one({'_id': experiment_id})
 
     def _make_experiment(self, experiment):
-        return Experiment.from_db_object(self.db, self.fs, experiment)
+        return Experiment.from_db_object(self._database, self._grid_filesystem, experiment)
