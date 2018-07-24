@@ -23,8 +23,7 @@ activation_fn_map = {
 }
 
 
-def load(architecture, activation_fn, optimizer, learning_rate, input_size, output_size, max_norm_weights=False,
-         batch_norm=False):
+def load(architecture, activation_fn, optimizer, learning_rate, input_size, output_size, max_norm_weights=False):
     input_layer = keras.layers.Input((input_size,))
     clayer = input_layer
     for n in architecture:
@@ -37,7 +36,7 @@ def load(architecture, activation_fn, optimizer, learning_rate, input_size, outp
                                     kernel_constraint=(max_norm(max_value=float(max_norm_weights))
                                                        if max_norm_weights else None)
                                     )(clayer)
-        clayer = (keras.layers.BatchNormalization()(clayer) if batch_norm else None)
+        clayer = keras.layers.BatchNormalization()(clayer)
     output_layer = keras.layers.Dense(output_size, activation='softmax')(clayer)
 
     model = keras.models.Model(inputs=input_layer, outputs=output_layer)
