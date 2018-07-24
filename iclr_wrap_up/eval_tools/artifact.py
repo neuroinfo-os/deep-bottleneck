@@ -1,34 +1,7 @@
 from io import BytesIO
-from pymongo import MongoClient
-import gridfs
 import matplotlib.pyplot as plt
-import numpy as np
-from iclr_wrap_up import credentials
 from IPython.display import HTML
 import pandas as pd
-from functools import lru_cache
-
-
-class ArtifactLoader:
-    """Loads artifacts related to experiments."""
-
-    def __init__(self, mongo_uri=credentials.MONGODB_URI, db_name=credentials.MONGODB_DBNAME):
-        client = MongoClient(mongo_uri)
-        db = client[db_name]
-        self.runs = db.runs
-        self.fs = gridfs.GridFS(db)
-        self.mapping = {'infoplane': PNGArtifact, 'snr': PNGArtifact, 'infoplane_movie': MP4Artifact,
-                        'information_measures': CSVArtifact, 'activations': PNGArtifact}
-
-    # The cache makes sure that both retrieval of the artifacts and
-    # their content is not unnecessarily done more than once.
-    @lru_cache(maxsize=32)
-    def load(self, experiment_id: int):
-        experiment = self.runs.find_one({'_id': experiment_id})
-        artifacts = {
-            artifact['name']: self.mapping[artifact['name']](artifact['name'], self.fs.get(artifact['file_id']))
-            for artifact in experiment['artifacts']}
-        return artifacts
 
 
 class Artifact:
@@ -112,10 +85,11 @@ class CSVArtifact(Artifact):
         super().__init__(name, file)
         self.df = None
 
-    def _make_df(self):
-        self.df = pd.read_csv(self.file)
-
     def show(self):
         if self.df is None:
-            self._make_df()
+            self.df = self._make_df()
         return self.df
+
+    def _make_df(self):
+        df = pd.read_csv(self.file)
+        return df
