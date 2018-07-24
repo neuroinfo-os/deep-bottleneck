@@ -27,13 +27,21 @@ ex.observers.append(MongoObserver.create(url=credentials.MONGODB_URI,
 @ex.config
 def hyperparams():
     # For downwards compatibility
+    dataset = None
     max_norm_weights = False
-    plotters = [('plotter.informationplane', []),
-                ('plotter.snr', []),
-                ('plotter.informationplane_movie', []),
-                ('plotter.activations', []),
-                ('plotter.activations_single_neuron', [])
-                ]
+    if dataset == 'mnist':
+        plotters = [('plotter.informationplane', []),
+                    ('plotter.snr', []),
+                    ('plotter.informationplane_movie', []),
+                    ('plotter.activations', [])
+                    ]
+    else:
+        plotters = [('plotter.informationplane', []),
+                    ('plotter.snr', []),
+                    ('plotter.informationplane_movie', []),
+                    ('plotter.activations', []),
+                    ('plotter.activations_single_neuron', [])
+                    ]
 
 
 ex.add_config('configs/basic.json')
