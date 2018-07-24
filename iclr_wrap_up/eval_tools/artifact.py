@@ -39,24 +39,19 @@ class PNGArtifact(Artifact):
 
     def __init__(self, name, file):
         super().__init__(name, file)
-        self.fig = None
         self._img = None
 
     def show(self, figsize=(10, 10)):
-        if self.fig is None:
-            self._make_figure(figsize)
-        return self.fig
+        fig, ax = plt.subplots(figsize=figsize)
+        ax.imshow(self.img)
+        ax.axis('off')
+        return fig
 
     @property
     def img(self):
         if self._img is None:
             self._img = plt.imread(BytesIO(self.content))
         return self._img
-
-    def _make_figure(self, figsize):
-        self.fig, ax = plt.subplots(figsize=figsize)
-        ax.imshow(self.img)
-        ax.axis('off')
 
 
 class MP4Artifact(Artifact):
