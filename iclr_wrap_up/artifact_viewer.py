@@ -24,20 +24,11 @@ class ArtifactLoader:
     # their content is not unnecessarily done more than once.
     @lru_cache(maxsize=32)
     def load(self, experiment_id: int):
-        experiment = self._find_experiment(experiment_id)
+        experiment = self.runs.find_one({'_id': experiment_id})
         artifacts = {
             artifact['name']: self.mapping[artifact['name']](artifact['name'], self.fs.get(artifact['file_id']))
             for artifact in experiment['artifacts']}
         return artifacts
-
-    @lru_cache(maxsize=32)
-    def load_config(self, experiment_id: int):
-        experiment = self._find_experiment(experiment_id)
-        return experiment['config']
-
-    @lru_cache(maxsize=32)
-    def _find_experiment(self, experiment_id: int):
-        return self.runs.find_one({'_id': experiment_id})
 
 
 class Artifact:
