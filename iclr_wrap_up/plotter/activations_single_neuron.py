@@ -19,8 +19,6 @@ class SingleNeuronActivityPlotter(BasePlotter):
 
     def _grab_activations(self, measures_summary):
         activations_summary = measures_summary['activations_summary']
-        #activations_df = pd.DataFrame(activations_summary).transpose()
-        #all_activations = activations_df['activations']
         return activations_summary
 
     def _get_number_of_layers(self, all_activations):

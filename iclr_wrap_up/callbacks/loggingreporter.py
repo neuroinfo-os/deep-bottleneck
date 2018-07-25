@@ -107,36 +107,22 @@ class LoggingReporter(keras.callbacks.Callback):
         self.file_all_activations[str(epoch)].create_dataset('gradstd', (len(self.layerixs),))
         self.file_all_activations[str(epoch)].create_group('activations')
 
-        print('layerixs: ', len(self.layerixs))
-
-        data = {
-            'weights_norm': [],  # L2 norm of weights
-            'gradmean': [],  # Mean of gradients
-            'gradstd': [],  # Std of gradients
-            'activations': []  # Activity in each layer for test set
-        }
-
         for lndx, layerix in enumerate(self.layerixs):
             clayer = self.model.layers[layerix]
 
-            self.file_all_activations[str(epoch)+'/weights_norm'][lndx] = np.linalg.norm(K.get_value(clayer.kernel))
-            #data['weights_norm'].append(np.linalg.norm(K.get_value(clayer.kernel)))
+            self.file_all_activations[f'{epoch}/weights_norm'][lndx] = np.linalg.norm(K.get_value(clayer.kernel))
 
             stackedgrads = np.stack(self._batch_gradients[lndx], axis=1)
-            self.file_all_activations[str(epoch) + '/gradmean'][lndx] = np.linalg.norm(stackedgrads.mean(axis=1))
-            #data['gradmean'].append(np.linalg.norm(stackedgrads.mean(axis=1)))
-            self.file_all_activations[str(epoch) + '/gradstd'][lndx] = np.linalg.norm(stackedgrads.std(axis=1))
-            #data['gradstd'].append(np.linalg.norm(stackedgrads.std(axis=1)))
+            self.file_all_activations[f'{epoch}/gradmean'][lndx] = np.linalg.norm(stackedgrads.mean(axis=1))
+            self.file_all_activations[f'{epoch}/gradstd'][lndx] = np.linalg.norm(stackedgrads.std(axis=1))
 
             # TODO Same "if" clause is in the estimatior, remove code duplication
             if self.calculate_mi_for == "full_dataset":
-                #data['activations'].append(self.layerfuncs[lndx]([self.full.X])[0])
-                self.file_all_activations[str(epoch) + '/activations/'].create_dataset(str(lndx), data=
-                self.layerfuncs[lndx]([self.full.X])[0])
+                self.file_all_activations[f'{epoch}/activations/'].create_dataset(str(lndx), data=
+                        self.layerfuncs[lndx]([self.full.X])[0])
             elif self.calculate_mi_for == "test":
-                #data['activations'].append(self.layerfuncs[lndx]([self.tst.X])[0])
-                self.file_all_activations[str(epoch) + '/activations/'].create_dataset(str(lndx), data=self.layerfuncs[lndx]([self.tst.X])[0])
+                self.file_all_activations[f'{epoch}/activations/'].create_dataset(str(lndx), data=
+                        self.layerfuncs[lndx]([self.tst.X])[0])
             elif self.calculate_mi_for == "training":
-                #data['activations'].append(self.layerfuncs[lndx]([self.trn.X])[0])
-                self.file_all_activations[str(epoch) + '/activations/'].create_dataset(str(lndx), data=
-                self.layerfuncs[lndx]([self.trn.X])[0])
+                self.file_all_activations[f'{epoch}/activations/'].create_dataset(str(lndx), data=
+                        self.layerfuncs[lndx]([self.trn.X])[0])

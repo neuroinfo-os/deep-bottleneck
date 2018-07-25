@@ -29,7 +29,7 @@ def hyperparams():
     # For downwards compatibility
     dataset = None
     max_norm_weights = False
-    if dataset == 'mnist':
+    if dataset == 'dataset.mnist':
         plotters = [('plotter.informationplane', []),
                     ('plotter.snr', []),
                     ('plotter.informationplane_movie', []),
@@ -125,14 +125,10 @@ def conduct(epochs, batch_size, dataset, n_runs, _run):
 
     steps_per_epoch = None
 
-    # Introduced because already after the first epoch mnist is to close to its maximal accuracy compute meaningful MI
-    if dataset == 'mnist':
-        steps_per_epoch = 5
-
     for run_id in range(n_runs):
         model = load_model(input_size=training.X.shape[1], output_size=training.n_classes)
         os.makedirs("activations", exist_ok=True)
-        file_name_all_activations = "activations/activations_experiment_" + str(_run._id) + "_run_" + str(run_id)
+        file_name_all_activations = f'activations/activations_experiment_{_run._id}_run_{run_id}'
         file_all_activations = h5py.File(file_name_all_activations, "a")
         callbacks = make_callbacks(training=training, test=test, file_all_activations=file_all_activations)
         model.fit(x=training.X, y=training.Y,

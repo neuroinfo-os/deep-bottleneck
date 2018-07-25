@@ -35,7 +35,6 @@ class MutualInformationEstimator:
         epoch_numbers = sorted(epoch_numbers)
         measures = self._init_dataframe(epoch_numbers=epoch_numbers, n_layers=n_layers)
 
-        #for epoch, summary in epoch_summaries.items():
         for epoch in epoch_numbers:
             print(f'Estimating mutual information for epoch {epoch}.')
             summary = file_all_activations[str(epoch)]
