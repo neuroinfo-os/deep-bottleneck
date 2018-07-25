@@ -72,18 +72,26 @@ def is_dense_like(layer):
     return hasattr(layer, 'kernel')
 
 
-def get_min_max(activations, layer_number, neuron_number=None):
+def get_min_max(activations_summary, layer_number, neuron_number=None):
+    epochs_in_activation_summary = [int(epoch) for epoch in activations_summary]
+    epochs_in_activation_summary = np.asarray(sorted(epochs_in_activation_summary))
+
     total_max = 0
     total_min = 0
-    for epoch, activations in activations.items():
+    for epochs in epochs_in_activation_summary:
+        activations = activations_summary[f'{epochs}/activations']
 
         if neuron_number is not None:
-            layer_activations = activations[layer_number].transpose()
+            layer_activations = np.asarray(activations[str(layer_number)])
+            layer_activations = layer_activations.transpose()
+
             current_max = np.max(layer_activations[neuron_number])
             current_min = np.min(layer_activations[neuron_number])
         else:
-            current_max = np.max(activations[layer_number])
-            current_min = np.min(activations[layer_number])
+            layer_activations = np.asarray(activations[str(layer_number)])
+
+            current_max = np.max(layer_activations)
+            current_min = np.min(layer_activations)
 
         if current_max > total_max:
             total_max = current_max
