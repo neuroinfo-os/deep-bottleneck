@@ -6,7 +6,7 @@
   "learning_rate": 0.0004,
   "calculate_mi_for": "full_dataset",
   "activation_fn": "relu",
-  "model": "models.feedforward_batchnorm",
+  "model": "models.feedforward",
   "dataset": "datasets.harmonics",
   "estimator": "mi_estimator.binning",
   "discretization_range": 0.07,
