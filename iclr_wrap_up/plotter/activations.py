@@ -2,6 +2,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
+from iclr_wrap_up import utils
+
 from iclr_wrap_up.plotter.base import BasePlotter
 
 
@@ -16,6 +18,7 @@ class ActivityPlotter(BasePlotter):
         self.dataset = dataset
         self.run = run
 
+
     def plot(self, measures_summary):
         activations_summary = measures_summary['activations_summary']
         num_layers = len(activations_summary[0]['weights_norm'])  # get number of layers indirectly via number of values
@@ -28,9 +31,12 @@ class ActivityPlotter(BasePlotter):
         for layer in range(num_layers):
             ax = fig.add_subplot(num_layers, 1, layer + 1)
 
+            min, max = utils.get_min_max(all_activations, layer_number=layer)
+            bins = np.linspace(min, max, 30)
+
             hist = []
-            for epoch, epoch_values in all_activations.items():
-                hist.append(np.histogram(epoch_values[layer], bins=30)[0])
+            for epoch, activations in all_activations.items():
+                hist.append(np.histogram(activations[layer], bins=bins)[0])
 
             hist_df = pd.DataFrame(hist)
 

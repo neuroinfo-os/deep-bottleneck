@@ -17,7 +17,7 @@ def construct_full_dataset(training, test):
     Returns:
         A new Namedtuple with fields X, y and Y containing the concatenation of training and test data
     """
-    Dataset = namedtuple('Dataset',['X','Y','y','n_classes'])
+    Dataset = namedtuple('Dataset', ['X', 'Y', 'y', 'n_classes'])
     X = np.concatenate((training.X, test.X))
     y = np.concatenate((training.y, test.y))
     Y = np.concatenate((training.Y, test.Y))
@@ -70,3 +70,24 @@ def is_dense_like(layer):
         True if layer has attribute 'kernel', False otherwise
     """
     return hasattr(layer, 'kernel')
+
+
+def get_min_max(activations, layer_number, neuron_number=None):
+    total_max = 0
+    total_min = 0
+    for epoch, activations in activations.items():
+
+        if neuron_number is not None:
+            layer_activations = activations[layer_number].transpose()
+            current_max = np.max(layer_activations[neuron_number])
+            current_min = np.min(layer_activations[neuron_number])
+        else:
+            current_max = np.max(activations[layer_number])
+            current_min = np.min(activations[layer_number])
+
+        if current_max > total_max:
+            total_max = current_max
+        if current_min < total_min:
+            total_min = current_min
+
+    return total_min, total_max
