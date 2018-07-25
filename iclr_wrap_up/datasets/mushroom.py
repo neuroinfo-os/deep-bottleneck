@@ -6,10 +6,18 @@ from tensorflow import keras
 from tensorflow.python.keras import utils as keras_utils
 
 
-mushrooms = pd.read_csv('datasets/mushroom.csv')
-
-
 def load():
+    """Load the mushroom dataset
+    Mushrooms are to be classified as either edible or poisonous
+    Returns:
+        Returns two namedtuples, the first one containing training
+        and the second one containing test data respectively. Both come with fields X, y and Y:
+        - X is the data
+        - y is class, with numbers from 0 to 1
+        - Y is class, but coded as a 2-dim vector with one entry set to 1 at the column index corresponding to the class
+    """
+    mushrooms = pd.read_csv('datasets/mushroom.csv')
+
     n_classes = 2
     y = mushrooms['class=e']
     X = mushrooms.drop(['class=e', 'class=p'], axis=1).values
