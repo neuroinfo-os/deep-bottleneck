@@ -5,11 +5,12 @@
   "optimizer": "adam",
   "learning_rate": 0.0004,
   "calculate_mi_for": "full_dataset",
-  "activation_fn": "relu",
-  "model": "models.feedforward",
+  "activation_fn": "tanh",
+  "max_norm_weights": 0.7,
+  "model": "models.feedforward_batchnorm",
   "dataset": "datasets.harmonics",
   "estimator": "mi_estimator.binning",
   "discretization_range": 0.07,
   "callbacks": [],
-  "n_runs": 2
+  "n_runs": 1
 }
