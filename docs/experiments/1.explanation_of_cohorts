@@ -33,3 +33,6 @@ the following table offers a simple description for each cohort.
 | cohort_7   | Comparison of different hyperparameter for max-norm regularization.               |
 |            | All experiments are done for relu and tanh using adam as optimizer.               |
 +------------+-----------------------------------------------------------------------------------+
+| cohort_8   | Comparison of architecture with batchnorm and without batchnorm.                  |
+|            | All experiments are done for relu and tanh using adam as optimizer.               |
++------------+-----------------------------------------------------------------------------------+

@@ -19,21 +19,24 @@ class SingleNeuronActivityPlotter(BasePlotter):
 
     def _grab_activations(self, measures_summary):
         activations_summary = measures_summary['activations_summary']
-        activations_df = pd.DataFrame(activations_summary).transpose()
-        all_activations = activations_df['activations']
-        return all_activations
+        return activations_summary
 
     def _get_number_of_layers(self, all_activations):
-        return len(all_activations[0])
+        return len(all_activations["0/activations"])
 
     def _get_number_of_neurons_in_layer(self, all_activations, layer):
-        return all_activations[0][layer].shape[1]
+        return all_activations["0/activations"][str(layer)].shape[1]
 
     def _create_histogram(self, all_activations, layer_number):
         neurons_in_layer = self._get_number_of_neurons_in_layer(all_activations, layer_number)
         hist = [[] for x in range(neurons_in_layer)]
-        for epoch, activations in all_activations.items():
-            layer_activations = activations[layer_number].transpose()
+        epochs_in_activation_summary = [int(epoch) for epoch in all_activations]
+        epochs_in_activation_summary = np.asarray(sorted(epochs_in_activation_summary))
+        for epoch in epochs_in_activation_summary:
+            activations = all_activations[str(epoch)]
+            layer_activations = activations[f'activations/{layer_number}']
+            layer_activations = np.asarray(layer_activations)
+            layer_activations = layer_activations.transpose()
             for neuron_number in range(neurons_in_layer):
                 histogram_per_neuron, _ = np.histogram(layer_activations[neuron_number], bins=30)
                 hist[neuron_number].append(histogram_per_neuron)
@@ -69,8 +72,10 @@ class SingleNeuronActivityPlotter(BasePlotter):
 
                 ax.set_xlabel("epoch")
                 xticks = np.arange(0, hist_df.shape[0], 5)
+                epochs_in_activation_summary = [int(epoch) for epoch in all_activations]
+                epochs_in_activation_summary = np.asarray(sorted(epochs_in_activation_summary))
                 ax.set_xticks(xticks)
-                ax.set_xticklabels(all_activations.index[xticks], rotation=90)
+                ax.set_xticklabels(epochs_in_activation_summary[xticks], rotation=90)
 
                 activity_map = ax.imshow(hist_df.transpose(), cmap="viridis", interpolation='nearest')
                 counts_colorbar = fig.colorbar(activity_map)
