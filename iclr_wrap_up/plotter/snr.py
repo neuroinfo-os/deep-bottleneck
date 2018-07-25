@@ -20,15 +20,19 @@ class SignalToNoiseRatioPlotter(BasePlotter):
     def plot(self, measures_summary):
 
         activations_summary = measures_summary['activations_summary']
-        num_layers = len(activations_summary[0]['weights_norm'])  # get number of layers indirectly via number of values
+        num_layers = len(activations_summary["0"]['weights_norm'])  # get number of layers indirectly via number of values
 
         epochs = []
         means = []
         stds = []
         wnorms = []
 
-        for epoch, epoch_values in activations_summary.items():
+        epochs_in_activation_summary = [int(epoch) for epoch in activations_summary]
+        epochs_in_activation_summary = np.asarray(sorted(epochs_in_activation_summary))
+
+        for epoch in epochs_in_activation_summary:
             epochs.append(epoch)
+            epoch_values = activations_summary[str(epoch)]
             wnorms.append(epoch_values['weights_norm'])
             means.append(epoch_values['gradmean'])
             stds.append(epoch_values['gradstd'])
