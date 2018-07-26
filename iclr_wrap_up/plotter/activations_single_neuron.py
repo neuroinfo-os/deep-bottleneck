@@ -40,8 +40,8 @@ class SingleNeuronActivityPlotter(BasePlotter):
             layer_activations = np.asarray(layer_activations)
             layer_activations = layer_activations.transpose()
             for neuron_number in range(neurons_in_layer):
-                min, max = utils.get_min_max(all_activations, layer_number, neuron_number)
-                bins = np.linspace(min, max, 30)
+                activations_min, activations_max = utils.get_min_max(all_activations, layer_number, neuron_number)
+                bins = np.linspace(activations_min, activations_max, 30)
 
                 histogram_per_neuron, _ = np.histogram(layer_activations[neuron_number], bins=bins)
                 hist[neuron_number].append(histogram_per_neuron)
