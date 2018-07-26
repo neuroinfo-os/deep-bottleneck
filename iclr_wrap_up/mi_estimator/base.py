@@ -17,8 +17,12 @@ class MutualInformationEstimator:
         self.architecture = architecture
         self.calculate_mi_for = calculate_mi_for
 
-    def compute_mi(self, epoch_summaries) -> pd.DataFrame:
+    def compute_mi(self, file_all_activations) -> pd.DataFrame:
         print(f'*** Start running {self.__class__.__name__}. ***')
+
+        print(file_all_activations["2"])
+        print(f'len of file activations: {len(file_all_activations)}')
+        for i in file_all_activations: print(file_all_activations[str(i)])
 
         labels, one_hot_labels = self._construct_dataset()
         # Proportion of instances that have a certain label.
@@ -27,12 +31,15 @@ class MutualInformationEstimator:
         for target_class in range(self.training_data.n_classes):
             label_masks[target_class] = labels == target_class
         n_layers = len(self.architecture) + 1  # + 1 for output layer
-        measures = self._init_dataframe(epoch_numbers=epoch_summaries.keys(), n_layers=n_layers)
+        epoch_numbers = [int(value) for value in file_all_activations]
+        epoch_numbers = sorted(epoch_numbers)
+        measures = self._init_dataframe(epoch_numbers=epoch_numbers, n_layers=n_layers)
 
-        for epoch, summary in epoch_summaries.items():
+        for epoch in epoch_numbers:
             print(f'Estimating mutual information for epoch {epoch}.')
+            summary = file_all_activations[str(epoch)]
             for layer_index in range(n_layers):
-                layer_activations = summary['activations'][layer_index]
+                layer_activations = summary['activations'][str(layer_index)]
                 mi_with_input, mi_with_label = self._compute_mi_per_epoch_and_layer(layer_activations, label_weights,
                                                                                     label_masks)
 
@@ -63,6 +70,7 @@ class MutualInformationEstimator:
         return measures
 
     def _compute_mi_per_epoch_and_layer(self, activations, label_weights, label_masks) -> Tuple[float, float]:
+        activations = np.asarray(activations)
         H_of_M = self._estimate_entropy(activations)
         H_of_M_given_X = self._estimate_conditional_entropy(activations)
         H_of_M_given_Y = self._compute_H_of_M_given_Y(activations, label_weights, label_masks)

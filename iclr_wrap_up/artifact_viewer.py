@@ -6,6 +6,7 @@ import numpy as np
 from iclr_wrap_up import credentials
 from IPython.display import HTML
 import pandas as pd
+from functools import lru_cache
 
 
 class ArtifactLoader:
@@ -18,13 +19,17 @@ class ArtifactLoader:
         self.fs = gridfs.GridFS(db)
         self.mapping = {'infoplane': PNGArtifact, 'snr': PNGArtifact, 'infoplane_movie': MP4Artifact,
                         'information_measures': CSVArtifact, 'activations': PNGArtifact}
-        
+
+    # The cache makes sure that both retrieval of the artifacts and
+    # their content is not unnecessarily done more than once.
+    @lru_cache(maxsize=32)
     def load(self, experiment_id: int):
         experiment = self.runs.find_one({'_id': experiment_id})
-        artifacts = {artifact['name']: self.mapping[artifact['name']](artifact['name'], self.fs.get(artifact['file_id']))
-                     for artifact in experiment['artifacts']}
+        artifacts = {
+            artifact['name']: self.mapping[artifact['name']](artifact['name'], self.fs.get(artifact['file_id']))
+            for artifact in experiment['artifacts']}
         return artifacts
-        
+
 
 class Artifact:
     """Displays or saves an artifact."""
@@ -34,19 +39,20 @@ class Artifact:
     def __init__(self, name, file):
         self.name = name
         self.file = file
-        self.content = None
+        self._content = None
 
     def __repr__(self):
-        return f'{self.__class__}(name={self.name})'
+        return f'{self.__class__.__name__}(name={self.name})'
 
     def save(self):
-        self._read()
         with open(self._make_filename(), 'wb') as file:
             file.write(self.content)
 
-    def _read(self):
-        if self.content is None:
-            self.content = self.file.read()
+    @property
+    def content(self):
+        if self._content is None:
+            self._content = self.file.read()
+        return self._content
 
     def _make_filename(self):
         parts = self.file.filename.split('/')
@@ -68,7 +74,6 @@ class PNGArtifact(Artifact):
         return self.fig
 
     def _make_figure(self, figsize):
-        self._read()
         self.fig, ax = plt.subplots(figsize=figsize)
         img = plt.imread(BytesIO(self.content))
         ax.imshow(img)
@@ -97,6 +102,7 @@ class MP4Artifact(Artifact):
         </video>
         """)
 
+
 class CSVArtifact(Artifact):
     """Displays and saves a CSV artifact"""
 
@@ -113,4 +119,3 @@ class CSVArtifact(Artifact):
         if self.df is None:
             self._make_df()
         return self.df
-

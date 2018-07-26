@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
+from iclr_wrap_up import utils
 from iclr_wrap_up.plotter.base import BasePlotter
 
 
@@ -18,19 +19,22 @@ class ActivityPlotter(BasePlotter):
 
     def plot(self, measures_summary):
         activations_summary = measures_summary['activations_summary']
-        num_layers = len(activations_summary[0]['weights_norm'])  # get number of layers indirectly via number of values
-
-        activations_df = pd.DataFrame(activations_summary).transpose()
-        all_activations = activations_df['activations']
+        num_layers = len(activations_summary["0"]['weights_norm'])  # get number of layers indirectly via number of values
 
         fig = plt.figure()
 
         for layer in range(num_layers):
             ax = fig.add_subplot(num_layers, 1, layer + 1)
 
+            min_activations, max_activations = utils.get_min_max(activations_summary, layer_number=layer)
+            bins = np.linspace(min_activations, max_activations, 30)
+
             hist = []
-            for epoch, epoch_values in all_activations.items():
-                hist.append(np.histogram(epoch_values[layer], bins=30)[0])
+            epochs_in_activation_summary = [int(epoch) for epoch in activations_summary]
+            epochs_in_activation_summary = np.asarray(sorted(epochs_in_activation_summary))
+
+            for epoch in epochs_in_activation_summary:
+                hist.append(np.histogram(activations_summary[f'{epoch}/activations/{layer}'], bins=bins)[0])
 
             hist_df = pd.DataFrame(hist)
 
@@ -42,7 +46,7 @@ class ActivityPlotter(BasePlotter):
             ax.set_xlabel("epoch")
             xticks = np.arange(0, hist_df.shape[0], 5)
             ax.set_xticks(xticks)
-            ax.set_xticklabels(all_activations.index[xticks], rotation=90)
+            ax.set_xticklabels(epochs_in_activation_summary[xticks], rotation=90)
 
             activity_map = ax.imshow(hist_df.transpose(), cmap="viridis", interpolation='nearest')
             counts_colorbar = fig.colorbar(activity_map)

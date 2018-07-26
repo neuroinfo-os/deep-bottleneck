@@ -32,7 +32,7 @@ def load(architecture, activation_fn, optimizer, learning_rate, input_size, outp
                                     kernel_initializer=keras.initializers.TruncatedNormal(mean=0.0,
                                                                                           stddev=1 / np.sqrt(float(n)),
                                                                                           seed=None),
-                                    bias_initializer='zeros',
+                                    bias_initializer=keras.initializers.Constant(value=0.1),
                                     kernel_constraint=(max_norm(max_value=float(max_norm_weights))
                                                        if max_norm_weights else None)
                                     )(clayer)
