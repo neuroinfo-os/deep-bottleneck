@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
+from iclr_wrap_up import utils
 from iclr_wrap_up.plotter.base import BasePlotter
 
 
@@ -25,12 +26,15 @@ class ActivityPlotter(BasePlotter):
         for layer in range(num_layers):
             ax = fig.add_subplot(num_layers, 1, layer + 1)
 
+            min_activations, max_activations = utils.get_min_max(activations_summary, layer_number=layer)
+            bins = np.linspace(min_activations, max_activations, 30)
+
             hist = []
             epochs_in_activation_summary = [int(epoch) for epoch in activations_summary]
             epochs_in_activation_summary = np.asarray(sorted(epochs_in_activation_summary))
 
             for epoch in epochs_in_activation_summary:
-                hist.append(np.histogram(activations_summary[f'{epoch}/activations/{layer}'], bins=30)[0])
+                hist.append(np.histogram(activations_summary[f'{epoch}/activations/{layer}'], bins=bins)[0])
 
             hist_df = pd.DataFrame(hist)
 
