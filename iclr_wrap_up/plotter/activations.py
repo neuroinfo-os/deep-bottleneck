@@ -26,8 +26,8 @@ class ActivityPlotter(BasePlotter):
         for layer in range(num_layers):
             ax = fig.add_subplot(num_layers, 1, layer + 1)
 
-            min, max = utils.get_min_max(activations_summary, layer_number=layer)
-            bins = np.linspace(min, max, 30)
+            min_activations, max_activations = utils.get_min_max(activations_summary, layer_number=layer)
+            bins = np.linspace(min_activations, max_activations, 30)
 
             hist = []
             epochs_in_activation_summary = [int(epoch) for epoch in activations_summary]

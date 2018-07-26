@@ -72,30 +72,42 @@ def is_dense_like(layer):
     return hasattr(layer, 'kernel')
 
 
+def _get_current_min_max(activations):
+    """Get both minimum and maximum of an array
+    Args:
+        activations: numpy ndarray
+
+    Returns:
+        Minimum and maximum value of activations
+    """
+    return np.min(activations), np.max(activations)
+
 def get_min_max(activations_summary, layer_number, neuron_number=None):
+    """Get minimum and maximum of activations of a specific layer or a specific neuron over all epochs
+    Args:
+        activations_summary:
+        layer_number: Index of the layer
+        neuron_number: Index of the neuron. If None, activations of the whole layer serve as a basis
+
+    Returns:
+        Minimum and maximum value of activations over all epochs
+    """
     epochs_in_activation_summary = [int(epoch) for epoch in activations_summary]
     epochs_in_activation_summary = np.asarray(sorted(epochs_in_activation_summary))
 
-    total_max = 0
-    total_min = 0
+    total_max = float("-inf")
+    total_min = float("inf")
     for epochs in epochs_in_activation_summary:
         activations = activations_summary[f'{epochs}/activations']
+        layer_activations = np.asarray(activations[str(layer_number)])
+        layer_activations = layer_activations.transpose()
 
         if neuron_number is not None:
-            layer_activations = np.asarray(activations[str(layer_number)])
-            layer_activations = layer_activations.transpose()
-
-            current_max = np.max(layer_activations[neuron_number])
-            current_min = np.min(layer_activations[neuron_number])
+            current_min, current_max = _get_current_min_max(layer_activations[neuron_number])
         else:
-            layer_activations = np.asarray(activations[str(layer_number)])
+            current_min, current_max = _get_current_min_max(layer_activations)
 
-            current_max = np.max(layer_activations)
-            current_min = np.min(layer_activations)
-
-        if current_max > total_max:
-            total_max = current_max
-        if current_min < total_min:
-            total_min = current_min
+        total_max = np.max([current_max, total_max])
+        total_min = np.min([current_min, total_min])
 
     return total_min, total_max
