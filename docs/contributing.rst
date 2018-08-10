@@ -2,6 +2,21 @@
 Contributing
 ************
 
+Extending the framework
+=======================
+J
+
+General structure
+
+* dataset
+* model
+* estimator
+* callbacks
+* plotter
+
+describe common interface and usage in experiment.py
+more detailed description in API documentation R
+
 Git workflow
 ============
 
@@ -129,3 +144,5 @@ Documentation
 
 A short restructeredText `reference <https://github.com/ralsina/rst-cheatsheet/blob/master/rst-cheatsheet.rst>`_.
 There is also a longer `video tutorial <https://www.youtube.com/watch?v=hM4I58TA72g>`_
+
+
