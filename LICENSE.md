@@ -23,11 +23,9 @@ Contributors: https://github.com/neuroinfo-os/deep-bottleneck/graphs/contributor
 > SOFTWARE.
 
 
-deep-bottleneck includes code under "IDNNs/" from the following project, which has its own license:
+deep-bottleneck is based on the code from the following two projects:
 
 - [IDNNs](https://github.com/neuroinfo-os/deep-bottleneck/blob/master/IDNNs/LICENSE) (The author's original implementation of Experiments described in "Opening the Black Box of Deep Neural Networks via Information" by Ravid Shwartz-Ziv and Naftali Tishby).
-
-deep-bottleneck includes code under "ibsgd-iclr2018/" from the following project, which does not have its own license:
 
 - [ibsgd](https://github.com/artemyk/ibsgd) (The author's implementation of experiments described in "On the Information Bottleneck Theory of Deep Learning" by Andrew Michael Saxe, Yamini Bansal, Joel Dapello, Madhu Advani, Artemy Kolchinsky, Brendan Daniel Tracey and David Daniel Cox).
 
