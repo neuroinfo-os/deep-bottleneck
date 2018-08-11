@@ -8,12 +8,16 @@ from tensorflow.python.keras import utils as keras_utils
 
 def load():
     """Load the Fashion-MNIST dataset
-    Returns:
-        Returns two namedtuples, the first one containing training
-        and the second one containing test data respectively. Both come with fields X, y and Y:
+
+    The output follows the following naming convention:
+    
         - X is the data
         - y is class, with numbers from 0 to 9
         - Y is class, but coded as a 10-dim vector with one entry set to 1 at the column index corresponding to the class
+
+    Returns:
+        Returns two namedtuples, the first one containing training
+        and the second one containing test data respectively. Both come with fields X, y and Y:
     """
     nb_classes = 10
     (X_train, y_train), (X_test, y_test) = keras.datasets.fashion_mnist.load_data()

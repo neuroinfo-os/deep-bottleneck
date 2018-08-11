@@ -7,14 +7,18 @@ from tensorflow.python.keras import utils as keras_utils
 
 
 def load():
-    """Load the mushroom dataset
-    Mushrooms are to be classified as either edible or poisonous
+    """Load the mushroom dataset.
+    
+    Mushrooms are to be classified as either edible or poisonous.
+    The output follows the following naming convention:
+
+        - X is the data
+        - y is class, with numbers from 0 to 9
+        - Y is class, but coded as a 10-dim vector with one entry set to 1 at the column index corresponding to the class
+
     Returns:
         Returns two namedtuples, the first one containing training
         and the second one containing test data respectively. Both come with fields X, y and Y:
-        - X is the data
-        - y is class, with numbers from 0 to 1
-        - Y is class, but coded as a 2-dim vector with one entry set to 1 at the column index corresponding to the class
     """
     mushrooms = pd.read_csv('datasets/mushroom.csv')
 

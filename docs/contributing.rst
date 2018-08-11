@@ -141,8 +141,16 @@ Experiment workflow
 
 Documentation
 =============
+To build the documentation run::
+
+    $ cd docs
+    $ make html
 
 A short restructeredText `reference <https://github.com/ralsina/rst-cheatsheet/blob/master/rst-cheatsheet.rst>`_.
 There is also a longer `video tutorial <https://www.youtube.com/watch?v=hM4I58TA72g>`_
 
+If you added new packages and want to add them to the API documentation use::
 
+    $ sphinx-apidoc -o docs/api_doc/ deep_bottleneck deep_bottleneck/credentials.py deep_bottleneck/experiment.py deep_bottleneck/demo.py
+
+Make sure to change the header of ``modules.rst`` back to "API Documentation".

@@ -30,6 +30,9 @@ release = ''
 
 
 # -- General configuration ---------------------------------------------------
+import sys
+sys.path.append('..')
+
 
 # If your documentation needs a minimal Sphinx version, state it here.
 #
