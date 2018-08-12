@@ -4,18 +4,31 @@ Contributing
 
 Extending the framework
 =======================
-J
+There are several possibilities to extend the frameworks. In the following the structure of the framework is shown
+to allow an easy extension of the basic modules.
+There are five types of modules that can be included quite easy, they are listed in the table below:
 
-General structure
 
-* dataset
-* model
-* estimator
-* callbacks
-* plotter
+:dataset:
+    The datasets are saved in the ``deep_bottleneck.dataset`` folder and require a load-method returning a trainng and a test-dataset.
+:model:
+    The model are saved in the ``deep_bottleneck.model`` folder and require a load-method as well.
+    But in this case the load-method returns a trainable keras-model.
+:estimator:
+    The estimator are saved in the ``deep_bottleneck.mi_estimator`` folder and require a load-method as well.
+    The load-method should returns a estimator that is able to compute the mutual information based on a dataset and
+    is more detailed described by a hyperparameter called ``discretization_range``.
+:callbacks:
+    Callbacks can be used for different kind of tasks. They are saved in the ``deep_bottleneck.callbacks`` folder and
+    are used to save the needed information during the training or to influence the training-proces (e.g. early stopping).
+    They need to implement a a class inheriting from ``keras.callbacks.Callback``.
+:plotter:
+    Plotter are using the saved data of the callbacks and are creating the wanted plots. They are saved in the ``deep_bottleneck.plotter`` folder.
+    They need a load method returning a plotter-class inheriting from ``deep_bottleneck.plotter.base.BasePlotter``.
 
-describe common interface and usage in experiment.py
-more detailed description in API documentation R
+To add a new module, it needs to be copied into the respective folder and set in the configuration file.
+If the path is correctly defined and the module has a matching interface, it should get imported in the experiment.py and conduct its tasks.
+More about the interfaces and the existing methods in the API-documentation.
 
 Git workflow
 ============
