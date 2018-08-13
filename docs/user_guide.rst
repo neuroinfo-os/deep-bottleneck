@@ -71,18 +71,18 @@ How to use the framework
 
 Running experiments
 ^^^^^^^^^^^^^^^^^^^
-The idea of the project is based on the concepts presented by Tishby as described in ....
-To reproduce the basic setup of the experiments, one can simply run the experiment.py.
+The idea of the project is based on the concepts presented by Tishby.
+To reproduce the basic setup of the experiments one can simply start the experiment.py.
 
-If all the required packages are installed properly and the program is started, different things are happening.
+If all the required packages are installed properly and the program is started, different things should happen.
 First the required modules of the framework are imported based on the defined configuration
-(more about configurations in "Adding new Experiments"). To allow any evaluation, in the first step the corresponding data
+(more about configurations in "Adding new Experiments"). To allow any evaluation, in the corresponding data
 needs to be generated. For this a given neural network is trained using a defined dataset. The progress of this process is also logged in the console.
 During the training process the required data is saved in regular time-steps to the local filesystem.
 Given the saved data (e.g. the activations) it is possible to compute the mutual information of the different layer and the input/output.
 Using this different plots as e.g. the information plane plot are created and saved simultaneously in the filesystem and in the database.
 The results of the experiments can be looked up either in the deep_bottleneck/plots folder (only the plots of the last runs are saved)
-or using the artifac-viewer as described in the following chapter.
+or using the artifac-viewer as described below.
 
 Artifact viewer 
 ^^^^^^^^^^^^^^^
@@ -98,33 +98,33 @@ notebooks. To get you started have a look at
 Adding new experiments (config)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 During the exploration of Tishby's idea already a lot of experiments have been done, but there are still many things
-that can be done using this framework. To define a new experiment a new configuration needs to be added.
+one can do using this framework. To define a new experiment a new configuration needs to be added.
 The existing configurations are saved in the deep_bottleneck/configs folder.
 To add a new configuration a new json file is required using the interface of the existing ones.
 The currently relevant parts of the configuration and their effects are explained in the following table.
 
 :epochs:
-    The number of epochs the model is trained for.
+    Number of epochs the model is trained for.
     Most of the experiments for the harmonics dataset used 8000 epochs.
 :batch_size:
-    The batch size used during the training process.
+    Batch size used during the training process.
     Most dominant batch size in our experiments was 256.
 :architecture:
-    The architecture of the trained model.
+    Architecture of the trained model.
     Defined as a list of integers, where every integer defines the number of neurons in one layer.
     It is important to notify that an additional readout layer is added (with two neurons in case of the harmonics dataset).
     The basic architecture for the harmonics dataset is [10, 7, 5, 4, 3].
 :optimizer:
-    The optimizer used for the training od the neural network.
+    The optimizer used for the training of the neural network.
     Possible values are "sgd", or "adam".
 :learning_rate:
     The learning rate of the optimizer.
     Default values are 0.0004 for harmonics and 0.001 for mnist.
 :calculate_mi_for:
-    The calculate_mi_for parameter defines the dataset that is the base of the mutual information computation.
+    The calculate_mi_for parameter defines the dataset that is used for the mutual information computation.
     It can be done either for the training-data (value: training), test-data (test) or the full dataset (full_dataset).
 :activation_fn:
-    The activation-function used to train the model. The following activation function can be used:
+    The activation-function used to train the model. The following activation function are implemented:
     ``tanh``, ``relu``, ``sigmoid``, ``softsign``, ``softplus``, ``leaky_relu``, ``hard_sigmoid``, ``selu``, ``relu6``, ``elu``, ``linear``
 :model:
     The parameter which defines the basic model-choice. Currently only different architectures of feed-foreward-networks can be used.
@@ -149,7 +149,7 @@ The currently relevant parts of the configuration and their effects are explaine
 
 
 Using these parameters one should be able to define experiments as desired. To execute the experiment(s) one could
-simply start des experiment.py but manly due to our usage of external hardware resources (organized by sun grid enine)
+simply start des experiment.py but mainly due to our usage of external hardware resources (organized by sun grid enine)
 we had to develop another way to execute experiments.
 We created two python-files, the run_experiment.py and the run_experiment_local.py, which can run either a single experiment or a group of experiments.
 For the local execution of experiments the run_experiment_local.py one needs to switch to the deep_bottleneck-folder by::
@@ -168,8 +168,8 @@ and pointing at a directory containing all the experiments one wants to execute.
 In that case all the jsons in the folder and in its sub-folders are executed.
 
 In case one uses a sun grid engine to execute the experiments it is possible to start run_experiments.py on the engine
-in the same way with and the experiments will get submitted on the engine using qsub.
-In that case it is important to make sure that an output-folder exists on the directory-level of the experiment.sge file.
+in the same way with as described ahead and the experiments will get submitted on the engine using qsub.
+In that case it is important to make sure that an /output/-folder exists on the directory-level of the experiment.sge file.
 
 Additionally it might be important to run experiments that are repeatable and will return the same results in every run.
 Because the basic step of the framework is to train a neural network, including some kind of randomness the results of
@@ -178,7 +178,7 @@ To avoid misconceptions it is possible to set a seed for each experiment, simply
 
     $ python experiment.py with seed=0
 
-(the number is randomly chosen). In the case that one of the run_experiment files are used this step is done for you,
+(the number is randomly chosen). In the case that one of the run_experiment files is used this step is done for you,
 but even in the other cases some IDEs allow to set script-parameters for normal executions of specific file,
 such that it is not required to start the experiment.py out of the command-line.
 
