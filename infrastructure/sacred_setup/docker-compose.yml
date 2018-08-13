@@ -1,0 +1,32 @@
+version: '3.3'
+
+services:
+
+  mongo:
+    image: mongo
+    ports:
+      - 27017:27017
+    restart: unless-stopped
+    env_file: .env
+
+  mongo-express:
+    image: mongo-express
+    ports:
+      - 8081:8081
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: $MONGO_INITDB_ROOT_USERNAME
+      ME_CONFIG_MONGODB_ADMINPASSWORD: $MONGO_INITDB_ROOT_PASSWORD
+    depends_on:
+      - mongo
+
+  sacredboard:
+    build: ./sacredboard
+    ports:
+      - 5000:5000
+    restart: unless-stopped
+    env_file: .env
+    depends_on:
+      - mongo
+
