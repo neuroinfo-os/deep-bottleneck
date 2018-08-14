@@ -23,7 +23,7 @@ def load(nb_dir = ''):
     if data_file.is_file():
         data = np.load(nb_dir + 'datasets/IB_data_' + str(ID) + '.npz')
     else:
-        import_IB_data_from_mat(ID)
+        import_IB_data_from_mat(ID, nb_dir)
         data = np.load(nb_dir + 'datasets/IB_data_' + str(ID) + '.npz')
 
     X_train = data['X_train']
