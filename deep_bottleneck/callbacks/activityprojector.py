@@ -7,7 +7,7 @@ import tensorflow as tf
 from tensorflow.python.summary import summary as tf_summary
 from tensorflow.contrib.tensorboard.plugins import projector
 
-import utils
+from deep_bottleneck import utils
 import numpy as np
 
 

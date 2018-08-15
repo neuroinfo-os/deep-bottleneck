@@ -20,8 +20,8 @@
 # -- Project information -----------------------------------------------------
 
 project = 'Deep Bottleneck'
-copyright = '2018, Rüdiger Busche'
-author = 'Rüdiger Busche'
+copyright = '2018, Deep Bottleneck study project'
+author = 'Deep Bottleneck study project team'
 
 # The short X.Y version
 version = ''
@@ -30,6 +30,9 @@ release = ''
 
 
 # -- General configuration ---------------------------------------------------
+import sys
+sys.path.append('..')
+
 
 # If your documentation needs a minimal Sphinx version, state it here.
 #
@@ -46,6 +49,10 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinxcontrib.bibtex',
     'nbsphinx',
+    'sphinx.ext.napoleon',
+    'sphinx.ext.viewcode',
+
+
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -136,7 +143,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'DeepBottleneck.tex', 'Deep Bottleneck Documentation',
-     'Rüdiger Busche', 'manual'),
+     'Deep Bottleneck study project team', 'manual'),
 ]
 
 

@@ -4,15 +4,15 @@ from collections import namedtuple
 
 def construct_full_dataset(training, test):
     """Concatenates training and test data splits to obtain the full dataset.
+
+    The input arguments use the following naming convention:
+        - X is the training data
+        - y is training class, with numbers from 0 to 1
+        - Y is training class, but coded as a 2-dim vector with one entry set to 1 at the column index corresponding to the class
+  
     Args:
         training: Namedtuple with fields X, y and Y:
-            - X is the training data
-            - y is training class, with numbers from 0 to 1
-            - Y is training class, but coded as a 2-dim vector with one entry set to 1 at the column index corresponding to the class
         test: Namedtuple with fields X, y and Y:
-            - X is the test data
-            - y is test class, with numbers from 0 to 1
-            - Y is test class, but coded as a 2-dim vector with one entry set to 1 at the column index corresponding to the class
 
     Returns:
         A new Namedtuple with fields X, y and Y containing the concatenation of training and test data
@@ -25,7 +25,7 @@ def construct_full_dataset(training, test):
 
 
 def shuffle_in_unison_inplace(a, b):
-    """ Shuffles both array a and b randomly in unison
+    """Shuffles both array a and b randomly in unison
     Args:
         a: An Array, for example containing data samples
         b: An Array, fpor example containing labels
@@ -39,7 +39,7 @@ def shuffle_in_unison_inplace(a, b):
 
 
 def data_shuffle(data_sets_org, percent_of_train, min_test_data=80, shuffle_data=False):
-    """ Divided the data to train and test and shuffle it """
+    """Divided the data to train and test and shuffle it"""
     # TODO Function data_shuffle need refctoring and proper docstring
     perc = lambda i, t: np.rint((i * t) / 100).astype(np.int32)
     C = type('type_C', (object,), {})
@@ -85,7 +85,7 @@ def _get_current_min_max(activations):
 def get_min_max(activations_summary, layer_number, neuron_number=None):
     """Get minimum and maximum of activations of a specific layer or a specific neuron over all epochs
     Args:
-        activations_summary:
+        activations_summary: numpy ndarray
         layer_number: Index of the layer
         neuron_number: Index of the neuron. If None, activations of the whole layer serve as a basis
 
