@@ -1,5 +1,3 @@
-# Newer tensorflow versions produce errors on ReadTheDocs, 
-# so this is fine for building the documentation. 
 sphinx
 sphinx-autobuild
 sphinx-rtd-theme
