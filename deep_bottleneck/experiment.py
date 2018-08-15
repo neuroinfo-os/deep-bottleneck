@@ -29,6 +29,7 @@ def hyperparams():
     # For downwards compatibility
     dataset = None
     max_norm_weights = False
+    initial_bias = 0.0
     if dataset == 'dataset.mnist':
         plotters = [('plotter.informationplane', []),
                     ('plotter.snr', []),
@@ -54,9 +55,11 @@ def load_dataset(dataset):
 
 
 @ex.capture
-def load_model(model, architecture, activation_fn, optimizer, learning_rate, input_size, output_size, max_norm_weights):
+def load_model(model, architecture, activation_fn, optimizer,
+               learning_rate, input_size, output_size, max_norm_weights, initial_bias):
     module = importlib.import_module(model)
-    return module.load(architecture, activation_fn, optimizer, learning_rate, input_size, output_size, max_norm_weights)
+    return module.load(architecture, activation_fn, optimizer,
+               learning_rate, input_size, output_size, max_norm_weights, initial_bias)
 
 
 def do_report(epoch):

@@ -1,5 +1,5 @@
 {
-  "epochs": 150,
+  "epochs": 1500,
   "batch_size": 256,
   "architecture": [10, 7, 5, 4, 3],
   "optimizer": "adam",
@@ -11,5 +11,6 @@
   "estimator": "mi_estimator.binning",
   "discretization_range": 0.07,
   "callbacks": [],
-  "n_runs": 1
+  "n_runs": 1,
+  "initial_bias": 1
 }
