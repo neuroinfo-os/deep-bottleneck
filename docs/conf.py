@@ -18,6 +18,9 @@ sys.path.append(os.path.abspath('.'))
 sys.path.append(os.path.abspath('..'))
 
 
+import matplotlib
+matplotlib.use('agg')
+
 # -- Project information -----------------------------------------------------
 
 project = 'Deep Bottleneck'
@@ -176,4 +179,4 @@ intersphinx_mapping = {'https://docs.python.org/': None}
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = True
 
-autodoc_mock_imports = ['_tkinter', 'tensorflow']
+autodoc_mock_imports = ['tensorflow']
