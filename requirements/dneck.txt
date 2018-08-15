@@ -3,7 +3,7 @@ scipy
 matplotlib
 keras
 pathlib2
-tensorflow==1.8
+tensorflow==1.4
 seaborn
 sacred
 pymongo
