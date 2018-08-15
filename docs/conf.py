@@ -12,10 +12,14 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-# import os
-# import sys
-# sys.path.insert(0, os.path.abspath('.'))
+import os
+import sys
+sys.path.append(os.path.abspath('.'))
+sys.path.append(os.path.abspath('..'))
 
+
+import matplotlib
+matplotlib.use('agg')
 
 # -- Project information -----------------------------------------------------
 
@@ -27,12 +31,6 @@ author = 'Deep Bottleneck study project team'
 version = ''
 # The full version, including alpha/beta/rc tags
 release = ''
-
-
-# -- General configuration ---------------------------------------------------
-import sys
-sys.path.append('..')
-
 
 # If your documentation needs a minimal Sphinx version, state it here.
 #
@@ -180,3 +178,5 @@ intersphinx_mapping = {'https://docs.python.org/': None}
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = True
+
+autodoc_mock_imports = ['tensorflow']
