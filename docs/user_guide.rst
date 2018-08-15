@@ -34,15 +34,18 @@ to
 
 :: 
 
-    $ cd infractructure/mongo_db
+    $ cd infractructure/sacred_setup
 
-4. Edit the ``.env`` file. Replace all values in angle brackets with meaningful and secure values. 
+4. Edit the ``.env`` file. This file is hidden by default, but you can still edit it with any text 
+   editor, e.g. by ``vi .env``. Replace all values in angle brackets with meaningful and secure values. 
 
 5. Run docker-compose::
 
     docker-compose up -d
 
-mongoDB should now be up and running. ``mongo-express`` should now be available on port ``8081``, 
+This will pull the necessary containers from the internet and build them. This may take several
+minutes.
+Afterwards mongoDB should be up and running. ``mongo-express`` should now be available on port ``8081``, 
 accessible by the user and password you set in the ``.env`` file (``ME_CONFIG_BASICAUTH_USERNAME`` 
 and ``ME_CONFIG_BASICAUTH_PASSWORD``). Sacredboard should be available on port ``5000``.
 
@@ -69,6 +72,32 @@ address of the server your database is running on, which is either the address g
 by your server provider or ``127.0.0.1`` when running mongo locally.
 
 6. You are ready to run some exciting experiments!
+
+Importing and exporting from mongoDB
+------------------------------------
+
+The following section is meant to help you migrate your data from
+one server to another. If you are just starting you can skip this section.
+
+To export data from your mongo container run
+
+::
+
+    $ docker run --rm --link <container_id>:mongo --network <network_id> -v /root/dump:/backup mongo bash -c 'mongodump --out /backup --uri mongodb://<username>:<password>@mongo:27017/?authMechanism=SCRAM-SHA-1'
+
+
+make sure you you create the output folder, in this case ``/root/dump`` beforehand. You also need
+to look up the id of your current mongo container using ``docker ls`` and find the id
+of the network is running is using ``docker network ls``. Then replace ``<username>`` 
+and ``<password>`` by the values you originally set in your ``.env``.
+
+To import data again run following the same steps as above.
+
+::
+    
+    $ docker run --rm --link <container_id>:mongo --network <network_id> -v /root/dump:/backup mongo bash -c 'mongorestore /backup --uri mongodb://<username>:<password>@mongo:27017/?authMechanism=SCRAM-SHA-1'
+
+
 
 How to use the framework
 ========================
