@@ -151,7 +151,7 @@ The currently relevant parts of the configuration and their effects are explaine
 :discretization_range:
     The different estimators have a different hyperparameter to add artificial noise to the estimation. 
     This parameter is used as a placeholder for the different hyperparameter.
-    A typical value is 0.07 for ``bining`` and 0.001 for ``upper`` and ``lower``.
+    A typical value is 0.07 for ``binning`` and 0.001 for ``upper`` and ``lower``.
 :callbacks:
     A list of additional callbacks as for example early stopping.
     Needs to defined as a list of paths to the callbacks, as e.g. ``[callbacks.early_stopping_manual]``.
