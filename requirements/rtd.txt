@@ -1,3 +1,6 @@
+# Newer tensorflow versions produce errors on ReadTheDocs, 
+# so this is fine for building the documentation. 
+tensorflow==1.4
 sphinx
 sphinx-autobuild
 sphinx-rtd-theme
