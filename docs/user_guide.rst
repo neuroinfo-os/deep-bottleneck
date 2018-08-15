@@ -39,6 +39,7 @@ to
 4. Edit the ``.env`` file. This file is hidden by default, but you can still edit it with any text 
    editor, e.g. by ``vi .env``. Replace all values in angle brackets with meaningful and secure values. 
 
+
 5. Run docker-compose::
 
     docker-compose up -d
