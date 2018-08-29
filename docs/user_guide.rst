@@ -71,6 +71,13 @@ by
 values you actually set in the ``.env`` file. Additionally, you have to provide the IP 
 address of the server your database is running on, which is either the address given 
 by your server provider or ``127.0.0.1`` when running mongo locally.
+You should also tell git to ignore any changes you make to the ``credentials.py``, 
+so they will not be accidentally committed, by running::
+
+    git update-index --skip-worktree deep_bottleneck/credentials.py 
+
+This will stop git from taking notice of any changes you make to the file.
+
 
 6. You are ready to run some exciting experiments!
 
