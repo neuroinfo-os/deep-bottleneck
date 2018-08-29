@@ -3,15 +3,15 @@ import numpy as np
 from deep_bottleneck.mi_estimator.base import MutualInformationEstimator
 
 
-def load(discretization_range, training_data, test_data, architecture, calculate_mi_for):
-    estimator = BinningMutualInformationEstimator(discretization_range, training_data, test_data, architecture, calculate_mi_for)
+def load(discretization_range, data, architecture, calculate_mi_for):
+    estimator = BinningMutualInformationEstimator(discretization_range, data, architecture, calculate_mi_for)
     return estimator
 
 
 class BinningMutualInformationEstimator(MutualInformationEstimator):
 
-    def __init__(self, discretization_range, training_data, test_data, architecture, calculate_mi_for):
-        super().__init__(discretization_range, training_data, test_data, architecture, calculate_mi_for)
+    def __init__(self, discretization_range, data, architecture, calculate_mi_for):
+        super().__init__(discretization_range, data, architecture, calculate_mi_for)
         self.binsize = discretization_range
 
     def _estimate_entropy(self, data):
