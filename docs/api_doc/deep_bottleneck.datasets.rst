@@ -4,6 +4,14 @@ deep\_bottleneck.datasets package
 Submodules
 ----------
 
+deep\_bottleneck.datasets.base\_dataset module
+-----------------------------------------------
+
+.. automodule:: deep_bottleneck.datasets.base_dataset
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 deep\_bottleneck.datasets.fashion\_mnist module
 -----------------------------------------------
 
