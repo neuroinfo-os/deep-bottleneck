@@ -37,10 +37,10 @@ def hyperparams():
                     ]
     else:
         plotters = [('plotter.informationplane', []),
-                    ('plotter.snr', []),
-                    ('plotter.informationplane_movie', []),
-                    ('plotter.activations', []),
-                    ('plotter.activations_single_neuron', [])
+                    #('plotter.snr', []),
+                    ('plotter.informationplane_movie', [])#,
+                    #('plotter.activations', []),
+                    #('plotter.activations_single_neuron', [])
                     ]
 
 
@@ -122,6 +122,7 @@ def conduct(epochs, batch_size, dataset, n_runs, _run):
     training, test = load_dataset()
 
     measures_all_runs = []
+    accuracies_all_runs = []
 
     steps_per_epoch = None
 

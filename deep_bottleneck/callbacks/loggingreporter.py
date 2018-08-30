@@ -91,7 +91,7 @@ class LoggingReporter(keras.callbacks.Callback):
             oneDgrad = np.reshape(g, -1, 1)  # Flatten to one dimensional vector
             self._batch_gradients[lndx].append(oneDgrad)
 
-    def on_epoch_end(self, epoch, logs={}):
+    def on_epoch_end(self, epoch, logs=None):
         if self.do_save_func is not None and not self.do_save_func(epoch):
             # Don't log this epoch
             return
@@ -116,7 +116,7 @@ class LoggingReporter(keras.callbacks.Callback):
             self.file_all_activations[f'{epoch}/gradmean'][lndx] = np.linalg.norm(stackedgrads.mean(axis=1))
             self.file_all_activations[f'{epoch}/gradstd'][lndx] = np.linalg.norm(stackedgrads.std(axis=1))
 
-            # TODO Same "if" clause is in the estimatior, remove code duplication
+            # TODO Same "if" clause is in the estimator, remove code duplication
             if self.calculate_mi_for == "full_dataset":
                 self.file_all_activations[f'{epoch}/activations/'].create_dataset(str(lndx), data=
                         self.layerfuncs[lndx]([self.full.X])[0])
@@ -126,3 +126,11 @@ class LoggingReporter(keras.callbacks.Callback):
             elif self.calculate_mi_for == "training":
                 self.file_all_activations[f'{epoch}/activations/'].create_dataset(str(lndx), data=
                         self.layerfuncs[lndx]([self.trn.X])[0])
+
+
+        self.file_all_activations[str(epoch)].create_group('accuracy')
+        self.file_all_activations[f'{epoch}/accuracy']['training'] = float(logs['acc'])
+        try:
+            self.file_all_activations[f'{epoch}/accuracy']['validation'] = float(logs['val_acc'])
+        except KeyError:
+            print('Validation not enabled. Validation metrics cannot be logged')
