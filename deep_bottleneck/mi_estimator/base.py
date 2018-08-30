@@ -11,9 +11,8 @@ class MutualInformationEstimator:
     nats2bits = 1.0 / np.log(2)
     """Nats to bits conversion factor."""
 
-    def __init__(self, discretization_range, training_data, test_data, architecture, calculate_mi_for):
-        self.training_data = training_data
-        self.test_data = test_data
+    def __init__(self, discretization_range, data, architecture, calculate_mi_for):
+        self.data = data
         self.architecture = architecture
         self.calculate_mi_for = calculate_mi_for
 
@@ -24,7 +23,7 @@ class MutualInformationEstimator:
         # Proportion of instances that have a certain label.
         label_weights = np.mean(one_hot_labels, axis=0)
         label_masks = {}
-        for target_class in range(self.training_data.n_classes):
+        for target_class in range(self.data.n_classes):
             label_masks[target_class] = labels == target_class
         n_layers = len(self.architecture) + 1  # + 1 for output layer
         epoch_numbers = [int(value) for value in file_all_activations]
@@ -44,17 +43,12 @@ class MutualInformationEstimator:
         return measures
 
     def _construct_dataset(self):
-        # Y is a one-hot vector, y is a label vector.
-        if self.calculate_mi_for == "full_dataset":
-            full = utils.construct_full_dataset(self.training_data, self.test_data)
-            labels = full.y
-            one_hot_labels = full.Y
-        elif self.calculate_mi_for == "test":
-            labels = self.test_data.y
-            one_hot_labels = self.test_data.Y
+        if self.calculate_mi_for == "test":
+            labels = self.data.test.labels
+            one_hot_labels = self.data.test.one_hot_labels
         elif self.calculate_mi_for == "training":
-            labels = self.training_data.y
-            one_hot_labels = self.training_data.Y
+            labels = self.data.train.labels
+            one_hot_labels = self.data.train.one_hot_labels
 
         return labels, one_hot_labels
 
