@@ -19,10 +19,6 @@ class MutualInformationEstimator:
     def compute_mi(self, file_all_activations) -> pd.DataFrame:
         print(f'*** Start running {self.__class__.__name__}. ***')
 
-        print(file_all_activations["2"])
-        print(f'len of file activations: {len(file_all_activations)}')
-        for i in file_all_activations: print(file_all_activations[str(i)])
-
         labels, one_hot_labels = self._construct_dataset()
         # Proportion of instances that have a certain label.
         label_weights = np.mean(one_hot_labels, axis=0)

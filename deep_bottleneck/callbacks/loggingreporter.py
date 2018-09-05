@@ -125,3 +125,10 @@ class LoggingReporter(keras.callbacks.Callback):
                     str(i),
                     data=self.layerfuncs[i]([self.dataset.train.examples])[0]
                 )
+
+        self.file_all_activations[str(epoch)].create_group('accuracy')
+        self.file_all_activations[f'{epoch}/accuracy']['training'] = float(logs['acc'])
+        try:
+            self.file_all_activations[f'{epoch}/accuracy']['validation'] = float(logs['val_acc'])
+        except KeyError:
+            print('Validation not enabled. Validation metrics cannot be logged')
