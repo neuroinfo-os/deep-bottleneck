@@ -17,7 +17,6 @@ def initialize_basic_datastructures():
     "batch_size" : 256,
     "architecture" : [10, 7, 5, 4, 3],
     "learning_rate" : 0.0004,
-    "calculate_mi_for": "full_dataset",
     "activation_fn" :"relu",
     "model" : "models.feedforward",
     "dataset" : "datasets.harmonics",
