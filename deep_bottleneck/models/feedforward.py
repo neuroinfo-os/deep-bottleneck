@@ -23,10 +23,10 @@ activation_fn_map = {
 }
 
 
-def load(architecture, activation_fn, optimizer, learning_rate, input_size, output_size, max_norm_weights=False, initial_bias=0.0):
+def load(architecture, activation_fn, optimizer, learning_rate, input_size, output_size, max_norm_weights=False,
+         initial_bias=0.0):
     input_layer = keras.layers.Input((input_size,))
     clayer = input_layer
-    print(initial_bias)
     for n in architecture:
         clayer = keras.layers.Dense(n,
                                     activation=activation_fn_map[activation_fn],
