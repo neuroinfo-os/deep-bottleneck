@@ -12,6 +12,8 @@ def load(run, dataset):
 
 class ActivityPlotter(BasePlotter):
     plotname = 'activations'
+    file_ext = 'png'
+
 
     def __init__(self, run, dataset):
         self.dataset = dataset
@@ -19,7 +21,7 @@ class ActivityPlotter(BasePlotter):
 
     def plot(self, measures_summary):
         activations_summary = measures_summary['activations_summary']
-        num_layers = len(activations_summary["0"]['weights_norm'])  # get number of layers indirectly via number of values
+        num_layers = len(activations_summary['0']['activations'])  # get number of layers indirectly via number of values
 
         fig = plt.figure()
 

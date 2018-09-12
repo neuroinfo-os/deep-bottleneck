@@ -167,10 +167,6 @@ The currently relevant parts of the configuration and their effects are explaine
 :learning_rate:
     The learning rate of the optimizer.
     Default values are 0.0004 for harmonics and 0.001 for mnist.
-:calculate_mi_for:
-    The calculate_mi_for parameter defines the dataset that is used for the mutual information computation.
-    It can be done either for the training data (value: "training"), test data ("test") 
-    or the full dataset ("full_dataset").
 :activation_fn:
     The activation-function used to train the model. The following activation function are implemented:
     ``tanh``, ``relu``, ``sigmoid``, ``softsign``, ``softplus``, ``leaky_relu``, 

@@ -1,10 +1,9 @@
 {
-  "epochs": 150,
+  "epochs": 5,
   "batch_size": 256,
-  "architecture": [10, 7, 5, 4, 3],
+  "architecture": [10, 3],
   "optimizer": "adam",
   "learning_rate": 0.0004,
-  "calculate_mi_for": "test",
   "activation_fn": "relu",
   "model": "models.feedforward",
   "dataset": "datasets.harmonics",

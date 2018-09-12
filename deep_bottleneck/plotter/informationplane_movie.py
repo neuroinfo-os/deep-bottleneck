@@ -14,7 +14,8 @@ def load(run, dataset):
 class InformationPlaneMoviePlotter(BasePlotter):
     """Plot the infoplane movie for several runs of the same network."""
     plotname = 'infoplane_movie'
-    filename = f'plots/{plotname}.mp4'
+    file_ext = 'mp4'
+
 
     num_layers = None
     total_number_of_epochs = None
@@ -25,7 +26,8 @@ class InformationPlaneMoviePlotter(BasePlotter):
         self.dataset = dataset
         self.run = run
 
-    def generate(self, measures_summary):
+    def generate(self, measures_summary, suffix):
+        self.filename = self.make_filename(suffix)
         self.plot(measures_summary)
         self.run.add_artifact(self.filename, name=self.plotname)
 
@@ -56,14 +58,14 @@ class InformationPlaneMoviePlotter(BasePlotter):
 
     def setup_accuracy_subplot(self, ax_accuracy):
         [acc_line] = ax_accuracy.plot([], [], 'b', label="training accuracy")
-        [val_acc_line] = ax_accuracy.plot([], [], 'g', label="validation accuracy")
+        [val_acc_line] = ax_accuracy.plot([], [], 'g', label="test accuracy")
 
         ax_accuracy.set_ylim(0, 1)
         ax_accuracy.set_xlim(0, self.total_number_of_epochs)
-
-        xticks_positions = range(0, self.total_number_of_epochs, int(self.total_number_of_epochs / 20))
-        ax_accuracy.set_xticks(xticks_positions)
-        ax_accuracy.set_xticklabels(self.epoch_indexes[xticks_positions], rotation=90)
+        if self.total_number_of_epochs > 20:
+            xticks_positions = range(0, self.total_number_of_epochs, int(self.total_number_of_epochs / 20))
+            ax_accuracy.set_xticks(xticks_positions)
+            ax_accuracy.set_xticklabels(self.epoch_indexes[xticks_positions], rotation=90)
 
         handles, labels = ax_accuracy.get_legend_handles_labels()
         ax_accuracy.legend(handles, labels, loc=4)
@@ -75,7 +77,7 @@ class InformationPlaneMoviePlotter(BasePlotter):
 
     def fill_accuracy_subplot(self, acc_line, val_acc_line, activations_summary, epoch_number, acc, val_acc):
         epoch_accuracy = np.asarray(activations_summary[f'{epoch_number}/accuracy/']['training'])
-        epoch_val_accuracy = np.asarray(activations_summary[f'{epoch_number}/accuracy/']['validation'])
+        epoch_val_accuracy = np.asarray(activations_summary[f'{epoch_number}/accuracy/']['test'])
 
         acc.append(epoch_accuracy)
         val_acc.append(epoch_val_accuracy)
