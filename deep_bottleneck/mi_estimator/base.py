@@ -7,37 +7,33 @@ from deep_bottleneck import utils
 
 from deep_bottleneck.mi_estimator import kde
 
+
 class MutualInformationEstimator:
     nats2bits = 1.0 / np.log(2)
     """Nats to bits conversion factor."""
 
-    def __init__(self, discretization_range, training_data, test_data, architecture, calculate_mi_for):
-        self.training_data = training_data
-        self.test_data = test_data
+    def __init__(self, discretization_range, architecture, n_classes):
         self.architecture = architecture
-        self.calculate_mi_for = calculate_mi_for
+        self.n_classes = n_classes
 
-    def compute_mi(self, file_all_activations) -> pd.DataFrame:
+    def compute_mi(self, data, file_dump) -> pd.DataFrame:
         print(f'*** Start running {self.__class__.__name__}. ***')
 
-        print(file_all_activations["2"])
-        print(f'len of file activations: {len(file_all_activations)}')
-        for i in file_all_activations: print(file_all_activations[str(i)])
-
-        labels, one_hot_labels = self._construct_dataset()
+        labels = data.labels
+        one_hot_labels = data.one_hot_labels
         # Proportion of instances that have a certain label.
         label_weights = np.mean(one_hot_labels, axis=0)
         label_masks = {}
-        for target_class in range(self.training_data.n_classes):
+        for target_class in range(self.n_classes):
             label_masks[target_class] = labels == target_class
         n_layers = len(self.architecture) + 1  # + 1 for output layer
-        epoch_numbers = [int(value) for value in file_all_activations]
+        epoch_numbers = [int(value) for value in file_dump]
         epoch_numbers = sorted(epoch_numbers)
         measures = self._init_dataframe(epoch_numbers=epoch_numbers, n_layers=n_layers)
 
         for epoch in epoch_numbers:
             print(f'Estimating mutual information for epoch {epoch}.')
-            summary = file_all_activations[str(epoch)]
+            summary = file_dump[str(epoch)]
             for layer_index in range(n_layers):
                 layer_activations = summary['activations'][str(layer_index)]
                 mi_with_input, mi_with_label = self._compute_mi_per_epoch_and_layer(layer_activations, label_weights,
@@ -46,21 +42,6 @@ class MutualInformationEstimator:
                 measures.loc[(epoch, layer_index), 'MI_XM'] = mi_with_input
                 measures.loc[(epoch, layer_index), 'MI_YM'] = mi_with_label
         return measures
-
-    def _construct_dataset(self):
-        # Y is a one-hot vector, y is a label vector.
-        if self.calculate_mi_for == "full_dataset":
-            full = utils.construct_full_dataset(self.training_data, self.test_data)
-            labels = full.y
-            one_hot_labels = full.Y
-        elif self.calculate_mi_for == "test":
-            labels = self.test_data.y
-            one_hot_labels = self.test_data.Y
-        elif self.calculate_mi_for == "training":
-            labels = self.training_data.y
-            one_hot_labels = self.training_data.Y
-
-        return labels, one_hot_labels
 
     def _init_dataframe(self, epoch_numbers, n_layers):
         info_measures = ['MI_XM', 'MI_YM']

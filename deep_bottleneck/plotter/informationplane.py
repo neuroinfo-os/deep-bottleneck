@@ -12,6 +12,7 @@ def load(run, dataset):
 class InformationPlanePlotter(BasePlotter):
     """Plot the infoplane for average MI estimates."""
     plotname = 'infoplane'
+    file_ext = 'png'
 
     def __init__(self, run, dataset):
         self.dataset = dataset

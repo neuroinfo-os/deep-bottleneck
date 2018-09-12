@@ -3,7 +3,6 @@ import matplotlib.gridspec as gridspec
 import numpy as np
 import pandas as pd
 
-
 from deep_bottleneck.plotter.base import BasePlotter
 from deep_bottleneck import utils
 
@@ -14,6 +13,7 @@ def load(run, dataset):
 
 class SingleNeuronActivityPlotter(BasePlotter):
     plotname = 'single_neuron_activations'
+    file_ext = 'png'
 
     def __init__(self, run, dataset):
         self.dataset = dataset
