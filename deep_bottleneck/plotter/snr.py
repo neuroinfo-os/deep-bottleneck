@@ -12,6 +12,7 @@ def load(run, dataset):
 
 class SignalToNoiseRatioPlotter(BasePlotter):
     plotname = 'snr'
+    file_ext = 'png'
 
     def __init__(self, run, dataset):
         self.dataset = dataset
@@ -20,7 +21,8 @@ class SignalToNoiseRatioPlotter(BasePlotter):
     def plot(self, measures_summary):
 
         activations_summary = measures_summary['activations_summary']
-        num_layers = len(activations_summary["0"]['weights_norm'])  # get number of layers indirectly via number of values
+        num_layers = len(
+            activations_summary["0"]['weights_norm'])  # get number of layers indirectly via number of values
 
         epochs = []
         means = []
