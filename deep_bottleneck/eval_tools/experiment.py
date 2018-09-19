@@ -7,12 +7,19 @@ from deep_bottleneck.eval_tools import artifact
 
 class Experiment:
     artifact_name_to_cls = {
-        'infoplane': artifact.PNGArtifact,
-        'snr': artifact.PNGArtifact,
-        'infoplane_movie': artifact.MP4Artifact,
-        'information_measures': artifact.CSVArtifact,
-        'activations': artifact.PNGArtifact,
-        'single_neuron_activations': artifact.PNGArtifact
+        'infoplane_train': artifact.PNGArtifact,
+        'snr_train': artifact.PNGArtifact,
+        'infoplane_movie_train': artifact.MP4Artifact,
+        'information_measures_train': artifact.CSVArtifact,
+        'activations_train': artifact.PNGArtifact,
+        'single_neuron_activations_train': artifact.PNGArtifact,
+
+        'infoplane_test': artifact.PNGArtifact,
+        'snr_test': artifact.PNGArtifact,
+        'infoplane_movie_test': artifact.MP4Artifact,
+        'information_measures_test': artifact.CSVArtifact,
+        'activations_test': artifact.PNGArtifact,
+        'single_neuron_activations_test': artifact.PNGArtifact
     }
 
     def __init__(self, id_, database, grid_filesystem, config, artifact_links, metric_links):
