@@ -27,7 +27,7 @@ class MutualInformationEstimator:
         for target_class in range(self.n_classes):
             label_masks[target_class] = labels == target_class
         n_layers = len(self.architecture) + 1  # + 1 for output layer
-        epoch_numbers = [int(value) for value in file_dump]
+        epoch_numbers = [int(value) for value in file_dump.keys()]
         epoch_numbers = sorted(epoch_numbers)
         measures = self._init_dataframe(epoch_numbers=epoch_numbers, n_layers=n_layers)
 

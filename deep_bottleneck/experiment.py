@@ -32,6 +32,7 @@ def hyperparams():
     # For downwards compatibility
     dataset = None
     max_norm_weights = False
+    initial_bias = 0.0
     if dataset == 'dataset.mnist':
         plotters = [
             # ('plotter.informationplane', []),
@@ -59,9 +60,11 @@ def load_dataset(dataset):
 
 
 @ex.capture
-def load_model(model, architecture, activation_fn, optimizer, learning_rate, input_size, output_size, max_norm_weights):
+def load_model(model, architecture, activation_fn, optimizer,
+               learning_rate, input_size, output_size, max_norm_weights, initial_bias):
     module = importlib.import_module(model)
-    return module.load(architecture, activation_fn, optimizer, learning_rate, input_size, output_size, max_norm_weights)
+    return module.load(architecture, activation_fn, optimizer,
+               learning_rate, input_size, output_size, max_norm_weights, initial_bias)
 
 
 def do_report(epoch):
@@ -118,8 +121,8 @@ def make_callbacks(callbacks, data, batch_size, _run,
                                            do_save_func=do_report,
                                            file_dump=file_dump_test))
 
-    callback_objects.append(MetricsLogger(file_dump_train))
-    callback_objects.append(MetricsLogger(file_dump_test))
+    callback_objects.append(MetricsLogger(file_dump_train, do_report))
+    callback_objects.append(MetricsLogger(file_dump_test, do_report))
 
     callback_objects.append(SacredMetricsLogger(_run))
 
@@ -156,8 +159,8 @@ def conduct(epochs, batch_size, n_runs, _run):
     for run_id in range(n_runs):
         model = load_model(input_size=data.train.examples.shape[1], output_size=data.n_classes)
         os.makedirs("dumps", exist_ok=True)
-        file_name_dump_train = f'dumps/experiment_{_run._id}_run_{run_id}_train'
-        file_name_dump_test = f'dumps/experiment_{_run._id}_run_{run_id}_test'
+        file_name_dump_train = f'dumps/experiment_{_run._id}_run_{run_id}_train.h5'
+        file_name_dump_test = f'dumps/experiment_{_run._id}_run_{run_id}_test.h5'
 
         file_dump_train = h5py.File(file_name_dump_train, "a")
         file_dump_test = h5py.File(file_name_dump_test, "a")
