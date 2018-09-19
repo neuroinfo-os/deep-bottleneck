@@ -29,7 +29,9 @@ class InformationPlaneMoviePlotter(BasePlotter):
     def generate(self, measures_summary, suffix):
         self.filename = self.make_filename(suffix)
         self.plot(measures_summary)
-        self.run.add_artifact(self.filename, name=self.plotname)
+        suffix = '_' + suffix if suffix else suffix
+        artifact_name = f'{self.plotname}{suffix}'
+        self.run.add_artifact(self.filename, name=artifact_name)
 
     def setup_infoplane_subplot(self, ax_infoplane):
         if self.dataset == 'datasets.mnist' or self.dataset == 'datasets.fashion_mnist':
