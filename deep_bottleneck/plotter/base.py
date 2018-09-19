@@ -15,8 +15,10 @@ class BasePlotter:
         fig = self.plot(measures_summary)
         filename = self.make_filename(suffix)
         fig.savefig(filename, bbox_inches='tight', dpi=300)
+        suffix = '_' + suffix if suffix else suffix
+        artifact_name = f'{self.plotname}{suffix}'
 
-        self.run.add_artifact(filename, name=self.plotname)
+        self.run.add_artifact(filename, name=artifact_name)
 
     def plot(self, measures_summary) -> matplotlib.figure.Figure:
         raise NotImplementedError
