@@ -22,9 +22,72 @@ Let’s start with the perceptron, which is a mathematical model of a single neu
 In language of math, a perceptron is a simple equation:
 
 
-.. image:: http://latex.codecogs.com/gif.latex?H%28%5Csum_%7Bi%7Dw_ix_i%20&plus;%20b%29
+.. image:: http://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20H%28%5Csum_%7Bi%7Dw_ix_i&plus;b%29
 
-where ``x_i`` huh this is unblie
+where **x**\ :sub:`i` \ is the **\i**\th input, **w**\ :sub:`i` \ is the weight correspond to the **\i**\th input, **b** stands for the bias, and **H** is the Heaviside step function which will be activated with positive input:
+
+.. image:: http://latex.codecogs.com/gif.latex?%5Cinline%20%5Cdpi%7B150%7D%20H%28z%29%3D%5Cleft%5C%7B%5Cbegin%7Bmatrix%7D%200%20%5Ctext%7B%2C%20if%20%7D%20z%20%3C%200%5C%5C1%20%5Ctext%7B%2C%20if%20%7D%20z%20%5Cgeq%200%20%5Cend%7Bmatrix%7D%5Cright.
+
+\For the sake of neatness of the formula, we add a facial input, **x**\ :sub:`0` \, which is always equal to 1 and its weight, **w**\ :sub:`0` \, represent the bias value. Then we can rewrite the perceptron equation as:
+
+
+.. image:: http://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20H%28%5Csum_%7Bi%7Dw_ix_i%29
+
+and simplify the diagram, by removing the addition node, assuming everyone knows that the activation function will work on the summation of inputs:
+
+.. image:: https://user-images.githubusercontent.com/27868570/46575888-71804100-c9be-11e8-872f-a53d47a80f96.png
+
+
+**Hands On**
+
+::
+
+  If we have [.5, 3, -7] as inputs, and [4, .2, 9] as our weights, and the bias sets to 2,
+  the net input to the Heaviside step function is:
+  
+  4(.5)+.2(3)+9(-7)+2 = -58.4
+  
+  And since the result is negative, the perceptron output is 0.
+
+
+**Snippet**
+
+::
+
+  Perceptron could be easily coded. It is just a bunch of basic math operations and
+  an if-else statement. Here is an example code, using Python:
+
+.. code-block:: python 
+  
+  import numpy as np
+
+  def perceptron(input_vector):
+      '''
+      This perceptron function takes a 3-element
+      array in form of a row vector as its argument,
+      and returns the output of the above described
+      perceptron.
+      '''
+
+      # setting the parameters
+      bias = 2
+      weights = np.array([4, .2, 9])
+
+      # calculating the net input to the HSFunction
+      input = np.inner(input_vector, weights) + bias
+
+      # implementing Heaviside step function
+      if input < 0:
+          output = 0
+      else:
+          output = 1
+
+      return output
+
+
+  input_vector = np.array([.5, 3, -7])
+  print('The perceptron output is ', perceptron(input_vector))
+
 
 
 What is entropy?
