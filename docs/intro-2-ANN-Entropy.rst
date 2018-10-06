@@ -24,7 +24,8 @@ In language of math, a perceptron is a simple equation:
 
 .. image:: http://latex.codecogs.com/gif.latex?H%28%5Csum_%7Bi%7Dw_ix_i%20&plus;%20b%29
 
-   
+where ``x_i`` huh this is unblie
+
 
 What is entropy?
 ================
