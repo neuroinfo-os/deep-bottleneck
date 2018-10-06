@@ -15,7 +15,16 @@ Perceptron
 Let’s start with the perceptron, which is a mathematical model of a single neuron and the plainest version of an artificial neural network: a network with one single-node layer. However, from a practical point of view, a perceptron is only a humble classifier that divide input data into two categories: the ones that cause our artificial neuron fires, and the ones that does not. The procedure is like this: the perceptron takes one or multiple real numbers as input, sums over a weighted version of them, adds a constant value, bias, to the result, and then uses it as the net input to its activation function. That is the function that calculates if the perceptron is going to be activated with the inputs or not. The perceptron uses Heaviside step function as its activation function. So the output of this function is the the perceptron output.
 
 
-![nnne-01](https://user-images.githubusercontent.com/27868570/46574055-18a0b080-c99e-11e8-8cf4-ddc151ec33f3.jpg)
+.. image:: https://user-images.githubusercontent.com/27868570/46574055-18a0b080-c99e-11e8-8cf4-ddc151ec33f3.jpg
+  :alt: Perceptron
+
+
+In language of math, a perceptron is a simple equation:
+
+.. image:: http://latex.codecogs.com/gif.latex?H%28%5Csum_%7Bi%7Dw_ix_i%20&plus;%20b%29
+
+
+   
 
 What is entropy?
 ================
