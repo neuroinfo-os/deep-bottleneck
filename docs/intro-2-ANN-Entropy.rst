@@ -33,7 +33,7 @@ In language of math, a perceptron is a simple equation:
 where **x**\ :sub:`i` \ is the **\i**\th input, **w**\ :sub:`i` \ is the weight correspond to the **\i**\th input, **b** stands for the bias, and **H** is the Heaviside step function which will be activated with positive input:
 
 .. image:: http://latex.codecogs.com/gif.latex?%5Cinline%20%5Cdpi%7B150%7D%20H%28z%29%3D%5Cleft%5C%7B%5Cbegin%7Bmatrix%7D%200%20%5Ctext%7B%2C%20if%20%7D%20z%20%3C%200%5C%5C1%20%5Ctext%7B%2C%20if%20%7D%20z%20%5Cgeq%200%20%5Cend%7Bmatrix%7D%5Cright.
-``Eq. 2``
+``Eq. 2`` [#]_
 
 |    
 |  
@@ -50,7 +50,7 @@ where **x**\ :sub:`i` \ is the **\i**\th input, **w**\ :sub:`i` \ is the weight 
 and simplify the diagram, by removing the addition node, assuming everyone knows that the activation function will work on the summation of inputs:
 
 .. image:: https://user-images.githubusercontent.com/27868570/46575888-71804100-c9be-11e8-872f-a53d47a80f96.png
-``Fig. 2``
+``Fig. 2. Perceptron``
 
 |    
 |  
@@ -111,6 +111,83 @@ As we did with the code, dealing with a perceptron, the input is the only variab
 
 But for now, let’s just talk about what does each of the perceptron parameters do? We can use a simple example. Assume you want to use a perceptron deciding if a specific person likes watching a specific movie or not.\ [#]_ You could define an almost arbitrary set of criteria as your perceptron input, like the movie genre, how good are the actors, and say the movie production budget. We can quantize these three criteria assuming the person loves watching comedies, so if the movie genre is comedy (1) or not (0). And the total number of prestigious awards won by the four leading/supporting actors, and the budget in million USD. The output 0 means the person, probably, does not like the movie and 1 means she, probably, does.
 
+.. image:: https://user-images.githubusercontent.com/27868570/46581161-bc886b80-ca33-11e8-88fa-cbf9ffafe517.png
+``Fig. 3. A perceptron for binary classification of movies for a single Netflix user``
+
+|    
+|  
+
+Now it is easier to have an intuitive understanding of what each of perceptron parameters does. Weights help to give a more important factor, a heavier effect on the final decision. So for example, if the person is a huge fan of glorious fantasy movies with heavy CGI, we have to set **w**\ :sub:`1` \ a little bit higher. Or if she is open to discovering new talents over watching the same arrogant acting styles, we could lower down **w**\ :sub:`2` \ a bit. 
+The bias role, however, is not as obvious as the weights. The simplest explanation is that bias shift the firing threshold of the perceptron or to be accurate the activation function. Suppose the intended person cares equally for the three elements of input and won’t watch a movie that fails to meet each one them. Then we have to set the bias so high that a high score in none of these three indices cannot make the perceptron fire, singly. Or if she probably would like Hobbit-kinds of movie, even though they do not fit in comedy genre, we can lower down the bias to the extent that having high scores, the Actors and the Budget could fire the perceptron together. You might think that we could do all these kind of arrangements solely using the weights. So let’S deal with this case in which all the input parameters are equal to zero. Without adding a bias term the output would be zero regardless of what we are taking in, and what we are willing to classify.
+
+
+**Hands On (2)**
+
+::
+
+  Assume we have two binary inputs, A and B, which could be either 0 or 1.
+  What we want is to design a perceptron that takes A and B and behaves like
+  a NOR gate; that is the perceptron output will be 1 if and only if both A
+  and B are 0, otherwise the output will be 0.
+
+  It is not always guaranteed for all problems, but in this case, we could do
+  the design in too many different ways, with a wide variety of values as weights
+  and the bias. One possible valid combination of the parameters is: wA = -2,
+  wB = -1, and the bias = 1. We can check the results:
+  
+.. image:: https://user-images.githubusercontent.com/27868570/46581680-1e010800-ca3d-11e8-8c83-945878afe6bd.png
+
+::
+
+  Another valid set of parameters would be: wA = -0.5, wB = -0.5, and .4 for the
+  bias. You can think of many more sets of valid parameters yourself.
+  
+  Now try designing this perceptron without adding bias.
+
+
+The last thing to talk about is the activation function. The function is like the perceptron brain. Even though it does not do complicated calculations, but without it the perceptron is nothing but a linear combination of the inputs.\ [#]_ The activation function helps perceptron to learn. Once the perceptron parameters are set, it is able to differentiate between different sets of inputs  and to make decisions via its elementary mechanism of ‘fire’ or ‘do not fire’.
+
+That would be also fun to compare a perceptron with a neuron; provided that you do not take this comparison too seriously.\ [#]_ You can think of the inputs, naïvely, as chemoelectrical signals transmitting through dendrites (weights), reaching the neuron (Heaviside step function), if the pulse passes the threshold (bias), the neuron fires down the axon (the output is 1), otherwise it does not (the output is 0). 
+
+
+The Network
+-----------
+So… not a big deal? We have a basic classifier which it is limited to linearly separable data. Suppose we want to divide a set of samples that are, somehow, represented using a coordinate system. The perceptron would be able to do the task, if and only if, the two sets could be separated by drawing a single straight line between them.\ [#]_
+
+**Problem (1)**
+::
+
+  Design a perceptron that takes two binary inputs, A and B and returns the XOR value of them:
+  
+.. image::  https://user-images.githubusercontent.com/27868570/46582158-2b20f580-ca43-11e8-8d15-4ae0779c5a37.png
+|    
+
+So at this point, perceptron might seem a little boring. But we can make it wildly exciting with taking one step further in imitating our brain structure by connecting artificial neurons together to form a network in which each perceptron output is fed as input to another perceptron; something like this:
+
+.. image:: https://user-images.githubusercontent.com/27868570/46582293-97e8bf80-ca44-11e8-9dae-832699152ee2.png
+``Fig. 4. An artificial neural network``
+
+|    
+|  
+
+As you see in the picture, the artificial neurons, or simply the nodes, are organized in layers. Nodes in a layer are not connected to each other. They are just connected to other nodes in their previous and/or next layers, except for the bias nodes. The bias nodes are not connected to their previous layer nodes, because being connected backward means their value is going to be set with the incoming flow. But bias nodes, as we see in perceptron, are conventionally set to feed 1,\ [#]_ so they are disconnected from their previous layers.
+
+The first layer of the network is the input layer, and the last one is the output layer. Every layer in between is called a hidden layer. Note that, in the above picture, the input layer is more of a decorative setting, or a placeholder only to represent the input flow. The nodes in this layer are not actual perceptrons. They, just like the bias nodes, merely stand for input variables, and unlike the other nodes in the network, do not represent any activation function.\ [#]_ When we are counting a network layers, we only consider the layers with adjustable weights led to them. So in this case, we do not count the input layer and say it is a 2-layer neural network, or the depth of this network is 2. The number of neurons in each layer is called its width. But, just like the poor input layer, we do not include bias nodes while counting the width. So in our network the hidden layer width is 4 and the output layer width is 2.
+
+As the depth of the network increases, it could easier deal with the more complicated patterns. The same happens when the width of layers grows. What this complex structure does is to break down the input data into small fragments and find a way to combine the most informative parts as output.
+
+Imagine we want to estimate people income, based on their age, education, and say blood pressure. Assume we want to use the multiple linear regression method to accomplish the task. So what we do is to find how much and in which way each of our explanatory variables (i.e. age, education, and blood pressure) affects the income. That is, we reduce income to summation of our variables multiplied by their corresponding coefficient plus a bias term. Sounds good, does not work all the time. What we neglect here is the implicit relations between the explanatory variables, themselves. Like the general fact that, as people age, their blood pressure increases. Now what a neural network with its hidden layers does is to taking these relations into account. How? With chopping each input variable into pieces, thanks to many nodes in a one single layer, and letting these pieces each of which belongs to a different variable, combine together with a specific proportion, set by the weights, in the next layer. In other word, a neural network let the input variable have interaction with each other. And that is how the increase of width and the depth enable the network to handle and to construct more complex data structures.
+
+
+.. image::
+.. image::
+.. image::
+.. image::
+.. image::
+.. image::
+.. image::
+.. image::
+.. image::
 
 What is entropy?
 ================
@@ -141,5 +218,10 @@ How is entropy useful for understanding artificial neural networks?
 
 
 
-
+.. [#] We usually denote an activation function input with the letter z, rather than good old x, in order to prevent any confusion of the function input with the perceptron/network inputs.
 .. [#] For motivation, assume Netflix offered a US$1,000,000 prize for designing this perceptron.
+.. [#] Plus bias which in no-activation-function case, is itself an irrelevant factor.
+.. [#] Yes, the original idea was to imitate the way our brain works, but let’s be honest with ourselves, do we know how our brain works? But that aside, perceptron and ANNs have adopted a couple of important and effective macro features of our brain structure, like not being a simple/linear transmitter but getting activated with specific functions/patterns or the network structure itself which is made up of, generally, uniform elements.
+.. [#] Or a plane/hyperplane for 3 and more dimensions.
+.. [#] The value 1 is arbitrary, and only more convenient to work with. But whatever other value you assign to the bias nodes it should be constant during the flow of data through the network. 
+.. [#] However, we will see that this is not a rule.
