@@ -12,7 +12,7 @@ Unlike the conventional codes, which are instructed what to do, in a step-by-ste
 
 Perceptron
 ----------
-Let’s start with the perceptron, which is a mathematical model of a single neuron and the plainest version of an artificial neural network: a network with one single-node layer. However, from a practical point of view, a perceptron is only a humble classifier that divide input data into two categories: the ones that cause our artificial neuron fires, and the ones that does not. The procedure is like this: the perceptron takes one or multiple real numbers as input, sums over a weighted version of them, adds a constant value, bias, to the result, and then uses it as the net input to its activation function. That is the function that calculates if the perceptron is going to be activated with the inputs or not. The perceptron uses Heaviside step function as its activation function. So the output of this function is the the perceptron output.
+Let’s start with the *perceptron*, which is a mathematical model of a single neuron and the plainest version of an artificial neural network: a network with one single-node layer. However, from a practical point of view, a perceptron is only a humble classifier that divide input data into two categories: the ones that cause our artificial neuron fires, and the ones that does not. The procedure is like this: the perceptron takes one or multiple real numbers as input, sums over a weighted version of them, adds a constant value, bias, to the result, and then uses it as the net input to its activation function. That is the function that calculates if the perceptron is going to be activated with the inputs or not. The perceptron uses Heaviside step function as its *activation function*. So the output of this function is the the perceptron output.
 
 
 .. image:: https://user-images.githubusercontent.com/27868570/46575181-adaca500-c9b0-11e8-8788-ce58fe1fb5bd.png
@@ -60,8 +60,8 @@ and simplify the diagram, by removing the addition node, assuming everyone knows
 
 ::
 
-  If we have [.5, 3, -7] as inputs, and [4, .2, 9] as our weights, and the bias sets to 2,
-  the net input to the Heaviside step function is:
+  If we have [.5, 3, -7] as inputs, and [4, .2, 9] as our weights, and the bias sets to 2, the net
+  input to the Heaviside step function is:
   
   4(.5)+.2(3)+9(-7)+2 = -58.4
   
@@ -72,8 +72,8 @@ and simplify the diagram, by removing the addition node, assuming everyone knows
 
 ::
 
-  Perceptron could be easily coded. It is just a bunch of basic math operations and
-  an if-else statement. Here is an example code, using Python:
+  Perceptron could be easily coded. It is just a bunch of basic math operations and an if-else
+  statement. Here is an example code, using Python:
 
 .. code-block:: python 
   
@@ -109,7 +109,7 @@ and simplify the diagram, by removing the addition node, assuming everyone knows
 
 As we did with the code, dealing with a perceptron, the input is the only variable we have. But the weights and the bias are the parameters of our perceptron and parts of its architecture. It does not necessarily mean that the weights and the bias take constant values. On the contrary, we will see that the most important, and the beauty, of perceptron is its ability to learn and this learning happens through the change of the weights and the bias.
 
-But for now, let’s just talk about what does each of the perceptron parameters do? We can use a simple example. Assume you want to use a perceptron deciding if a specific person likes watching a specific movie or not.\ [#]_ You could define an almost arbitrary set of criteria as your perceptron input, like the movie genre, how good are the actors, and say the movie production budget. We can quantize these three criteria assuming the person loves watching comedies, so if the movie genre is comedy (1) or not (0). And the total number of prestigious awards won by the four leading/supporting actors, and the budget in million USD. The output 0 means the person, probably, does not like the movie and 1 means she, probably, does.
+But for now, let’s just talk about what does each of the perceptron parameters do? We can use a simple example. Assume you want to use a perceptron deciding if a specific person likes watching a specific movie or not.\ [#]_ You could define an almost arbitrary set of criteria as your perceptron input, like the movie genre, how good are the *ctors, and say the movie production budget. We can quantize these three criteria assuming the person loves watching comedies, so if the movie genre is comedy (1) or not (0). And the total number of prestigious awards won by the four leading/supporting actors, and the budget in million USD. The output 0 means the person, probably, does not like the movie and 1 means she, probably, does.
 
 .. image:: https://user-images.githubusercontent.com/27868570/46581161-bc886b80-ca33-11e8-88fa-cbf9ffafe517.png
 ``Fig. 3. A perceptron for binary classification of movies for a single Netflix user``
@@ -118,29 +118,27 @@ But for now, let’s just talk about what does each of the perceptron parameters
 |  
 
 Now it is easier to have an intuitive understanding of what each of perceptron parameters does. Weights help to give a more important factor, a heavier effect on the final decision. So for example, if the person is a huge fan of glorious fantasy movies with heavy CGI, we have to set **w**\ :sub:`1` \ a little bit higher. Or if she is open to discovering new talents over watching the same arrogant acting styles, we could lower down **w**\ :sub:`2` \ a bit. 
-The bias role, however, is not as obvious as the weights. The simplest explanation is that bias shift the firing threshold of the perceptron or to be accurate the activation function. Suppose the intended person cares equally for the three elements of input and won’t watch a movie that fails to meet each one them. Then we have to set the bias so high that a high score in none of these three indices cannot make the perceptron fire, singly. Or if she probably would like Hobbit-kinds of movie, even though they do not fit in comedy genre, we can lower down the bias to the extent that having high scores, the Actors and the Budget could fire the perceptron together. You might think that we could do all these kind of arrangements solely using the weights. So let’S deal with this case in which all the input parameters are equal to zero. Without adding a bias term the output would be zero regardless of what we are taking in, and what we are willing to classify.
+The bias role, however, is not as obvious as the weights. The simplest explanation is that bias shift the firing threshold of the perceptron or to be accurate the activation function. Suppose the intended person cares equally for the three elements of input and won’t watch a movie that fails to meet each one them. Then we have to set the bias so high that a high score in none of these three indices cannot make the perceptron fire, singly. Or if she probably would like Hobbit-kinds of movie, even though they do not fit in comedy genre, we can lower down the bias to the extent that having high scores, the *Actors* and the *Budget* could fire the perceptron together. You might think that we could do all these kind of arrangements solely using the weights. So let’s deal with this case in which all the input parameters are equal to zero. Without adding a bias term the output would be zero regardless of what we are taking in, and what we are willing to classify.
 
 
 **Hands On (2)**
 
 ::
 
-  Assume we have two binary inputs, A and B, which could be either 0 or 1.
-  What we want is to design a perceptron that takes A and B and behaves like
-  a NOR gate; that is the perceptron output will be 1 if and only if both A
-  and B are 0, otherwise the output will be 0.
+  Assume we have two binary inputs, A and B, which could be either 0 or 1. What we want is to
+  design a perceptron that takes A and B and behaves like a NOR gate; that is the perceptron
+  output will be 1 if and only if both A and B are 0, otherwise the output will be 0.
 
-  It is not always guaranteed for all problems, but in this case, we could do
-  the design in too many different ways, with a wide variety of values as weights
-  and the bias. One possible valid combination of the parameters is: wA = -2,
-  wB = -1, and the bias = 1. We can check the results:
+  It is not always guaranteed for all problems, but in this case, we could do the design in too
+  many different ways, with a wide variety of values as weights and the bias. One possible valid
+  combination of the parameters is: wA = -2, wB = -1, and the bias = 1. We can check the results:
   
 .. image:: https://user-images.githubusercontent.com/27868570/46581680-1e010800-ca3d-11e8-8c83-945878afe6bd.png
 
 ::
 
-  Another valid set of parameters would be: wA = -0.5, wB = -0.5, and .4 for the
-  bias. You can think of many more sets of valid parameters yourself.
+  Another valid set of parameters would be: wA = -0.5, wB = -0.5, and .4 for the bias. You can
+  think of many more sets of valid parameters yourself.
   
   Now try designing this perceptron without adding bias.
 
@@ -178,7 +176,28 @@ As the depth of the network increases, it could easier deal with the more compli
 
 Imagine we want to estimate people income, based on their age, education, and say blood pressure. Assume we want to use the multiple linear regression method to accomplish the task. So what we do is to find how much and in which way each of our explanatory variables (i.e. age, education, and blood pressure) affects the income. That is, we reduce income to summation of our variables multiplied by their corresponding coefficient plus a bias term. Sounds good, does not work all the time. What we neglect here is the implicit relations between the explanatory variables, themselves. Like the general fact that, as people age, their blood pressure increases. Now what a neural network with its hidden layers does is to taking these relations into account. How? With chopping each input variable into pieces, thanks to many nodes in a one single layer, and letting these pieces each of which belongs to a different variable, combine together with a specific proportion, set by the weights, in the next layer. In other word, a neural network let the input variable have interaction with each other. And that is how the increase of width and the depth enable the network to handle and to construct more complex data structures.
 
+**Problem (2)**
 
+::
+
+  We discussed a privilege of neural networks over the multiple linear regression in doing a specific
+  task. Regarding the same task, would the neural network performance still have any privilege over a
+  multivariate nonlinear regression, which can handle nonlinear dependency of a variable on multiple
+  explanatory variables?
+
+**Snippet (2)**
+
+::
+  
+  Assume we have the following network, in which all the nodes in the hidden and output layers have
+  Heaviside step function as their activation function:
+
+.. image:: https://user-images.githubusercontent.com/27868570/46582663-cbc6e380-ca4a-11e8-806e-8332f6daa22a.png
+
+::
+  The hidden layer weights are given with the following connectivity matrix:
+  
+  
 .. image::
 .. image::
 .. image::
