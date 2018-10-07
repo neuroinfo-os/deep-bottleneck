@@ -38,7 +38,7 @@ where **x**\ :sub:`i` \ is the **\i**\th input, **w**\ :sub:`i` \ is the weight 
 |    
 |  
 
-\For the sake of neatness of the formula, we add a facial input, **x**\ :sub:`0` \, which is always equal to 1 and its weight, **w**\ :sub:`0` \, represent the bias value. Then we can rewrite the perceptron equation as:
+\For the sake of neatness of the equation, we add a facial input, **x**\ :sub:`0` \, which is always equal to 1 and its weight, **w**\ :sub:`0` \, represent the bias value. Then we can rewrite the perceptron equation as:
 
 
 .. image:: http://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20H%28%5Csum_%7Bi%7Dw_ix_i%29
@@ -109,7 +109,7 @@ and simplify the diagram, by removing the addition node, assuming everyone knows
 
 As we did with the code, dealing with a perceptron, the input is the only variable we have. But the weights and the bias are the parameters of our perceptron and parts of its architecture. It does not necessarily mean that the weights and the bias take constant values. On the contrary, we will see that the most important, and the beauty, of perceptron is its ability to learn and this learning happens through the change of the weights and the bias.
 
-But for now, let’s just talk about what does each of the perceptron parameters do? We can use a simple example. Assume you want to use a perceptron deciding if a specific person likes watching a specific movie or not.\ [#]_ You could define an almost arbitrary set of criteria as your perceptron input, like the movie genre, how good are the *ctors, and say the movie production budget. We can quantize these three criteria assuming the person loves watching comedies, so if the movie genre is comedy (1) or not (0). And the total number of prestigious awards won by the four leading/supporting actors, and the budget in million USD. The output 0 means the person, probably, does not like the movie and 1 means she, probably, does.
+But for now, let’s just talk about what does each of the perceptron parameters do? We can use a simple example. Assume you want to use a perceptron deciding if a specific person likes watching a specific movie or not.\ [#]_ You could define an almost arbitrary set of criteria as your perceptron input, like the movie genre, how good are the actors, and say the movie production budget. We can quantize these three criteria assuming the person loves watching comedies, so if the movie genre is comedy (1) or not (0). And the total number of prestigious awards won by the four leading/supporting actors, and the budget in million USD. The output 0 means the person, probably, does not like the movie and 1 means she, probably, does.
 
 .. image:: https://user-images.githubusercontent.com/27868570/46581161-bc886b80-ca33-11e8-88fa-cbf9ffafe517.png
 ``Fig. 3. A perceptron for binary classification of movies for a single Netflix user``
@@ -272,16 +272,206 @@ Imagine we want to estimate people income, based on their age, education, and sa
 
       return output_2
 
+So, now that we know the magic of more nodes in each layer and more hidden layers, what does stop us from voraciously extending our network? First of all we have to know that it is theoretically proven that a neural network with only one hidden layer can model any arbitrary function as accurate as you want, provided that you add enough nodes to that hidden layer.\ [#]_ However, adding more hidden layers makes life easier, both for you and your network. Then again, what is the main reason for sticking to the smallest network that would handle our problem?
+
+With the perceptron, for example when we wanted to model a logic gate, it was a simple and almost intuitive task to find proper weights and bias. But as we mentioned before that the most important, and the beauty of a perceptron is its capacity to learn functions, without us setting the right weights and biases. It can even go further, and map inputs to desired outputs with finding and observing patterns in data that are hidden to our defective human intuition. And that is where the magical power of neural networks come from. Artificial neurons go through a trial and error process to find the most effective values as their weights and biases, regarding what they are fed and what they are supposed to return. This process takes time and would also be computationally expensive.\ [#]_ Therefore, the bigger the network, the slower and more expensive its performance. And that is the reason for being thrifty in implementing more nodes and layers in our network.
+
+Activation Functions
+--------------------
+Speaking of learning, how does perceptron learn? Assume that we have a dataset including samples with attributes a, b, and c. And we want to be able to train the perceptron to predict attribute c provided a and b. What the perceptron does it to start with random weights and bias. It takes the samples attributes a and b as its input and calculates the output, which is supposed to be the attribute c. Then it compares its result with the actual c, measures the error and based on the difference, it adjusts its parameters a little bit. The procedure will be repeated until the error shrinks to a desired neglectable level.
+
+Cool! Everything seems quiet perfect, except the fact that the output of perceptron activation function is either 1 or 0. So if the perceptron parameters change a bit, its output does not change slowly, but jumps to the other possible value. Thus, the error is either at its maximum or minimum level. For making an artificial neuron trainable, we started using other functions as activation functions; functions which are, somehow, smoothed approximations of the original step function.
+
+**Linear or Identity Function**
+
+Earlier we talked about the absurdity of a perceptron (not to mention a network) not using an activation function, because its output would simply be a linear combination of  the inputs. But, actually, there is a thing as linear or identity activation function. Imagine a network in which all nodes work with linear functions. In this case, according to linearity math, no matter how big or how elaborately-structured that network is, you can simply compress it to one single layer.
+However, a linear activation function could still be used in a network, if we use it as activation function of a few nodes; especially the ones in the output layer. There are cases, when we are interested in regression problems rather than classification ones, in which we want our network to have an unbounded and continuous range of outputs. Let’s return to example where we wanted to design a perceptron capable of predicting if a user wants to watch a movie or not. That was a classification problem because our desired range of output was discrete; a simple bit of 0 or 1 was enough for our purpose. But assume the same perceptron with the same inputs is supposed to predict the box office revenue. That would be a regression problem because our desired range of output is a continuous one. In such a case a linear activation function in the output layer would send out whatever it takes in, without confining it within a narrow and discrete range.
+
+.. image:: http://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20g%28z%29%20%3D%20z
+``Eq. 4``
+
+|    
+|  
+
+**Snippet (3)**
+
+::
   
-.. image::
-.. image::
-.. image::
-.. image::
-.. image::
-.. image::
-.. image::
-.. image::
-.. image::
+  Modeling the linear or identity activation function and plotting its graph:  
+
+.. code-block:: python 
+
+  import numpy as np
+  import matplotlib.pyplot as plt
+
+  def linear(z):
+      '''
+      This function models the Linear or Identity
+      activation function.
+      '''
+      y = [component for component in z]
+      return y
+
+
+  # Plotting the graph of the function for an input range
+  # from -10 to 10 with step size .01
+
+  z = np.arange(-10, 11, .01)
+  y = linear(z)
+
+  plt.title('Linear or Identity Function')
+  plt.grid()
+  plt.plot(z, y)
+  plt.show()
+
+.. image:: https://user-images.githubusercontent.com/27868570/46586156-a8b42800-ca7a-11e8-969f-5b3da841e294.png
+
+**Heaviside Step Function**
+
+We already met the Heaviside step function:
+
+.. image:: http://latex.codecogs.com/gif.latex?%5Cinline%20%5Cdpi%7B150%7D%20H%28z%29%3D%5Cleft%5C%7B%5Cbegin%7Bmatrix%7D%200%20%5Ctext%7B%2C%20if%20%7D%20z%20%3C%200%5C%5C1%20%5Ctext%7B%2C%20if%20%7D%20z%20%5Cgeq%200%20%5Cend%7Bmatrix%7D%5Cright.
+``Eq. 5``
+
+|    
+|  
+
+**Snippet (4)**
+
+::
+  
+  Modeling the Heaviside step activation function and plotting its graph:  
+
+.. code-block:: python 
+
+  import numpy as np
+  import matplotlib.pyplot as plt
+
+  def heaviside(z):
+      '''
+      This function models the Heaviside step
+      activation function.
+      '''
+      y = [0 if component < 0 else 1 for component in z]
+      return y
+
+
+  # Setting up the domain (horizontal axis) from -10 to 10
+  # with step size .01
+
+  z = np.arange(-10, 11, .01)
+  y = heaviside(z)
+
+  plt.title('Heaviside Step Function')
+  plt.grid()
+  plt.plot(z, y)
+  plt.show()
+
+.. image:: https://user-images.githubusercontent.com/27868570/46586226-a8685c80-ca7b-11e8-9c1c-932bb5c187f2.png
+
+**Sigmoid or Logistic Function**
+
+Sigmoid or logistic function is currently one of the most used activation functions, capable of being used in both hidden and output layers. It is a continuous and smoothly-changing function, and that makes it a popular option because these features let the neurons to tune its parameters at the finest level.
+
+.. image:: http://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Csigma%20%28z%29%3D%5Cfrac%7B1%7D%7B1&plus;e%5E%7B-z%7D%7D
+``Eq. 6``
+
+|    
+|  
+
+**Snippet (5)**
+
+::
+  
+  Modeling the Sigmoid or Logistic activation function and plotting its graph:  
+
+.. code-block:: python 
+
+  import numpy as np
+  import matplotlib.pyplot as plt
+
+  def sigmoid(z):
+      '''
+      This function models the Sigmoid or Logistic
+      activation function.
+      '''
+      y = [1 / (1 + np.exp(-component)) for component in z]
+      return y
+
+
+  # Plotting the graph of the function for an input range 
+  # from -10 to 10 with step size .01
+
+  z = np.arange(-10, 11, .01)
+  y = sigmoid(z)
+
+  plt.title('Sigmoid or Logistic Function')
+  plt.grid()
+  plt.plot(z, y)
+  plt.show()
+
+.. image:: https://user-images.githubusercontent.com/27868570/46586280-8c18ef80-ca7c-11e8-958a-f19638a9c2ad.png
+
+**Softmax Function**
+
+Let’s go back to the movie preferences example.  In the original problem setting, what we wanted to do was to know if the user likes watching a specific movie or not. So our desired output was a binary classification. Now consider a situation when we also want to check the user interest in movie using multiple level; for example: she does not like to watch the movie, she likes to watch the movie, she likes the movie so much that she would purchase the first video game produced based on the movie. And instead of a decisive answer of 0 or 1, we want a probability value for each of these three outcomes, in a way that they sum up to 1.
+
+In this case, we cannot use a sigmoid activation function in the output layer anymore; even though the sigmoid neurons output works well as probability value, but it only handle binary classifications.
+Then that is exactly when we use a Softmax activation function instead; that is, when we want to do a classification task with multiple possible classes. You can think of Softmax as a cap over your network multiple, and raw, outputs, which takes them all and translates the results to a probabilistic language.
+
+Since Softmax is designed for such a specific task, using it in hidden layers is irrelevant. In addition, as you will see in the equation, what Softmax does is to take multiple values and deliver a correlated version of them. The output values of a Softmax node are dependent on each other. That is not what we want to do with our raw stream of information in our neural network. We do not want to constrain the information flow in the network, in any possible way, when we do not have any logical reason for that. However, recently, some researchers have found a good bunch of these logical reasons to use Softmax in hidden layers.\ [#]_ But the general rule is do not use it in hidden layer as long as you do not have a clear idea of why you are doing this.\ [#]_
+Anyway, this is the Softmax activation function:
+
+.. image:: http://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20S%28z%29_i%3D%5Cfrac%7Be%5E%7B%28z_i%29%7D%7D%7B%5Csum_%7Bj%3D1%7D%5E%7Bn%7De%5E%7B%28z_j%29%7D%7D
+``Eq. 7``
+
+|    
+|  
+
+To have a better understanding of what is going on over there, the following diagram could be useful:
+
+.. image:: https://user-images.githubusercontent.com/27868570/46586549-45c58f80-ca80-11e8-824b-c75df0001e55.png
+``Fig. 5. Softmax layer``
+
+|    
+|  
+
+**Snippet (6)**
+
+::
+  
+  Modeling the Softmax activation function and plotting its graph:  
+
+.. code-block:: python 
+
+  import numpy as np
+  import matplotlib.pyplot as plt
+
+  def softmax(z):
+      '''
+      This function models the Softmax activation function.
+      '''
+      y = [np.exp(component) / sum(np.exp(z)) for component in z]
+      return y
+
+
+  # Plotting the graph of the function for an input range
+  # from -10 to 10 with step size .01
+
+  z = np.arange(-10, 11, .01)
+  y = softmax(z)
+
+  plt.title('Softmax Function')
+  plt.grid()
+  plt.plot(z, y)
+  plt.show()
+  
+.. image:: https://user-images.githubusercontent.com/27868570/46586583-df8d3c80-ca80-11e8-8dad-6514bb87a11c.png
+
+Looking at the Softmax graph you can see that...
+
+.. image:: https://i.ebayimg.com/images/g/n9EAAOSwvc1ZaCei/s-l300.jpg
+
 
 What is entropy?
 ================
@@ -319,3 +509,7 @@ How is entropy useful for understanding artificial neural networks?
 .. [#] Or a plane/hyperplane for 3 and more dimensions.
 .. [#] The value 1 is arbitrary, and only more convenient to work with. But whatever other value you assign to the bias nodes it should be constant during the flow of data through the network. 
 .. [#] However, we will see that this is not a rule.
+.. [#] And provided that the nodes’ activation functions are nonlinear.
+.. [#] Both in an abstract and also a physical sense.
+.. [#] Xu, K., Ba, J., Kiros, R., Cho, K., Courville, A., Salakhudinov, R., ... & Bengio, Y. (2015, June). Show, attend and tell: Neural image caption generation with visual attention. In *International conference on machine learning* (pp. 2048-2057).
+.. [#] Compare with the fact that you can use a, say, sigmoid neuron, wherever in a network you want, without being sure of what you are doing!
