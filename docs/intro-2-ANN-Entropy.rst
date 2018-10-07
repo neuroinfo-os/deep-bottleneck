@@ -17,28 +17,46 @@ Let’s start with the perceptron, which is a mathematical model of a single neu
 
 .. image:: https://user-images.githubusercontent.com/27868570/46575181-adaca500-c9b0-11e8-8788-ce58fe1fb5bd.png
   :alt: Perceptron
+``Fig. 1. Perceptron``
 
+|    
+|   
 
 In language of math, a perceptron is a simple equation:
 
-
 .. image:: http://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20H%28%5Csum_%7Bi%7Dw_ix_i&plus;b%29
+``Eq. 1``
+
+|    
+|  
 
 where **x**\ :sub:`i` \ is the **\i**\th input, **w**\ :sub:`i` \ is the weight correspond to the **\i**\th input, **b** stands for the bias, and **H** is the Heaviside step function which will be activated with positive input:
 
 .. image:: http://latex.codecogs.com/gif.latex?%5Cinline%20%5Cdpi%7B150%7D%20H%28z%29%3D%5Cleft%5C%7B%5Cbegin%7Bmatrix%7D%200%20%5Ctext%7B%2C%20if%20%7D%20z%20%3C%200%5C%5C1%20%5Ctext%7B%2C%20if%20%7D%20z%20%5Cgeq%200%20%5Cend%7Bmatrix%7D%5Cright.
+``Eq. 2``
+
+|    
+|  
 
 \For the sake of neatness of the formula, we add a facial input, **x**\ :sub:`0` \, which is always equal to 1 and its weight, **w**\ :sub:`0` \, represent the bias value. Then we can rewrite the perceptron equation as:
 
 
 .. image:: http://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20H%28%5Csum_%7Bi%7Dw_ix_i%29
+``Eq. 3``
+
+|    
+|  
 
 and simplify the diagram, by removing the addition node, assuming everyone knows that the activation function will work on the summation of inputs:
 
 .. image:: https://user-images.githubusercontent.com/27868570/46575888-71804100-c9be-11e8-872f-a53d47a80f96.png
+``Fig. 2``
+
+|    
+|  
 
 
-**Hands On**
+**Hands On (1)**
 
 ::
 
@@ -50,7 +68,7 @@ and simplify the diagram, by removing the addition node, assuming everyone knows
   And since the result is negative, the perceptron output is 0.
 
 
-**Snippet**
+**Snippet (1)**
 
 ::
 
@@ -89,11 +107,39 @@ and simplify the diagram, by removing the addition node, assuming everyone knows
   print('The perceptron output is ', perceptron(input_vector))
 
 
+As we did with the code, dealing with a perceptron, the input is the only variable we have. But the weights and the bias are the parameters of our perceptron and parts of its architecture. It does not necessarily mean that the weights and the bias take constant values. On the contrary, we will see that the most important, and the beauty, of perceptron is its ability to learn and this learning happens through the change of the weights and the bias.
+
+But for now, let’s just talk about what does each of the perceptron parameters do? We can use a simple example. Assume you want to use a perceptron deciding if a specific person likes watching a specific movie or not.\ [#]_ You could define an almost arbitrary set of criteria as your perceptron input, like the movie genre, how good are the actors, and say the movie production budget. We can quantize these three criteria assuming the person loves watching comedies, so if the movie genre is comedy (1) or not (0). And the total number of prestigious awards won by the four leading/supporting actors, and the budget in million USD. The output 0 means the person, probably, does not like the movie and 1 means she, probably, does.
+
 
 What is entropy?
 ================
+
+|    
+|  
+
+
+.. image:: https://images.mysafetysign.com/img/lg/K/Slow-Construction-Area-Sign-K-5798.gif
+
+|    
+|  
 
 
 
 How is entropy useful for understanding artificial neural networks?
 ===================================================================
+
+|    
+|  
+
+
+
+.. image:: https://images-na.ssl-images-amazon.com/images/I/410zfLWCuTL.jpg
+
+|    
+|  
+
+
+
+
+.. [#] For motivation, assume Netflix offered a US$1,000,000 prize for designing this perceptron.
