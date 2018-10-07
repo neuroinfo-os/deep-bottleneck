@@ -195,8 +195,83 @@ Imagine we want to estimate people income, based on their age, education, and sa
 .. image:: https://user-images.githubusercontent.com/27868570/46582663-cbc6e380-ca4a-11e8-806e-8332f6daa22a.png
 
 ::
-  The hidden layer weights are given with the following connectivity matrix:
+
+  The hidden layer weights are given with the following connectivity matrix: 
+
+.. image:: http://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5C%20%5C%20%5C%20%5C%20%5Cbegin%7Bmatrix%7D%20x_1%26%20x_2%26%20x_3%20%5Cend%7Bmatrix%7D%20%5C%5C%20%5Cbegin%7Bmatrix%7D%20h_1%5C%5C%20h_2%5C%5C%20h_3%5C%5C%20h_4%20%5Cend%7Bmatrix%7D%20%5Cbegin%7Bbmatrix%7D%204%263%262%20%5C%5C%20-2%261%26.5%20%5C%5C%202%26-5%261.2%5C%5C%203%26-1%266%20%5Cend%7Bbmatrix%7D
+
+::
+
+  So according to this matrix, w32 or the weight between the second input x2 and the third node in the
+  hidden layer, h3, is 5. That is, x2 will be multiplied by -5, before being fed to h3. You might feel
+  a little uncomfortable with w32 convention of labeling and like w23 much better. But you will see
+  noting the destination layer index before the origin layer makes life much easier. In addition, you
+  can always remember that the weights are set only to adjust the value which is going to be fed to
+  the next layer.
   
+  And, in the same way, the following connectivity matrix gives us the output layer weights: 
+  
+.. image:: http://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5C%20%5C%20%5C%20%5C%20%5Cbegin%7Bmatrix%7D%20h_1%26%20h_2%26%20h_3%26%20h_4%20%5Cend%7Bmatrix%7D%20%5C%5C%20%5Cbegin%7Bmatrix%7D%20y_1%5C%5C%20y_2%20%5Cend%7Bmatrix%7D%20%5Cbegin%7Bbmatrix%7D%202%26-1%265%263.2%20%5C%5C%20-4.5%261%263%262%20%5Cend%7Bbmatrix%7D
+
+::
+
+  And the bias vectors are:  
+  
+.. image:: http://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20B_0%20%3D%20%5Cbegin%7Bbmatrix%7D%202%20%5C%5C%20-3%5C%5C%201%5C%5C%20.6%5C%5C%20%5Cend%7Bbmatrix%7D%20B_1%20%3D%20%5Cbegin%7Bbmatrix%7D%204%20%5C%5C%205%20%5Cend%7Bbmatrix%7D
+
+
+::
+
+  Now we want to write a code to model this network, get a numpy array with the shape of (3,) as the
+  input and returns the network output:  
+
+
+.. code-block:: python 
+
+  import numpy as np
+
+  # Modeling Heaviside Step function
+  def heaviside(z):
+      '''
+      This function models the Heaviside Step Function;
+      it takes z, a real number, and returns 0 if it is
+      a negative number, else returns 1.
+      '''
+      if z < 0:
+          return 0
+      else:
+          return 1
+
+  # And vectorizing it, suitable for applying element-wise
+  heaviside_vec = np.vectorize(heaviside)
+
+  def ann(input_0):
+      '''
+      This Artificial Neural Network function takes a 3-element
+      array in the form of a row vector as its argument, and returns
+      a two-element row vector as its output.
+      '''
+
+      # setting the parameters
+      bias_0 = np.array([2, -3, 1, .6])
+      bias_1 = np.array([4, 5])
+      weights_10 = np.array([[4, 3, 2], [-2, 1, .5], [2, -5, 1.2], [3, -1, 6]])
+      weights_21 = np.array([[2, -1, 5, 3.2], [-4.5, 1, 3, 2]])
+
+      # calculating the net input to the first (hidden) layer
+      input_1 = np.matmul(weights_10, input_0.transpose()) + bias_0.transpose()
+
+      # calculating the output of the first (hidden) layer
+      output_1 = heaviside_vec(input_1)
+
+      # calculating the net input to the second (output) layer
+      input_2 = np.matmul(weights_21, output_1.transpose()) + bias_1.transpose()
+
+      # calculating the output of to the second (output) layer
+      output_2 = heaviside_vec(input_2)
+
+      return output_2
+
   
 .. image::
 .. image::
