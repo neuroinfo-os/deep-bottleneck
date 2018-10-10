@@ -19,7 +19,7 @@ class Experiment:
         'infoplane_movie_test': artifact.MP4Artifact,
         'information_measures_test': artifact.CSVArtifact,
         'activations_test': artifact.PNGArtifact,
-        'single_neuron_activations_test': artifact.PNGArtifact
+        'single_neuron_activations_test': artifact.PNGArtifact,
 
         # For downwards compatibility
         'infoplane': artifact.PNGArtifact,
@@ -27,7 +27,7 @@ class Experiment:
         'infoplane_movie': artifact.MP4Artifact,
         'information_measures': artifact.CSVArtifact,
         'activations': artifact.PNGArtifact,
-        'single_neuron_activations': artifact.PNGArtifact,
+        'single_neuron_activations': artifact.PNGArtifact
     }
 
     def __init__(self, id_, database, grid_filesystem, config, artifact_links, metric_links):
