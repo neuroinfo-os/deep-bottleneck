@@ -126,6 +126,8 @@ corresponding to an input. In the following plots we can see that the :math:`\si
 we define when adding the noise is a free parameter which heavily influences the
 outcome.
 
+.. figure:: _static/images/infoplanes/tanh_upper_estimator.png
+
 
 The Estimator from Kraskov (CITE PAPER)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
