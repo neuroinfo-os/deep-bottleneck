@@ -1,6 +1,5 @@
 import importlib
 import pandas as pd
-import datetime
 import h5py
 import os
 
@@ -10,10 +9,14 @@ from sacred.observers import MongoObserver
 from tensorflow.python.keras import backend as K
 
 from tensorflow.python.keras.callbacks import TensorBoard
-from deep_bottleneck.callbacks.loggingreporter import LoggingReporter
-from deep_bottleneck.callbacks.metrics_logger import MetricsLogger
+from deep_bottleneck.callbacks.activity_logger import ActivityLogger
+
+from deep_bottleneck.callbacks.gradient_logger import GradientLogger
+
+from deep_bottleneck.callbacks.metrics_logger import MetricsLogger, SacredMetricsLogger
 from deep_bottleneck.callbacks.activityprojector import ActivityProjector
 import matplotlib
+
 matplotlib.use('agg')
 
 import deep_bottleneck.credentials as credentials
@@ -29,19 +32,22 @@ def hyperparams():
     # For downwards compatibility
     dataset = None
     max_norm_weights = False
+    initial_bias = 0.0
     if dataset == 'dataset.mnist':
-        plotters = [('plotter.informationplane', []),
-                    ('plotter.snr', []),
-                    ('plotter.informationplane_movie', []),
-                    ('plotter.activations', [])
-                    ]
+        plotters = [
+            # ('plotter.informationplane', []),
+            #         ('plotter.snr', []),
+            #         ('plotter.informationplane_movie', []),
+            ('plotter.activations', [])
+        ]
     else:
-        plotters = [('plotter.informationplane', []),
-                    ('plotter.snr', []),
-                    ('plotter.informationplane_movie', []),
-                    ('plotter.activations', []),
-                    ('plotter.activations_single_neuron', [])
-                    ]
+        plotters = [
+            ('plotter.informationplane', []),
+            ('plotter.snr', []),
+            ('plotter.informationplane_movie', []),
+            ('plotter.activations', []),
+            ('plotter.activations_single_neuron', [])
+        ]
 
 
 ex.add_config('configs/basic.json')
@@ -54,9 +60,11 @@ def load_dataset(dataset):
 
 
 @ex.capture
-def load_model(model, architecture, activation_fn, optimizer, learning_rate, input_size, output_size, max_norm_weights):
+def load_model(model, architecture, activation_fn, optimizer,
+               learning_rate, input_size, output_size, max_norm_weights, initial_bias):
     module = importlib.import_module(model)
-    return module.load(architecture, activation_fn, optimizer, learning_rate, input_size, output_size, max_norm_weights)
+    return module.load(architecture, activation_fn, optimizer,
+               learning_rate, input_size, output_size, max_norm_weights, initial_bias)
 
 
 def do_report(epoch):
@@ -84,67 +92,101 @@ def make_plotters(plotters, _run, dataset):
 
 
 @ex.capture
-def generate_plots(plotter_objects, measures_summary):
+def generate_plots(plotter_objects, measures_summary, suffix):
     for plotter in plotter_objects:
-        plotter.generate(measures_summary)
+        plotter.generate(measures_summary, suffix)
 
 
 @ex.capture
-def make_callbacks(callbacks, training, test, calculate_mi_for, batch_size, activation_fn, _run, file_all_activations):
-    datestr = str(datetime.datetime.now()).split(sep='.')[0]
-    datestr = datestr.replace(':', '-')
-    datestr = datestr.replace(' ', '_')
-
+def make_callbacks(callbacks, data, batch_size, _run,
+                   file_dump_train,
+                   file_dump_test):
     callback_objects = []
-    # The logging reporter needs to be at position 0 to access the correct one for the further processing.
-    callback_objects.append(LoggingReporter(trn=training, tst=test, calculate_mi_for=calculate_mi_for,
-                                            batch_size=batch_size, activation_fn=activation_fn,
-                                            do_save_func=do_report, file_all_activations=file_all_activations))
+
+    callback_objects.append(ActivityLogger(data.train.examples,
+                                           do_save_func=do_report,
+                                           file_dump=file_dump_train))
+
+    callback_objects.append(ActivityLogger(data.test.examples,
+                                           do_save_func=do_report,
+                                           file_dump=file_dump_test))
+
+    callback_objects.append(GradientLogger(data.train,
+                                           batch_size=batch_size,
+                                           do_save_func=do_report,
+                                           file_dump=file_dump_train))
+
+    callback_objects.append(GradientLogger(data.test,
+                                           batch_size=batch_size,
+                                           do_save_func=do_report,
+                                           file_dump=file_dump_test))
+
+    callback_objects.append(MetricsLogger(file_dump_train, do_report))
+    callback_objects.append(MetricsLogger(file_dump_test, do_report))
+
+    callback_objects.append(SacredMetricsLogger(_run))
+
+    callback_objects.append(TensorBoard(log_dir=f'./logs/{_run._id}', histogram_freq=10))
+    callback_objects.append(ActivityProjector(data.test,
+                                              log_dir=f'./logs/{_run._id}',
+                                              embeddings_freq=10))
+
     for callback in callbacks:
         callback_object = importlib.import_module(callback[0]).load(*callback[1])
         callback_objects.append(callback_object)
-    callback_objects.append(MetricsLogger(_run))
-    callback_objects.append(TensorBoard(log_dir=f'./logs/{datestr}', histogram_freq=10))
-    callback_objects.append(ActivityProjector(log_dir=f'./logs/{datestr}', train=training, test=test,
-                                              embeddings_freq=10))
 
     return callback_objects
 
 
 @ex.capture
-def load_estimator(estimator, discretization_range, training_data, test_data, calculate_mi_for, architecture):
+def load_estimator(estimator, discretization_range, architecture, n_classes):
     module = importlib.import_module(estimator)
-    return module.load(discretization_range, training_data, test_data, architecture, calculate_mi_for)
+    return module.load(discretization_range, architecture, n_classes)
 
 
 @ex.automain
-def conduct(epochs, batch_size, dataset, n_runs, _run):
-    training, test = load_dataset()
+def conduct(epochs, batch_size, n_runs, _run):
+    data = load_dataset()
 
-    measures_all_runs = []
+    estimator = load_estimator(n_classes=data.n_classes)
+    plotter_objects = make_plotters()
+
+    measures_all_runs_train = []
+    measures_all_runs_test = []
 
     steps_per_epoch = None
 
     for run_id in range(n_runs):
-        model = load_model(input_size=training.X.shape[1], output_size=training.n_classes)
-        os.makedirs("activations", exist_ok=True)
-        file_name_all_activations = f'activations/activations_experiment_{_run._id}_run_{run_id}'
-        file_all_activations = h5py.File(file_name_all_activations, "a")
-        callbacks = make_callbacks(training=training, test=test, file_all_activations=file_all_activations)
-        model.fit(x=training.X, y=training.Y,
+        model = load_model(input_size=data.train.examples.shape[1], output_size=data.n_classes)
+        os.makedirs("dumps", exist_ok=True)
+        file_name_dump_train = f'dumps/experiment_{_run._id}_run_{run_id}_train.h5'
+        file_name_dump_test = f'dumps/experiment_{_run._id}_run_{run_id}_test.h5'
+
+        file_dump_train = h5py.File(file_name_dump_train, "a")
+        file_dump_test = h5py.File(file_name_dump_test, "a")
+
+        callbacks = make_callbacks(data=data,
+                                   file_dump_train=file_dump_train,
+                                   file_dump_test=file_dump_test)
+        model.fit(x=data.train.examples, y=data.train.one_hot_labels,
                   verbose=2,
                   batch_size=batch_size,
                   steps_per_epoch=steps_per_epoch,
                   epochs=epochs,
-                  validation_data=(test.X, test.Y),
+                  validation_data=(data.test.examples, data.test.one_hot_labels),
                   callbacks=callbacks)
 
         print('fit successful')
 
-        estimator = load_estimator(training_data=training, test_data=test)
-        measures = estimator.compute_mi(file_all_activations=file_all_activations)
-        measures['run'] = run_id
-        measures_all_runs.append(measures)
+        measures_train = estimator.compute_mi(data.train,
+                                              file_dump=file_dump_train)
+        measures_train['run'] = run_id
+        measures_all_runs_train.append(measures_train)
+
+        measures_test = estimator.compute_mi(data.test,
+                                             file_dump=file_dump_test)
+        measures_test['run'] = run_id
+        measures_all_runs_test.append(measures_test)
 
         # Clear the current Session to free current layer and model definition.
         # This would otherwise be kept in memory. It is not needed as every run
@@ -152,20 +194,32 @@ def conduct(epochs, batch_size, dataset, n_runs, _run):
         K.clear_session()
 
     # Transform list of measurements into DataFrame with hierarchical index.
-    measures_all_runs = pd.concat(measures_all_runs)
-    measures_all_runs = measures_all_runs.fillna(0)
+    measures_all_runs_train = pd.concat(measures_all_runs_train)
+    measures_all_runs_train = measures_all_runs_train.fillna(0)
+
+    measures_all_runs_test = pd.concat(measures_all_runs_test)
+    measures_all_runs_test = measures_all_runs_test.fillna(0)
 
     # Save information measures
-    mi_filename = "information_measures.csv"
-    measures_all_runs.to_csv(mi_filename)
-    _run.add_artifact(mi_filename, name="information_measures")
+    mi_filename = "information_measures_train.csv"
+    measures_all_runs_train.to_csv(mi_filename)
+    _run.add_artifact(mi_filename, name="information_measures_train")
+
+    mi_filename = "information_measures_test.csv"
+    measures_all_runs_test.to_csv(mi_filename)
+    _run.add_artifact(mi_filename, name="information_measures_test")
 
     # compute mean of information measures over all runs
-    mi_mean_over_runs = measures_all_runs.groupby(['epoch', 'layer']).mean()
+    mi_mean_over_runs_train = measures_all_runs_train.groupby(['epoch', 'layer']).mean()
+    mi_mean_over_runs_test = measures_all_runs_test.groupby(['epoch', 'layer']).mean()
 
-    measures_summary = {'measures_all_runs': measures_all_runs,
-                        'mi_mean_over_runs': mi_mean_over_runs,
-                        'activations_summary': file_all_activations}
+    measures_summary_train = {'measures_all_runs': measures_all_runs_train,
+                              'mi_mean_over_runs': mi_mean_over_runs_train,
+                              'activations_summary': file_dump_train}
 
-    plotter_objects = make_plotters()
-    generate_plots(plotter_objects, measures_summary)
+    measures_summary_test = {'measures_all_runs': measures_all_runs_test,
+                             'mi_mean_over_runs': mi_mean_over_runs_test,
+                             'activations_summary': file_dump_test}
+
+    generate_plots(plotter_objects, measures_summary_train, suffix='train')
+    generate_plots(plotter_objects, measures_summary_test, suffix='test')

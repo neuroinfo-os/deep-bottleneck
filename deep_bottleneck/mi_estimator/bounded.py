@@ -3,8 +3,8 @@ from deep_bottleneck.mi_estimator import kde
 
 class BoundedMutualInformationEstimator(MutualInformationEstimator):
 
-    def __init__(self, discretization_range, training_data, test_data, architecture, calculate_mi_for):
-        super().__init__(discretization_range, training_data, test_data, architecture, calculate_mi_for)
+    def __init__(self, discretization_range, architecture, n_classes):
+        super().__init__(discretization_range, architecture, n_classes)
         self.noise_variance = discretization_range # Added Gaussian noise variance.
 
     def _estimate_entropy(self, data):

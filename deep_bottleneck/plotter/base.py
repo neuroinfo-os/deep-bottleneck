@@ -4,13 +4,21 @@ import matplotlib
 class BasePlotter:
     """Base class for plotters."""
     plotname = ''
+    file_ext = ''
 
-    def generate(self, measures_summary):
+    def make_filename(self, suffix):
+        suffix = '_' + suffix if suffix else suffix
+        filename = f'plots/{self.plotname}{suffix}.{self.file_ext}'
+        return filename
+
+    def generate(self, measures_summary, suffix=''):
         fig = self.plot(measures_summary)
-        filename = f'plots/{self.plotname}.png'
+        filename = self.make_filename(suffix)
         fig.savefig(filename, bbox_inches='tight', dpi=300)
+        suffix = '_' + suffix if suffix else suffix
+        artifact_name = f'{self.plotname}{suffix}'
 
-        self.run.add_artifact(filename, name=self.plotname)
+        self.run.add_artifact(filename, name=artifact_name)
 
     def plot(self, measures_summary) -> matplotlib.figure.Figure:
         raise NotImplementedError

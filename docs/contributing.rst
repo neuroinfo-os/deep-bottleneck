@@ -2,6 +2,44 @@
 Contributing
 ************
 
+Extending the framework
+=======================
+There are several possibilities to extend the framework. In the following the structure of the 
+framework is shown to allow an easy extension of the basic modules.
+There are five types of modules that can be included quite easy, they are listed in the table below:
+Each module requires a module level ``load`` method to be defined, that passes the hyperparameters
+from the sacred configuration to the constructor of the class.
+
+:dataset:
+    The datasets live in the ``deep_bottleneck.dataset`` folder and require a load-method 
+    returning a training and a test dataset.
+:model:
+    The models live in in the ``deep_bottleneck.model`` folder and require a ``load``-method as well.
+    But in this case the load-method returns a trainable keras-model.
+:estimator:
+    The mutual information estimators live in the ``deep_bottleneck.mi_estimator`` folder 
+    and require a load-method as well.
+    The ``load``-method should return an estimator that is able to compute the mutual information 
+    based on a dataset and is described in more detailed  by a hyperparameter called 
+    ``discretization_range``.
+:callback:
+    Callbacks can be used for different kinds of tasks. They live in the ``deep_bottleneck.callbacks`` 
+    folder and are used to save the needed information during the training or to 
+    influence the training process (e.g. early stopping).
+    They need to inherit from ``keras.callbacks.Callback``.
+:plotter:
+    Plotters are using the saved data of the callbacks to create the different plots. 
+    They live in the ``deep_bottleneck.plotter`` folder and
+    need a load method returning a plotter-class inheriting from 
+    ``deep_bottleneck.plotter.base.BasePlotter``.
+
+To add a new module, it needs to be added into the respective folder. Then the 
+configuration parameter needs to be set to the import path of the module.
+If the path is correctly defined and the module has a matching interface, 
+it will automatically be imported in ``experiment.py`` and conduct its tasks.
+More about the interfaces and the existing methods in the 
+:doc:`API-documentation </api_doc/modules>`.
+
 Git workflow
 ============
 
@@ -103,7 +141,6 @@ And here our non exhaustive list to guidelines to write cleaner code.
 
 
 
-`PEP8 <https://www.python.org/dev/peps/pep-0008/>`_
 
 
 Experiment workflow
@@ -126,6 +163,17 @@ Experiment workflow
 
 Documentation
 =============
+To build the documentation run::
+
+    $ cd docs
+    $ make html
 
 A short restructeredText `reference <https://github.com/ralsina/rst-cheatsheet/blob/master/rst-cheatsheet.rst>`_.
 There is also a longer `video tutorial <https://www.youtube.com/watch?v=hM4I58TA72g>`_
+
+If you added new packages and want to add them to the API documentation use::
+
+    $ sphinx-apidoc -o docs/api_doc/ deep_bottleneck deep_bottleneck/credentials.py deep_bottleneck/experiment.py deep_bottleneck/demo.py
+
+Make sure to change the header of ``modules.rst`` back to "API Documentation".
+

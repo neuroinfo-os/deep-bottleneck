@@ -7,7 +7,7 @@ import tensorflow as tf
 from tensorflow.python.summary import summary as tf_summary
 from tensorflow.contrib.tensorboard.plugins import projector
 
-import utils
+from deep_bottleneck import utils
 import numpy as np
 
 
@@ -20,11 +20,10 @@ class ActivityProjector(keras.callbacks.Callback):
     with its Embeddings Projector
     """
 
-    def __init__(self, train, test, log_dir='./logs', embeddings_freq=10):
+    def __init__(self, test_set, log_dir='./logs', embeddings_freq=10):
         """
         Args:
-            train: The training data
-            test: The test data
+            test_set: The test data
             log_dir: Path to directory used for logging
             embeddings_freq: Defines how often embedding variables will be saved to
                 the log directory. If set to 1, this is done every epoch, if it is set to 10 every 10th epoch and so forth.
@@ -41,12 +40,10 @@ class ActivityProjector(keras.callbacks.Callback):
 
         self.embeddings_ckpt_path = os.path.join(self.log_dir, 'keras_embedding.ckpt')
 
-        self.train = train
-        self.test = test
-        self.full = utils.construct_full_dataset(train, test)
+        self.test_set = test_set
 
         # Save metadata.
-        np.savetxt(f'{log_dir}/metadata.tsv', self.test.y, fmt='%i')
+        np.savetxt(f'{log_dir}/metadata.tsv', self.test_set.labels, fmt='%i')
 
     def set_model(self, model):
         """Prepare for logging the activities of the layers and set up the TensorBoard projector
@@ -62,7 +59,7 @@ class ActivityProjector(keras.callbacks.Callback):
         for layer in self.model.layers:
             if utils.is_dense_like(layer):
                 layerfunc = K.function(self.model.inputs, [layer.output])
-                layer_activity = layerfunc([self.test.X])[0]
+                layer_activity = layerfunc([self.test_set.examples])[0]
                 embeddings.append(tf.Variable(layer_activity, name=layer.name))
 
         self.saver = tf.train.Saver(embeddings)
