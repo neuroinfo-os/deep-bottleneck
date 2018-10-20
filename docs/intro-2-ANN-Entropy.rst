@@ -2,6 +2,8 @@
 - What is entropy?
 - How is entropy useful for understanding artificial neural networks?
 
+|  
+|  
 
 What are artificial neural networks?
 ====================================
