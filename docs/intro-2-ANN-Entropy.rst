@@ -656,7 +656,7 @@ You see how PReLU was generalizing Leaky ReLU, and Leaky ReLU was, somehow, gene
 |    
 |  
 
-So, what ReLU family do, basically, is to take the x and compute the corresponding y, using two lines’ equations, and then pass the biggest y as the output. Now, what Maxout does, is to do the very same thing except two things. First, Maxout won’t limit itself to only two lines. And second, those lines that Maxout work with, do not have pre-defined equations, but their characteristics like slope and y-insects will be learned. From this aspect, you can say Maxout is not just training the network, but on a lower level, it is also training the activation function, itself.
+So, what ReLU family do, basically, is to take the x and compute the corresponding y, using two lines’ equations, and then pass the biggest y as the output. Now, what Maxout does, is to do the same except two things. First, Maxout won’t limit itself to only two lines. And second, those lines that Maxout work with, do not have pre-defined equations, but their characteristics like slope and y-insects will be learned. From this aspect, you can say Maxout is not just training the network, but on a lower level, it is also training the activation function, itself.
 
 .. image:: https://user-images.githubusercontent.com/27868570/47259503-7c50d080-d4aa-11e8-9de3-f61e27bc83a5.jpg
 ``Fig. 7.``
