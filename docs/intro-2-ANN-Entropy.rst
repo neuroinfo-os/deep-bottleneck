@@ -757,7 +757,7 @@ Hard tangent function...
 ::
 
   Think of a new activation function with some advantages over the popular ones. Run an expriment to
-  compare its perfocrmance with the other. If it outperform the popular one, publish a paper on it.
+  compare its perfocrmance with the others. If it outperforms the hot ones, publish a paper on it.
 
 
 
