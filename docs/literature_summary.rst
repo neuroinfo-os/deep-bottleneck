@@ -169,48 +169,49 @@ compare the same layer at different time steps, or simply different layers.
 #. The comparison of two representations fulfills two important properties:
     * It is invariant to affine transformation (which allows the comparison
     between different layers and networks).
+
     * It is fast to compute, which allows more comparisons to be calculated
     than with previous methods.
 
 6.2 How SVCCA works
 ^^^^^^^^^^^^^^^^^^^
 #. SVCCA is short for Singular Vector Canonical Correlation Analysis and
-therefore combines the Singular Value Decomposition with a Canonical Correlation
-Analysis.
+  therefore combines the Singular Value Decomposition with a Canonical Correlation
+  Analysis.
 
-#. The representation of a neuron is defined as a table / function that maps the
-inputs on all possible outputs for a single neuron. Its representation is
-therefore studied as a set of responses over a finite set of inputs. Formally,
-that means that given a dataset :math:`X = {x_1,...,x_m}` and a neuron :math:`i`
-on layer :math:`l`, we define :math: `z^{l}_{i} to be the vector of outputs on
-:math: `X`, i.e.
+#. The representation of a neuron is defined as a table/function that maps the
+  inputs on all possible outputs for a single neuron. Its representation is
+  therefore studied as a set of responses over a finite set of inputs. Formally,
+  that means that given a dataset :math:`X = {x_1,...,x_m}` and a neuron :math:`i`
+  on layer :math:`l`, we define :math:`z^{l}_{i}` to be the vector of outputs on
+  :math:`X`, i.e.
 
-..math::
+  ..math::
 
-  z^{l}_{i} = (z^{l}_{i}(x_1),··· ,z^{l}_{i}(x_m)).
+    z^{l}_{i} = (z^{l}_{i}(x_1),··· ,z^{l}_{i}(x_m)).
 
-Note that :math: `z^{l}_{i}` is a single neuron's response over the entire
-dataset and not an entire layer's response for a single input. In this sense
-the neuron can be tought of as a single vector in a high-dimensional space.
-A layer is therefore a subspace of :math: `\mathbb{R}^m`spanned by its neurons'
-vectors.
+  Note that :math:`z^{l}_{i}` is a single neuron's response over the entire
+  dataset and not an entire layer's response for a single input. In this sense
+  the neuron can be tought of as a single vector in a high-dimensional space.
+  A layer is therefore a subspace of :math:`\mathbb{R}^m` spanned by its neurons'
+  vectors.
 
 #. **Input**: takes two (note necessarily different) sets of neurons (typically
-layers of a network)
+  layers of a network)
 
-..math::
+.. math::
   l_1 = {z^{l_1}_{1}, ..., z^{l_{m_1}}_{l_1}} and l_2 = {z^{l_2}_{1}, ..., z^{l_{m_2}}_{l_2}}
 
 #. **Step 1**: Use SVD of each  subspace to get sub-subspaces :math:`l_1' \in l_1`
-and :math: `l_2' \in l_2`, which contain of the most important directions of the
-original subspaces :math: `l_1, l_2`.
+  and :math:`l_2' \in l_2`, which contain of the most important directions of the
+  original subspaces :math:`l_1, l_2`.
 
 #. **Step 2**: Compute Canonical Correlation similarity of :math:`l_1', l_2'`:
-linearly transform :math:`l_1', l_2'` to be as aligned as possible and compute
-correlation coefficients.
+  linearly transform :math:`l_1', l_2'` to be as aligned as possible and compute
+  correlation coefficients.
 
-#. **Output**: pairs of aligned directions :math: `(\~{z}_i^{l_1}, \~{z}_i^{l_2})`
-and how well their correlate :math: `\rho_i`. The SVCCA similarity is defined as
+#. **Output**: pairs of aligned directions :math:`(\~{z}_i^{l_1}, \~{z}_i^{l_2})`
+  and how well their correlate :math:`\rho_i`. The SVCCA similarity is defined as
 
-..math::
+.. math::
   \={\rho} = \frac{1}{\min(m_1,m_2)} \sum_i \rho_i .
