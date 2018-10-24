@@ -54,29 +54,10 @@ Shwartz-Ziv, R., & Tishby, N. (2017). Opening the black box of deep neural netwo
 ^^^^^^^^^^^^^^
 
 
-
-4. ON THE INFORMATION BOTTLENECK THEORY OF DEEP LEARNING (Saxe 2018)
---------------------------------------------------------------------
-Saxe, A. M., Bansal, Y., Dapello, J., Advani, M., Kolchinsky, A., Tracey, B. D., & Cox, D. D. (2018, May). On the information bottleneck theory of deep learning. In International Conference on Learning Representations.
-
-4.1. Glossary
-^^^^^^^^^^^^^
-
-4.2. Structure
-^^^^^^^^^^^^^^
-
-4.3. Criticisim
-^^^^^^^^^^^^^^^
-
-4.4. Todo List
-^^^^^^^^^^^^^^
-
-
-
-5. ON THE INFORMATION BOTTLENECK THEORY OF DEEP LEARNING
+4. ON THE INFORMATION BOTTLENECK THEORY OF DEEP LEARNING
 --------------------------------------------------------
 
-:cite:`Andrew2017`
+Saxe, A. M., Bansal, Y., Dapello, J., Advani, M., Kolchinsky, A., Tracey, B. D., & Cox, D. D. (2018, May). On the information bottleneck theory of deep learning. In International Conference on Learning Representations.
 
 Key Points of the paper:
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -111,7 +92,7 @@ Key Points of the paper:
 |
 
 Most important Experiments:
-^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 #. Tishby's experiment reconstructed: 
 
     * 7 fully connected hidden layers of width 12-10-7-5-4-3-2 
