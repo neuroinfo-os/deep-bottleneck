@@ -7,7 +7,7 @@ import argparse
 def main():
     create_output_directory()
     args = parse_command_line_args()
-    start_experiments(args.configpath, args.local_execution)
+    start_experiments(args.configpath, bool(args.local_execution))
 
 
 def create_output_directory():
@@ -35,7 +35,7 @@ def start_experiments(config_dir_or_file, local_execution):
     if os.path.isdir(config_dir_or_file):
         for root, _, files in os.walk(config_dir_or_file):
             for file in files:
-                start_experiment(root, file)
+                start_experiment(root, file, local_execution)
                 n_experiments += 1
 
     else:
@@ -52,8 +52,7 @@ def start_experiment(root, file, local_execution):
     if is_valid_config_file:
         config_path = os.path.join(root, file)
         experiment_name, _ = os.path.splitext(config_path)
-        print(local_execution)
-        if local_execution == "True":
+        if local_execution:
             command = f'python experiment.py --name {experiment_name} with {config_path} seed=0'
         else:
             command = f'qsub -N {submission_name} experiment.sge {experiment_name} {config_path}'
