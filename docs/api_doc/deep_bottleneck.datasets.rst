@@ -5,7 +5,7 @@ Submodules
 ----------
 
 deep\_bottleneck.datasets.base\_dataset module
------------------------------------------------
+----------------------------------------------
 
 .. automodule:: deep_bottleneck.datasets.base_dataset
     :members:

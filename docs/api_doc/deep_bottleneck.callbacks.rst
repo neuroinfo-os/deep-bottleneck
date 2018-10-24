@@ -4,6 +4,14 @@ deep\_bottleneck.callbacks package
 Submodules
 ----------
 
+deep\_bottleneck.callbacks.activity\_logger module
+--------------------------------------------------
+
+.. automodule:: deep_bottleneck.callbacks.activity_logger
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 deep\_bottleneck.callbacks.activityprojector module
 ---------------------------------------------------
 
@@ -20,10 +28,10 @@ deep\_bottleneck.callbacks.earlystopping\_manual module
     :undoc-members:
     :show-inheritance:
 
-deep\_bottleneck.callbacks.loggingreporter module
--------------------------------------------------
+deep\_bottleneck.callbacks.gradient\_logger module
+--------------------------------------------------
 
-.. automodule:: deep_bottleneck.callbacks.loggingreporter
+.. automodule:: deep_bottleneck.callbacks.gradient_logger
     :members:
     :undoc-members:
     :show-inheritance:
