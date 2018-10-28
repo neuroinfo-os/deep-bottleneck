@@ -11,7 +11,7 @@ Tishby, N., Pereira, F. C., & Bialek, W. (2000). The information bottleneck meth
 1.2. Structure
 ^^^^^^^^^^^^^^
 
-1.3. Criticisim
+1.3. Criticism
 ^^^^^^^^^^^^^^^
 
 1.4. Todo List
@@ -47,7 +47,7 @@ Shwartz-Ziv, R., & Tishby, N. (2017). Opening the black box of deep neural netwo
 3.2. Structure
 ^^^^^^^^^^^^^^
 
-3.3. Criticisim
+3.3. Criticism
 ^^^^^^^^^^^^^^^
 
 3.4. Todo List
@@ -65,7 +65,7 @@ Saxe, A. M., Bansal, Y., Dapello, J., Advani, M., Kolchinsky, A., Tracey, B. D.,
 4.2. Structure
 ^^^^^^^^^^^^^^
 
-4.3. Criticisim
+4.3. Criticism
 ^^^^^^^^^^^^^^^
 
 4.4. Todo List
@@ -91,7 +91,7 @@ Key Points of the paper:
 
 |
 
-* the osberved compression is different based on the activation function: double-sided saturating nonlinearities like tanh
+* the observed compression is different based on the activation function: double-sided saturating nonlinearities like tanh
   yield a compression phase, but linear activation functions and single-sided saturating nonlinearities like ReLU do not.
 
 |
@@ -111,13 +111,13 @@ Key Points of the paper:
 |
 
 Most important Experiments:
-^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 #. Tishby's experiment reconstructed:
 
     * 7 fully connected hidden layers of width 12-10-7-5-4-3-2
     * trained with stochastic gradient descent to produce a binary classification from a 12-dimensional input
     * 256 randomly selected samples per batch
-    * mutual information is calculated by binning th  output activations into 30 equal intervals between -1 and 1
+    * mutual information is calculated by binning the output activations into 30 equal intervals between -1 and 1
     * trained on Tishby dataset
     * tanh-activation function
 
@@ -126,7 +126,7 @@ Most important Experiments:
     * 7 fully connected hidden layers of width 12-10-7-5-4-3-2
     * trained with stochastic gradient descent to produce a binary classification from a 12-dimensional input
     * 256 randomly selected samples per batch
-    * mutual information is calculated by binning th  output activations into 30 equal intervals between -1 and 1
+    * mutual information is calculated by binning the output activations into 30 equal intervals between -1 and 1
     * ReLu-activation function
 
 #. Tanh-activation function on MNIST:
@@ -152,37 +152,47 @@ Presentation:
 
 
 6. SVCCA: Singular Vector Canonical Correlation Analysis
---------------------------------------------------
-Maithra Raghu, Justin Gilmer, Jason Yosinski,
-Jascha Sohl-Dickstein (2017). SVCCA: Singular Vector Canonical Correlation
-Analysis for Deep Learning Dynamics and Interpretability.
+--------------------------------------------------------
+
+cite:`Raghu2017`
 
 6.1 Key Points of the paper
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-#. They developed a method that analyses each neuron's activation vector (i.e.
-the scalar outputs that are emitted on input datapoints). This analysis gives an
-insight into learning dynamics and learned representation.
+- They developed a method that analyses each neuron's activation vector (i.e.
+  the scalar outputs that are emitted on input data points). This analysis gives an
+  insight into learning dynamics and learned representation.
 
-#. SVCCA is a general method that compares two learned representations of
-different neural network layers and architectures. It is either possible to
-compare the same layer at different time steps, or simply different layers.
+- SVCCA is a general method that compares two learned representations of
+  different neural network layers and architectures. It is either possible to
+  compare the same layer at different time steps, or simply different layers.
 
-#. The comparison of two representations fulfills two important properties:
+- The comparison of two representations fulfills two important properties:
+
     * It is invariant to affine transformation (which allows the comparison
       between different layers and networks).
 
-      * It is fast to compute, which allows more comparisons to be calculated
+    * It is fast to compute, which allows more comparisons to be calculated
       than with previous methods.
 
-6.2 How SVCCA works
+6.2 Experiment Set-Up
+^^^^^^^^^^^^^^^^^^^^^
+
+- **Dataset**: mostly CIFAR-10 (augmented with random translations) 
+
+- **Architecture**: One convolutional network and one residual network
+
+- In order to produce a few figures, they decided to design a toy regression task (training a four hidden layer fully connected network with 1D input and 4D output)
+
+
+6.3 How SVCCA works
 ^^^^^^^^^^^^^^^^^^^
 
-#. SVCCA is short for Singular Vector Canonical Correlation Analysis and
+- SVCCA is short for Singular Vector Canonical Correlation Analysis and
   therefore combines the Singular Value Decomposition with a Canonical Correlation
   Analysis.
 
-#. The representation of a neuron is defined as a table/function that maps the
+- The representation of a neuron is defined as a table/function that maps the
   inputs on all possible outputs for a single neuron. Its representation is
   therefore studied as a set of responses over a finite set of inputs. Formally,
   that means that given a dataset :math:`X = {x_1,...,x_m}` and a neuron :math:`i`
@@ -195,27 +205,32 @@ compare the same layer at different time steps, or simply different layers.
 
   Note that :math:`z^{l}_{i}` is a single neuron's response over the entire
   dataset and not an entire layer's response for a single input. In this sense
-  the neuron can be tought of as a single vector in a high-dimensional space.
+  the neuron can be thought of as a single vector in a high-dimensional space.
   A layer is therefore a subspace of :math:`\mathbb{R}^m` spanned by its neurons'
   vectors.
 
-#. **Input**: takes two (note necessarily different) sets of neurons (typically
-  layers of a network)
+1. **Input**: takes two (not necessarily different) sets of neurons (typically layers of a network)
 
     .. math::
 
-      l_1 = {z^{l_1}_{1}, ..., z^{l_{m_1}}_{l_1}} and l_2 = {z^{l_2}_{1}, ..., z^{l_{m_2}}_{l_2}}
+      l_1 = {z^{l_1}_{1}, ..., z^{l_{m_1}}_{l_1}} \text{ and } l_2 = {z^{l_2}_{1}, ..., z^{l_{m_2}}_{l_2}}
 
-#. **Step 1**: Use SVD of each  subspace to get sub-subspaces :math:`l_1' \in l_1`
-  and :math:`l_2' \in l_2`, which contain of the most important directions of the
-  original subspaces :math:`l_1, l_2`.
+2. **Step 1**: Use SVD of each  subspace to get sub-subspaces :math:`l_1' \in l_1` and :math:`l_2' \in l_2`, which contain of the most important directions of the original subspaces :math:`l_1, l_2`.
 
-#. **Step 2**: Compute Canonical Correlation similarity of :math:`l_1', l_2'`:
-  linearly transform :math:`l_1', l_2'` to be as aligned as possible and compute
-  correlation coefficients.
+3. **Step 2**: Compute Canonical Correlation similarity of :math:`l_1', l_2'`: linearly transform :math:`l_1', l_2'` to be as aligned as possible and compute correlation coefficients.
 
-#. **Output**: pairs of aligned directions :math:`(\~{z}_i^{l_1}, \~{z}_i^{l_2})`
-  and how well their correlate :math:`\rho_i`. The SVCCA similarity is defined as
+4. **Output**: pairs of aligned directions :math:`(\widetilde{z}_{i}^{l_1}, \widetilde{z}_{i}^{l_2})` and how well their correlate :math:`\rho_i`. The SVCCA similarity is defined as
 
     .. math::
-      \={\rho} = \frac{1}{\min(m_1,m_2)} \sum_i \rho_i .
+      \bar{\rho} = \frac{1}{\min(m_1,m_2)} \sum_i \rho_i .
+
+6.4 Results
+^^^^^^^^^^^
+
+- The dimensionality of a layer's learned representation does not have to be the same number than the number of neurons in the layer.
+
+- Because of a bottom up convergence of the deep learning dynamics, they suggest a computationally more efficient method for training the network - *Freeze Training*. In Freeze Training  layers are sequentially frozen after a certain number of time steps. 
+
+- Computational speed up is successfully done with a Discrete Fourier Transform causing all block matrices to be block-diagonal. 
+
+- Moreover, SVCCA captures the semantics of different classes, with similar classes having similar sensitivities, and vice versa. 
