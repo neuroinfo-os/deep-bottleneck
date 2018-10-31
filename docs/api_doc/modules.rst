@@ -1,5 +1,5 @@
-deep_bottleneck
-===============
+API Documentation
+=================
 
 .. toctree::
    :maxdepth: 4
