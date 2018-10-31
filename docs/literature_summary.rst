@@ -1,27 +1,27 @@
-Literature Summary
+Literature summary
 ==================
 
-1. THE INFORMATION BOTTLENECK METHOD (Tishby 1999)
+1. The information bottleneck method (Tishby 1999)
 --------------------------------------------------
 :cite:`Tishby2000`
 
 
-2. DEEP LEARNING AND THE INFORMATION BOTTLENECK PRINCIPLE (Tishby 2015)
+2. Deep learning and the information bottleneck principle (Tishby 2015)
 -----------------------------------------------------------------------
 :cite:`Tishby2015`
 
 
-3. OPENING THE BLACK BOX OF DEEP NEURAL NETWORKS VIA INFORMATION (Tishby 2017)
+3. Opening the black box of deep neural networks via information (Tishby 2017)
 ------------------------------------------------------------------------------
 :cite:`Schwartz-ziv2017`
 
 
-4. ON THE INFORMATION BOTTLENECK THEORY OF DEEP LEARNING (Saxe 2018)
+4. On the information bottleneck theory of deep learning (Saxe 2018)
 --------------------------------------------------------------------
 :cite:`Saxe2018`
 
-Key Points of the paper:
-^^^^^^^^^^^^^^^^^^^^^^^^
+4.1 Key points of the paper
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 * none of the following claims of Tishby (:cite:`Tishby2015`) holds in the general case:
 
@@ -29,29 +29,19 @@ Key Points of the paper:
     #. the compression phase is causally related to the excellent generalization performance of deep networks
     #. the compression phase occurs due to the diffusion-like behavior of stochastic gradient descent
 
-|
-
 * the observed compression is different based on the activation function: double-sided saturating nonlinearities like tanh
   yield a compression phase, but linear activation functions and single-sided saturating nonlinearities like ReLU do not.
 
-|
-
 * there is no evident causal connection between compression and generalization.
 
-|
-
 * the compression phase, when it exists, does not arise from stochasticity in training.
-
-|
 
 * when an input domain consists of a subset of task-relevant and task-irrelevant information, the task-irrelevant information compress
   although the overall information about the input may monotonically increase with training time. This compression happens concurrently
   with the fitting process rather than during a subsequent compression period.
 
-|
-
-Most important Experiments:
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+4.2 Most important experiments
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 #. Tishby's experiment reconstructed:
 
     * 7 fully connected hidden layers of width 12-10-7-5-4-3-2
@@ -61,7 +51,7 @@ Most important Experiments:
     * trained on Tishby's dataset
     * tanh-activation function
 
-#. Tishby's experiment reconstructed with ReLu activation:
+#. Tishby's experiment reconstructed with ReLU activation:
 
     * 7 fully connected hidden layers of width 12-10-7-5-4-3-2
     * trained with stochastic gradient descent to produce a binary classification from a 12-dimensional input
@@ -77,25 +67,25 @@ Most important Experiments:
     * trained on MNIST dataset
     * tanh-activation function
 
-#. ReLu-activation function on MNIST:
+#. ReLU-activation function on MNIST:
 
     * 6 fully connected hidden layers of width 784 - 1024 - 20 - 20 - 20 - 10
     * trained with stochastic gradient descent to produce a binary classification from a 12-dimensional input
     * non-parametric kernel density mutual information estimator
     * trained on MNIST dataset
-    * ReLu-activation function
+    * ReLU-activation function
 
-Presentation:
-^^^^^^^^^^^^^
+4.3 Presentation
+^^^^^^^^^^^^^^^^
 
-`Google slides link <https://docs.google.com/presentation/d/1tB-TkvULUd4QvVn5ClDRDko6q8Y1EOdaZnTX3eGtxVc/edit?usp=sharing>`_
+`Click here to open presentation as PDF document. <_static/on_the_information_bottleneck_theory_presentation.pdf>`_
 
 
-5. SVCCA: Singular Vector Canonical Correlation Analysis
+5. SVCCA: singular vector canonical correlation analysis
 --------------------------------------------------------
 :cite:`Raghu2017`
 
-5.1 Key Points of the paper
+5.1 Key points of the paper
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - They developed a method that analyses each neuron's activation vector (i.e.
@@ -114,10 +104,10 @@ Presentation:
     * It is fast to compute, which allows more comparisons to be calculated
       than with previous methods.
 
-5.2 Experiment Set-Up
+5.2 Experiment set-up
 ^^^^^^^^^^^^^^^^^^^^^
 
-- **Dataset**: mostly CIFAR-10 (augmented with random translations) 
+- **Dataset**: mostly CIFAR-10 (augmented with random translations)
 
 - **Architecture**: One convolutional network and one residual network
 
@@ -168,8 +158,11 @@ Presentation:
 
 - The dimensionality of a layer's learned representation does not have to be the same number than the number of neurons in the layer.
 
-- Because of a bottom up convergence of the deep learning dynamics, they suggest a computationally more efficient method for training the network - *Freeze Training*. In Freeze Training  layers are sequentially frozen after a certain number of time steps. 
+- Because of a bottom up convergence of the deep learning dynamics, they suggest a computationally more efficient method for training the network - *Freeze Training*. In Freeze Training  layers are sequentially frozen after a certain number of time steps.
 
-- Computational speed up is successfully done with a Discrete Fourier Transform causing all block matrices to be block-diagonal. 
+- Computational speed up is successfully done with a Discrete Fourier Transform causing all block matrices to be block-diagonal.
 
-- Moreover, SVCCA captures the semantics of different classes, with similar classes having similar sensitivities, and vice versa. 
+- Moreover, SVCCA captures the semantics of different classes, with similar classes having similar sensitivities, and vice versa.
+
+
+.. bibliography:: references.bib
