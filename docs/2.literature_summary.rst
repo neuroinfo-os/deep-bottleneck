@@ -6,9 +6,11 @@ Literature summary
 :cite:`Tishby2000`
 
 
+
 2. Deep learning and the information bottleneck principle (Tishby 2015)
 -----------------------------------------------------------------------
 :cite:`Tishby2015`
+
 
 
 3. Opening the black box of deep neural networks via information (Tishby 2017)
@@ -16,9 +18,12 @@ Literature summary
 :cite:`Schwartz-ziv2017`
 
 
+
 4. On the information bottleneck theory of deep learning (Saxe 2018)
 --------------------------------------------------------------------
 :cite:`Saxe2018`
+
+
 
 4.1 Key points of the paper
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -79,6 +84,7 @@ Literature summary
 ^^^^^^^^^^^^^^^^
 
 `Click here to open presentation as PDF document. <_static/on_the_information_bottleneck_theory_presentation.pdf>`_
+
 
 
 5. SVCCA: singular vector canonical correlation analysis
@@ -163,6 +169,7 @@ Literature summary
 - Computational speed up is successfully done with a Discrete Fourier Transform causing all block matrices to be block-diagonal.
 
 - Moreover, SVCCA captures the semantics of different classes, with similar classes having similar sensitivities, and vice versa.
+
 
 
 .. bibliography:: references.bib
