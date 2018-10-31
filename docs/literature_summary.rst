@@ -3,87 +3,27 @@ Literature Summary
 
 1. THE INFORMATION BOTTLENECK METHOD (Tishby 1999)
 --------------------------------------------------
-Tishby, N., Pereira, F. C., & Bialek, W. (2000). The information bottleneck method. arXiv preprint physics/0004057.
-
-1.1. Glossary
-^^^^^^^^^^^^^
-
-1.2. Structure
-^^^^^^^^^^^^^^
-
-1.3. Criticism
-^^^^^^^^^^^^^^^
-
-1.4. Todo List
-^^^^^^^^^^^^^^
-
+:cite:`Tishby2000`
 
 
 2. DEEP LEARNING AND THE INFORMATION BOTTLENECK PRINCIPLE (Tishby 2015)
 -----------------------------------------------------------------------
-Tishby, N., & Zaslavsky, N. (2015, April). Deep learning and the information bottleneck principle. In Information Theory Workshop (ITW), 2015 IEEE (pp. 1-5). IEEE.
-
-2.1. Glossary
-^^^^^^^^^^^^^
-
-2.2. Structure
-^^^^^^^^^^^^^^
-
-2.3. Criticisim
-^^^^^^^^^^^^^^^
-
-2.4. Todo List
-^^^^^^^^^^^^^^
-
+:cite:`Tishby2015`
 
 
 3. OPENING THE BLACK BOX OF DEEP NEURAL NETWORKS VIA INFORMATION (Tishby 2017)
 ------------------------------------------------------------------------------
-Shwartz-Ziv, R., & Tishby, N. (2017). Opening the black box of deep neural networks via information. arXiv preprint arXiv:1703.00810.
-
-3.1. Glossary
-^^^^^^^^^^^^^
-
-3.2. Structure
-^^^^^^^^^^^^^^
-
-3.3. Criticism
-^^^^^^^^^^^^^^^
-
-3.4. Todo List
-^^^^^^^^^^^^^^
-
+:cite:`Schwartz-ziv2017`
 
 
 4. ON THE INFORMATION BOTTLENECK THEORY OF DEEP LEARNING (Saxe 2018)
 --------------------------------------------------------------------
-Saxe, A. M., Bansal, Y., Dapello, J., Advani, M., Kolchinsky, A., Tracey, B. D., & Cox, D. D. (2018, May). On the information bottleneck theory of deep learning. In International Conference on Learning Representations.
-
-4.1. Glossary
-^^^^^^^^^^^^^
-
-4.2. Structure
-^^^^^^^^^^^^^^
-
-4.3. Criticism
-^^^^^^^^^^^^^^^
-
-4.4. Todo List
-^^^^^^^^^^^^^^
-
-
-
-5. ON THE INFORMATION BOTTLENECK THEORY OF DEEP LEARNING
---------------------------------------------------------
-
-:cite:`Andrew2017`
+:cite:`Saxe2018`
 
 Key Points of the paper:
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-
-
-* none of the following claims of Tishby (:cite:`Tishby`) holds in the general case:
+* none of the following claims of Tishby (:cite:`Tishby2015`) holds in the general case:
 
     #. deep networks undergo two distinct phases consisting of an initial fitting phase and a subsequent compression phase
     #. the compression phase is causally related to the excellent generalization performance of deep networks
@@ -118,7 +58,7 @@ Most important Experiments:
     * trained with stochastic gradient descent to produce a binary classification from a 12-dimensional input
     * 256 randomly selected samples per batch
     * mutual information is calculated by binning the output activations into 30 equal intervals between -1 and 1
-    * trained on Tishby dataset
+    * trained on Tishby's dataset
     * tanh-activation function
 
 #. Tishby's experiment reconstructed with ReLu activation:
@@ -151,12 +91,11 @@ Presentation:
 `Google slides link <https://docs.google.com/presentation/d/1tB-TkvULUd4QvVn5ClDRDko6q8Y1EOdaZnTX3eGtxVc/edit?usp=sharing>`_
 
 
-6. SVCCA: Singular Vector Canonical Correlation Analysis
+5. SVCCA: Singular Vector Canonical Correlation Analysis
 --------------------------------------------------------
+:cite:`Raghu2017`
 
-cite:`Raghu2017`
-
-6.1 Key Points of the paper
+5.1 Key Points of the paper
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - They developed a method that analyses each neuron's activation vector (i.e.
@@ -175,7 +114,7 @@ cite:`Raghu2017`
     * It is fast to compute, which allows more comparisons to be calculated
       than with previous methods.
 
-6.2 Experiment Set-Up
+5.2 Experiment Set-Up
 ^^^^^^^^^^^^^^^^^^^^^
 
 - **Dataset**: mostly CIFAR-10 (augmented with random translations) 
@@ -185,7 +124,7 @@ cite:`Raghu2017`
 - In order to produce a few figures, they decided to design a toy regression task (training a four hidden layer fully connected network with 1D input and 4D output)
 
 
-6.3 How SVCCA works
+5.3 How SVCCA works
 ^^^^^^^^^^^^^^^^^^^
 
 - SVCCA is short for Singular Vector Canonical Correlation Analysis and
@@ -224,7 +163,7 @@ cite:`Raghu2017`
     .. math::
       \bar{\rho} = \frac{1}{\min(m_1,m_2)} \sum_i \rho_i .
 
-6.4 Results
+5.4 Results
 ^^^^^^^^^^^
 
 - The dimensionality of a layer's learned representation does not have to be the same number than the number of neurons in the layer.
