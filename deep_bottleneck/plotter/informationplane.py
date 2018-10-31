@@ -48,4 +48,11 @@ class InformationPlanePlotter(BasePlotter):
 
         fig.colorbar(sm, label='Epoch')
 
+        for layer_nr, layer_mi in measures.groupby(level=1):
+            # plot polynomials per layer
+            z = np.polyfit(layer_mi['MI_YM'], layer_mi['MI_XM'], 2)
+            p = np.poly1d(z)
+            xp = np.linspace(ax.get_ylim()[0], ax.get_ylim()[1], 100)
+            plt.plot(p(xp), xp, '-')
+
         return fig

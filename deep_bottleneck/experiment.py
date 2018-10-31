@@ -38,15 +38,15 @@ def hyperparams():
             # ('plotter.informationplane', []),
             #         ('plotter.snr', []),
             #         ('plotter.informationplane_movie', []),
-            ('plotter.activations', [])
+            #('plotter.activations', [])
         ]
     else:
         plotters = [
             ('plotter.informationplane', []),
-            ('plotter.snr', []),
-            ('plotter.informationplane_movie', []),
-            ('plotter.activations', []),
-            ('plotter.activations_single_neuron', [])
+            #('plotter.snr', []),
+            ('plotter.informationplane_movie', [])#,
+            #('plotter.activations', []),
+            #('plotter.activations_single_neuron', [])
         ]
 
 
