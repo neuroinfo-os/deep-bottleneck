@@ -2,10 +2,12 @@
 - What is entropy?
 - How is entropy useful for understanding artificial neural networks?
 
+|  
+|  
 
 What are artificial neural networks?
 ====================================
-Making some sorts of artificial lives, capable of acting humanly-rational, has been a long lasting dream of mankind. We started with mechanical bodies, working solely based on laws of physics, which were mostly fun creatures rather than intelligent ones. The big leap took place as we stepped in the programmable computers era; when the focus shifted to those features of human skills which were a bit more brainy. So the results became more serious and successful. Codes started beating us in some aspects of intelligence which involve memory and speed, especially when they were tested using well, and formally, structured problems. But their Achilles Heel was the tasks that need a bit of intuition and our banal common sense. So, while codes were instructed to outperform us at solving elegant logical problems at which our brains are miserably weak, they failed to carry out some simple trivial tasks that we are able to do, even without consciously thinking about them. It was like we made an intangible creature who is actually intelligent, but in a different direction perpendicular to the direction of our intelligence. Thus, we thought if we really want something that act similar to us, we need to structure it just like ourselves. And that was the very reason for all the efforts that finally led to the realization of artificial neural networks (ANNs).
+Making some sorts of artificial lives, capable of acting humanly-rational, has been a long lasting dream of mankind. We started with mechanical bodies, working solely based on laws of physics, which were mostly fun creatures rather than intelligent ones. The big leap took place as we stepped in the programmable computers era; when the focus shifted to those features of human skills which were a bit more brainy. So the results became more serious and successful. Codes started beating us in some aspects of intelligence which involve memory and speed, especially when they were tested using well, and formally, structured s. But their Achilles Heel was the tasks that need a bit of intuition and our banal common sense. So, while codes were instructed to outperform us at solving elegant logical problems at which our brains are miserably weak, they failed to carry out some simple trivial tasks that we are able to do, even without consciously thinking about them. It was like we made an intangible creature who is actually intelligent, but in a different direction perpendicular to the direction of our intelligence. Thus, we thought if we really want something that act similar to us, we need to structure it just like ourselves. And that was the very reason for all the efforts that finally led to the realization of artificial neural networks (ANNs).
 
 Unlike the conventional codes, which are instructed what to do, in a step-by-step way and by a human supervisor, neural networks learn stuff by observing data. It is almost the same as the way our brain learns doing intuitive tasks that we have no clear idea of exactly how and exactly when we have learned doing them; for example, a trivial task like recognizing a fire hydrant in a picture of a random street. And that was the way we chose to tackle the common sense problem of AI. So, what are these neural networks?
 
@@ -468,7 +470,301 @@ To have a better understanding of what is going on over there, the following dia
   
 .. image:: https://user-images.githubusercontent.com/27868570/46586583-df8d3c80-ca80-11e8-8dad-6514bb87a11c.png
 
-Looking at the Softmax graph you can see that...
+**Hyperbolic Tangent or TanH Function**
+
+Hyperbolic tangent activation function or simply tanh is pretty much like the sigmoid function, with the same popularity, and the same s-like graph. In fact, as you can check with the equation, you can define the tanh function using a horizontally and vertically, scaled and shifted version of the sigmoid function. And for that reason you can model a network with tanh hidden nodes using a network with sigmoid hidden nodes and vice versa. However, unlike the sigmoid function which its output is between 0 and 1, and therefore a lovely choice for probabilistics problems, tanh output ranges between -1 and 1, and therefore is zero centered, thanks to the vertical shift we mentioned. That enables tanh function to handle negative values with its negative range. For the very same reason, training process is easier and faster with tanh nodes.
+
+.. image:: http://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20tanh%28z%29%3D%5Cfrac%7Bsinh%28z%29%7D%7Bcosh%28z%29%7D%3D%5Cfrac%7Be%5Ez-e%5E%7B-z%7D%7D%7Be%5Ez&plus;e%5E%7B-z%7D%7D%3D%5Cfrac%7B1-e%5E%7B-2z%7D%7D%7B1&plus;e%5E%7B-2z%7D%7D%3D%5Cfrac%7B2%7D%7B1&plus;e%5E%7B-2z%7D%7D-1%3D2%5Csigma%20%282z%29-1
+``Eq. 8``
+
+|    
+|  
+
+**Snippet (7)**
+
+::
+  
+  Modeling the tanh activation function and plotting its graph:  
+
+.. code-block:: python 
+
+  import numpy as np
+  import matplotlib.pyplot as plt
+
+  def tanh(z):
+    '''
+    This function models the Hyperbolic Tangent
+    activation function.
+    '''
+    y = [np.tanh(component) for component in z]
+    return y
+
+  # Plotting the graph of the function for an input range
+  # from -10 to 10 with step size .01
+
+  z = np.arange(-10, 11, .01)
+  y = tanh(z)
+
+  plt.title('Hyperbolic Tangent (tanh) Function')
+  plt.grid()
+  plt.plot(z, y)
+  plt.show()
+
+.. image:: https://user-images.githubusercontent.com/27868570/47258882-60493100-d4a2-11e8-9720-143d1afb1975.png
+
+**Rectified Linear Unit or ReLU Function**
+
+Rectified Linear Unit or ReLU function, currently, is the hottest activation function in the hidden layers. Mathematically, ReLU is the step function and linear function joining together at the point zero. It rectifies the linear function by shutting it down in negative range.
+
+.. image:: http://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20R%28z%29%3Dmax%280%2Cz%29
+``Eq. 9``
+
+|    
+|  
+
+This combination makes it benefit from the good features of both functions. That is, while ReLU enjoys the unboundness of linear function, thanks to its behavior in the negative range, it is still a nonlinear function, not a barely, hardly useful linear function. We discussed that no matter how deep and how complex is a network of linear nodes, you can compress it to a single layer network of the same linear nodes. On the other hand, a network formed of ReLU neurons, could model any function you think of. The reason is that the nonlinearity of ReLU function will be chopped into random pieces and combined in complex patterns going through hidden layers and neurons; just the same as what happens to information flow in a neural network. And that makes the network nonlinear with a desirable level of complexity.
+In addition, ReLU benefits its linear part the way that the linear function itself can barely make use of. As we mentioned training a network needs a steady and slow rates of change in the network output. A feature that is missing in sigmoid and tanh neurons when we move towards big negatives and positives value. At those ranges, sigmoid and tanh have asymptotic behavior which means their change rates get undesirably slow and diminish. But ReLU has a steady rate of change, albeit for the positive range.
+There is one more beautiful thing about ReLU behavior in negative range. Networks with sigmoid and tanh neurons are firing all the time; but a ReLU neuron just like its wet counterpart sometimes does not fire, even in the presence of a stimuli. So using ReLU we can have *sparse activation* networks.
+This property, alongside with the steady rate of change, and its simple form, enables ReLU not only to have a faster training session, but also to be computationally less expensive.
+Though this negative blindness of ReLU has its own issues, as well. First and most obvious, it cannot handle negative values. Secondly, we have this problem called *dying ReLu*, that happens in the negative range, when the rate of change becomes zero. So when a neuron produce a big enough negative output, changing its weights and bias does not show any regress or progress; just like a dead body sending out flatline.
+
+**Snippet (8)**
+
+::
+  
+  Modeling the ReLU activation function and plotting its graph:  
+
+.. code-block:: python 
+
+  import numpy as np
+  import matplotlib.pyplot as plt
+
+  def relu(z):
+      '''
+      This function models the Rectified Linear Unit
+      activation function.
+      '''
+      y = [max(0, component) for component in z]
+      return y
+
+  # Plotting the graph of the function for an input range
+  # from -10 to 10 with step size .01
+
+  z = np.arange(-10, 11, .01)
+  y = relu(z)
+
+  plt.title('Rectified Linear Unit (ReLU) Function')
+  plt.grid()
+  plt.plot(z, y)
+  plt.show()
+
+.. image:: https://user-images.githubusercontent.com/27868570/47259304-dd2ad980-d4a7-11e8-99b2-c4246733c12a.png
+
+**Leaky ReLU Function**
+
+And the Leaky ReLU function is here to solve the negative issues about the negative blindness of ReLU function aka dying ReLU. So instead of a flatline with zero change rate, leaky ReLU leaks a little in negative range, with an arbitrary, but gentle slope, usually set to .01. But it costs us the ‘sparse activation’ advantage of ReLU.
+
+.. image:: http://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20g%28z%29%3Dmax%28.01z%2Cz%29
+``Eq. 10``
+
+|    
+|  
+
+**Snippet (9)**
+
+::
+  
+  Modeling the Leaky ReLU activation function and plotting its graph:  
+
+.. code-block:: python 
+
+  import numpy as np
+  import matplotlib.pyplot as plt
+
+  def lRelu(z):
+    '''
+    This function models the Leaky ReLU
+    activation function.
+    '''
+    y = [max(.01 * component, component) for component in z]
+    return y
+
+  # Plotting the graph of the function for an input range
+  # from -.005 to .001 with step size .001
+
+  z = np.arange(-.005, .001, .001)
+  y = lRelu(z)
+
+  plt.title('Leaky ReLU Function')
+  plt.grid()
+  plt.plot(z, y)
+  plt.show()
+
+.. image:: https://user-images.githubusercontent.com/27868570/47259351-d18be280-d4a8-11e8-8929-8cc40661a676.png
+
+**Parametric ReLU  or PReLU Function**
+
+Parametric ReLU or PReLU function is a variant of the Leaky ReLU, in that the slope is not constant but it is defined as a another parameter of the network, 𝛼, which will be tuned during training just like other parameters, weights and biases.
+
+.. image:: http://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20g%28z%29%3Dmax%28%5Calpha%20z%2Cz%29
+``Eq. 11``
+
+|    
+|  
+
+**Snippet (10)**
+
+::
+  
+  Modeling the PReLU activation function and plotting its graph:  
+
+.. code-block:: python 
+
+  import numpy as np
+  import matplotlib.pyplot as plt
+
+  def pRelu(z):
+    '''
+    This function models the Parametric ReLU or PReLU
+    activation function with alpha equals to .3.
+    '''
+    y = [max(.3 * component, component) for component in z]
+    return y
+
+  # Plotting the graph of the function for an input range
+  # from -10 to 10 with step size .01
+
+  z = np.arange(-10, 10, .01)
+  y = pRelu(z)
+
+  plt.title('Parametric ReLU Function')
+  plt.annotate(r'y=$\alpha$x', xy=(-5, -1.5), xytext=(-5, 1.5),
+              arrowprops=dict(facecolor='black', width=.2))
+  plt.grid()
+  plt.plot(z, y)
+  plt.show()
+
+.. image:: https://user-images.githubusercontent.com/27868570/47259431-c2596480-d4a9-11e8-85c6-314d55bcb6cd.png
+
+**Maxout Function**
+
+You see how PReLU was generalizing Leaky ReLU, and Leaky ReLU was, somehow, generalization of ReLU. Now, the Maxout activation function is a big step further in generalization of ReLU family of activation functions. Think about PReLU one more time, and this time try to see it as a combination of two linear functions.
+
+.. image:: https://user-images.githubusercontent.com/27868570/47259443-f16fd600-d4a9-11e8-84ce-6a7a240b6162.jpg
+``Fig. 6.``
+
+|    
+|  
+
+So, what ReLU family do, basically, is to take the x and compute the corresponding y, using two lines’ equations, and then pass the biggest y as the output. Now, what Maxout does, is to do the same except two things. First, Maxout won’t limit itself to only two lines. And second, those lines that Maxout work with, do not have pre-defined equations, but their characteristics like slope and y-insects will be learned. From this aspect, you can say Maxout is not just training the network, but on a lower level, it is also training the activation function, itself.
+
+.. image:: https://user-images.githubusercontent.com/27868570/47259503-7c50d080-d4aa-11e8-9de3-f61e27bc83a5.jpg
+``Fig. 7.``
+
+|    
+| 
+
+Maxout has a two-stage mechanism. There are linear nodes, at the first stage, which take the previous layer outputs (or the networks input, for sure) as their inputs, and the next stage is just a simple function, picking the maximum out.
+
+.. image:: http://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20g%28X%29%3Dmax%28z_1%2Cz_2%2C..%2Cz_i%29%20%5Ctext%7B%2C%20the%20second%20stage%7D%20%5C%5C%20where%20%5Ctext%7B%20%5C%20%5C%20%7D%20z_i%3D%5Csum_%7B1%7D%5E%7Bj%7Dw_%7Bij%7Dx_j%20&plus;b_i%5Ctext%7B%2C%20the%20first%20stage%7D
+``Eq. 12``
+
+|    
+|  
+
+.. image:: https://user-images.githubusercontent.com/27868570/47259589-7f988c00-d4ab-11e8-8cc1-f7aded41a54c.png
+
+``Fig. 8. Maxout inside workings``
+
+|    
+| 
+
+In the above picture, we have a Maxout neurons with 3 linear nodes. As you might noticed, Maxout linear nodes will be fed with net outputs of the previous layer (or network inputs), instead of being processed by weights and biases. The reason is obvious; Maxout weights and biases are shifted to its linear nodes.
+A network with two Maxout neurons can approximate any continuous function with an arbitrary level of accuracy.
+
+**Snippet (11)**
+
+::
+  
+  Modeling the Maxout activation function:  
+
+.. code-block:: python 
+
+  import numpy as np
+  import matplotlib.pyplot as plt
+
+  def maxout(x, w, b):
+    '''
+    This function models the Maxout activation function.
+    It takes input, x, the Maxout linear nodes weights, w,
+    and its biases, b, all with numpy array format.
+    x.shape = (1,i)
+    w.shape = (n,i)
+    b.shape = (1,n)
+    i = the number of Maxout inputs
+    n = the number of Maxout's linear nodes
+    '''
+    y = np.max(w @ np.transpose(x) + np.transpose(b))
+    return y
+    
+
+**Exponential Linear Unit or  ELU Function**
+
+Exponential function...
+
+.. image:: http://www.animatedimages.org/data/media/695/animated-under-construction-image-0035.gif
+
+
+**Softplus Function**
+
+Softplus function...
+
+.. image:: http://www.animatedimages.org/data/media/695/animated-under-construction-image-0035.gif
+
+
+**Radial Basis Function**
+
+Radial Basis function...
+
+.. image:: http://www.animatedimages.org/data/media/695/animated-under-construction-image-0035.gif
+
+
+**Swish Function**
+
+Swish function...
+
+.. image:: http://www.animatedimages.org/data/media/695/animated-under-construction-image-0035.gif
+
+
+**Arctangent Function**
+
+Arctangent function...
+
+
+.. image:: http://www.animatedimages.org/data/media/695/animated-under-construction-image-0035.gif
+
+
+**Hard Tangent Function**
+
+Hard tangent function...
+
+
+.. image:: http://www.animatedimages.org/data/media/695/animated-under-construction-image-0035.gif
+
+
+**Problem (3)**
+
+::
+
+  Think of a new activation function with some advantages over the popular ones. Run an expriment to
+  compare its perfocrmance with the others. If it outperforms the hot ones, publish a paper on it.
+
+
+
+Training
+--------
+But...
+
 
 .. image:: https://i.ebayimg.com/images/g/n9EAAOSwvc1ZaCei/s-l300.jpg
 
@@ -512,4 +808,4 @@ How is entropy useful for understanding artificial neural networks?
 .. [#] And provided that the nodes’ activation functions are nonlinear.
 .. [#] Both in an abstract and also a physical sense.
 .. [#] Xu, K., Ba, J., Kiros, R., Cho, K., Courville, A., Salakhudinov, R., ... & Bengio, Y. (2015, June). Show, attend and tell: Neural image caption generation with visual attention. In *International conference on machine learning* (pp. 2048-2057).
-.. [#] Compare with the fact that you can use a, say, sigmoid neuron, wherever in a network you want, without being sure of what you are doing!
+.. [#] Compare with the fact that you can use, say, a sigmoid neuron, almost wherever in a network that you want, without being sure of what you are doing!
