@@ -257,7 +257,7 @@ Documentation on how to run an experiment on grid
 
 5. Create a new folder with your Rechenzentrum username.::
 
-    $ mk dir rz_login_username
+    $ mkdir rz_login_username
 
 6. Go into your folder and clone the git repository.::
 
@@ -267,11 +267,11 @@ Documentation on how to run an experiment on grid
 7. Create a folder in deep-bottleneck/deep_bottleneck that you call output.::
 
     $ cd deep-bottleneck/deep_bottleneck
-    $ mk dir output
+    $ mkdir output
 
 8. Go into the following folder: ::
 
-    $ cd deep_bottleneck/deep_bottleneck
+    $ cd net/projects/scratch/summer/valid_until_31_January_2019/deep_bottleneck/deep_bottleneck
 
 9. Make sure you created a config-file that defines your parameter settings that you want to test. These should be in the following folder: ::
 
@@ -279,10 +279,9 @@ Documentation on how to run an experiment on grid
 
 10. Activate the dneck environment: ::
 
-      $ cd net/projects/scratch/summer/valid_until_31_January_2019/bottleneck/miniconda
       $ source activate dneck
 
-If that does not work than check your python path and see if ./miniconda/bin is already added to your path.
+If that does not work than check your $PATH and see if net/projects/scratch/summer/valid_until_31_January_2019/bottleneck/miniconda/bin is already added to your path.
 
 11. In order to run the experiment type: ::
 
