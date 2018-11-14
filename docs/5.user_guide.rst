@@ -240,47 +240,58 @@ To avoid misconceptions it is possible to set a seed for each experiment, simply
 but even in the other cases some IDEs allow to set script-parameters for normal executions of a
 specific file, such that it is not required to start the ``experiment.py`` out of the command-line.
 
-**Documentation on how to run an experiment on grid**
+Documentation on how to run an experiment on grid
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 1. Open console.
 
-2. Connect with Server via ssh. Your username should be your Rechenzentrums Login, as well as your password should be the corresponding password.
-ssh rz_login_username@gate.ikw.uos.de
+2. Connect with Server via ssh. Your username should be your Rechenzentrums Login, as well as your password should be the corresponding password.::
+
+    $ ssh rz_login_username@gate.ikw.uos.de
 
 3. If you want to run something on the grid for the first time, follow steps 4 - 7. Otherwise go directly to 8.
 
-4. Go to the following folder:
-cd net/projects/scratch/summer/valid_until_31_January_2019
+4. Go to the following folder: ::
 
-5. Create a new folder with your Rechenzentrum username.
-mk dir rz_login_username
+    $ cd net/projects/scratch/summer/valid_until_31_January_2019
 
-6. Go into your folder and clone the git repository.
-cd rz_login_username
-git clone https://github.com/neuroinfo-os/deep-bottleneck.git
+5. Create a new folder with your Rechenzentrum username.::
 
-7. Create a folder in deep-bottleneck/deep_bottleneck that you call output.
-cd deep-bottleneck/deep_bottleneck
-mk dir output
+    $ mk dir rz_login_username
 
-8. Go into the following folder:
+6. Go into your folder and clone the git repository.::
 
-cd deep_bottleneck/deep_bottleneck
+    $ cd rz_login_username
+    $ git clone https://github.com/neuroinfo-os/deep-bottleneck.git
 
-9. Make sure you created a config-file that defines your parameter settings that you want to test. These should be in the following folder:
+7. Create a folder in deep-bottleneck/deep_bottleneck that you call output.::
 
-deep_bottleneck/deep_bottleneck/configs/cohort_xx (xx - set a number and document your experiment in read the docs)
+    $ cd deep-bottleneck/deep_bottleneck
+    $ mk dir output
 
-10. Activate the dneck environment:
-cd net/projects/scratch/summer/valid_until_31_January_2019/bottleneck/miniconda
-source activate dneck
-(if that does not work than check your python path and see if ./miniconda/bin is already in your path)
+8. Go into the following folder: ::
 
-11. In order to run the experiment type:
-python run_experiments-py -c configs/cohort_xx
-(choose your config file)
+    $ cd deep_bottleneck/deep_bottleneck
 
-12. In order to see where your experiment is in the queue, check with:
-qstat
+9. Make sure you created a config-file that defines your parameter settings that you want to test. These should be in the following folder: ::
+
+    $ deep_bottleneck/deep_bottleneck/configs/cohort_xx (xx - set a number and document your experiment in read the docs)
+
+10. Activate the dneck environment: ::
+
+      $ cd net/projects/scratch/summer/valid_until_31_January_2019/bottleneck/miniconda
+      $ source activate dneck
+
+If that does not work than check your python path and see if ./miniconda/bin is already added to your path.
+
+11. In order to run the experiment type: ::
+
+    $ python run_experiments-py -c configs/cohort_xx
+
+Choose your config file.
+
+12. In order to see where your experiment is in the queue, check with: ::
+
+    $ qstat
 
 13. If experiment fails, check your output folder for console output. Delete data in output folder regularly.
