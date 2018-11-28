@@ -10,7 +10,7 @@ the following table offers a simple description for each cohort.
 +------------+-----------------------------------------------------------------------------------+
 | Cohort     | Description                                                                       |
 +============+===================================================================================+
-| cohort_1   | Comparison of upper, lower and binning as different estimator.                    |
+| cohort_1   | Comparison of upper, lower and binning as different estimator.                    |  
 |            | Additionally the hyperparameter of the estimators are varied.                     |
 |            | All experiments are done for relu and tanh using sgd as optimizer.                |
 +------------+-----------------------------------------------------------------------------------+
@@ -36,3 +36,8 @@ the following table offers a simple description for each cohort.
 | cohort_8   | Comparison of architecture with batchnorm and without batchnorm.                  |
 |            | All experiments are done for relu and tanh using adam as optimizer.               |
 +------------+-----------------------------------------------------------------------------------+
+| cohort_9   | Comparison of architecture with batchnorm and without batchnorm.                  |
+|            | All experiments are done for relu and tanh using adam as optimizer.               |
++------------+-----------------------------------------------------------------------------------+
+
+
