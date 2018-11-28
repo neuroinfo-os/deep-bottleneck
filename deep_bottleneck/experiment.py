@@ -148,7 +148,6 @@ def load_estimator(estimator, discretization_range, architecture, n_classes):
 def conduct(epochs, batch_size, n_runs, _run):
     data = load_dataset()
 
-    estimator = load_estimator(n_classes=data.n_classes)
     plotter_objects = make_plotters()
 
     measures_all_runs_train = []
@@ -157,6 +156,7 @@ def conduct(epochs, batch_size, n_runs, _run):
     steps_per_epoch = None
 
     for run_id in range(n_runs):
+        estimator = load_estimator(n_classes=data.n_classes)
         model = load_model(input_size=data.train.examples.shape[1], output_size=data.n_classes)
         os.makedirs("dumps", exist_ok=True)
         file_name_dump_train = f'dumps/experiment_{_run._id}_run_{run_id}_train.h5'
