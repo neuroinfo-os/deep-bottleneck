@@ -287,7 +287,7 @@ If that does not work than check your $PATH and see if net/projects/scratch/summ
 
 11. In order to run the experiment type: ::
 
-    $ python run_experiments-py -c configs/cohort_xx
+    $ python run_experiments.py -c configs/cohort_xx
 
 Choose your config file.
 
