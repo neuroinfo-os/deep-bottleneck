@@ -1,0 +1,14 @@
+{
+  "epochs": 1000,
+  "batch_size": 256,
+  "architecture": [128, 64, 32],
+  "optimizer": "adam",
+  "learning_rate": 0.001,
+  "activation_fn": "tanh",
+  "model": "models.feedforward",
+  "dataset": "datasets.mnist",
+  "estimator": "mi_estimator.lower",
+  "discretization_range": 1e-3,
+  "callbacks": [],
+  "n_runs": 1
+}

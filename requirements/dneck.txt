@@ -3,8 +3,10 @@ scipy
 matplotlib
 keras
 pathlib2
-tensorflow
+tensorflow==1.8
 seaborn
 sacred
 pymongo
 sacredboard
+pandas
+scikit-learn

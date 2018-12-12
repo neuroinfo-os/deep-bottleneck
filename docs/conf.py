@@ -12,24 +12,25 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-# import os
-# import sys
-# sys.path.insert(0, os.path.abspath('.'))
+import os
+import sys
+sys.path.append(os.path.abspath('.'))
+sys.path.append(os.path.abspath('..'))
 
+
+import matplotlib
+matplotlib.use('agg')
 
 # -- Project information -----------------------------------------------------
 
 project = 'Deep Bottleneck'
-copyright = '2018, Rüdiger Busche'
-author = 'Rüdiger Busche'
+copyright = '2018, Deep Bottleneck study project'
+author = 'Deep Bottleneck study project team'
 
 # The short X.Y version
 version = ''
 # The full version, including alpha/beta/rc tags
 release = ''
-
-
-# -- General configuration ---------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
 #
@@ -45,6 +46,11 @@ extensions = [
     'sphinx.ext.mathjax',
     'sphinx.ext.viewcode',
     'sphinxcontrib.bibtex',
+    'nbsphinx',
+    'sphinx.ext.napoleon',
+    'sphinx.ext.viewcode',
+
+
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -69,7 +75,7 @@ language = None
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path .
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', '**.ipynb_checkpoints'] 
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'
@@ -135,7 +141,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'DeepBottleneck.tex', 'Deep Bottleneck Documentation',
-     'Rüdiger Busche', 'manual'),
+     'Deep Bottleneck study project team', 'manual'),
 ]
 
 
@@ -172,3 +178,5 @@ intersphinx_mapping = {'https://docs.python.org/': None}
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = True
+
+autodoc_mock_imports = ['tensorflow']

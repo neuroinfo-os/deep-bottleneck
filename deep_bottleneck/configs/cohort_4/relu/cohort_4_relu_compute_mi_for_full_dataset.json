@@ -1,0 +1,15 @@
+{
+"epochs": 8000,
+"batch_size" : 256,
+"architecture" : [10, 7, 5, 4, 3],
+"learning_rate" : 0.0004,
+"activation_fn" :"relu",
+"model" : "models.feedforward",
+"dataset" : "datasets.harmonics",
+"estimator" : "mi_estimator.upper",
+"discretization_range" : 0.001,
+"callbacks" : [],
+"optimizer" : "adam",
+"n_runs" : 5,
+"regularization" : false
+}
