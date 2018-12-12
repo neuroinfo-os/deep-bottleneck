@@ -768,17 +768,29 @@ But...
 
 Entropy and mutual information
 ------------------------------
+Entropy for a piece of data translates the level of uncertainty about the content of that piece, which is the same quantity as the maximum number of binary bits required to code that piece of data,
 
 |    
-|  
-
-
-.. image:: https://images.mysafetysign.com/img/lg/K/Slow-Construction-Area-Sign-K-5798.gif
+| 
+.. image:: https://latex.codecogs.com/gif.latex?\dpi{150}&space;\text{Entropy}&space;=&space;H(X)&space;=&space;-\sum_{x\in&space;X}p(x)log(p(x))&space;\\
 
 |    
-|  
+| 
+
+.. image:: https://latex.codecogs.com/gif.latex?\dpi{150}&space;\text{Conditional&space;Entropy}&space;=&space;H(Y|X)&space;=&space;-\sum_{x\in&space;X}p(x)log(H(Y|X=x))&space;\\&space;\text{&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;}&space;=&space;-\sum_{x\in&space;X}p(x)\sum_{y\in&space;Y}p(y|x)log(p(y|x))&space;\\&space;\text{&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;}&space;=&space;-\sum_{x\in&space;X}\sum_{y\in&space;Y}p(x,y)log(p(y|x))&space;\\
 
 
+|    
+| 
+.. image:: https://latex.codecogs.com/gif.latex?\dpi{150}&space;\text{Joint&space;Entropy}&space;=&space;H(X,Y)&space;=&space;-\sum_{x\in&space;X}\sum_{y\in&space;Y}p(x,y)log(p(x,y))&space;\\&space;\text{\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;}&space;=&space;H(X)&space;&plus;&space;H(Y|X)
+
+|    
+| 
+
+.. image:: https://latex.codecogs.com/gif.latex?\dpi{150}&space;\text{Mutual&space;Information}&space;=&space;I(X;Y)&space;=&space;-\sum_{x\in&space;X}\sum_{y\in&space;Y}p(x,y)log(\frac{p(x,y)}{p(x)p(y)})&space;\\&space;\text{\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;}&space;=&space;H(X)&space;-&space;H(X|Y)\\&space;\text{\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;}&space;=&space;H(Y)&space;-&space;H(Y|X)
+
+|    
+|
 
 Entropy for understanding artificial neural networks
 ----------------------------------------------------
