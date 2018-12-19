@@ -148,8 +148,6 @@ def generator(examples, labels, batch_size):
  batch_features = []
  batch_labels = []
  
- #batch_features = np.zeros((batch_size, 784))
- #batch_labels = np.zeros((batch_size,10))
  while True:
    for i in range(batch_size):
      # choose random index in features
