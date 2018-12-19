@@ -2,8 +2,6 @@ import importlib
 import pandas as pd
 import h5py
 import os
-import numpy as np
-from random import randint
 
 from sacred import Experiment
 from sacred.observers import MongoObserver
@@ -128,7 +126,6 @@ def make_callbacks(callbacks, data, batch_size, _run,
 
     callback_objects.append(SacredMetricsLogger(_run))
 
-    #callback_objects.append(TensorBoard(log_dir=f'./logs/{_run._id}', histogram_freq=10))
     callback_objects.append(ActivityProjector(data.test,
                                               log_dir=f'./logs/{_run._id}',
                                               embeddings_freq=10))
@@ -235,8 +232,8 @@ def conduct(epochs, batch_size, n_runs, _run, steps_per_epoch=None):
     _run.add_artifact(mi_filename, name="information_measures_test")
 
     # compute mean of information measures over all runs
-    mi_mean_over_runs_train = measures_all_runs_train.groupby(['epoch', 'layer']).median()
-    mi_mean_over_runs_test = measures_all_runs_test.groupby(['epoch', 'layer']).median()
+    mi_mean_over_runs_train = measures_all_runs_train.groupby(['epoch', 'layer']).mean()
+    mi_mean_over_runs_test = measures_all_runs_test.groupby(['epoch', 'layer']).mean()
 
     measures_summary_train = {'measures_all_runs': measures_all_runs_train,
                               'mi_mean_over_runs': mi_mean_over_runs_train,
