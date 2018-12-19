@@ -143,19 +143,19 @@ def load_estimator(estimator, discretization_range, architecture, n_classes):
     return module.load(discretization_range, architecture, n_classes)
 
 def generator(examples, labels, batch_size):
- # Create empty arrays to contain batch of features and labels#
- 
- batch_features = []
- batch_labels = []
- 
- while True:
-   for i in range(batch_size):
-     # choose random index in features
-     index= randint(1,len(examples))
-     #index= random.choice(examples)
-     batch_features.append(examples[index])
-     batch_labels.append(labels[index])
-   yield np.asarray(batch_features), np.asarray(batch_labels)   
+# Create empty arrays to contain batch of features and labels#
+
+batch_features = []
+batch_labels = []
+
+while True:
+for i in range(batch_size):
+    # choose random index in features
+    index= randint(1,len(examples))
+    #index= random.choice(examples)
+    batch_features.append(examples[index])
+    batch_labels.append(labels[index])
+yield np.asarray(batch_features), np.asarray(batch_labels)   
 
 
 @ex.automain
