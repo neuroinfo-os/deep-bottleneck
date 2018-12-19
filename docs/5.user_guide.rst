@@ -281,11 +281,13 @@ Documentation on how to run an experiment on grid
 
       $ source activate dneck
 
-If that does not work than check your $PATH and see if net/projects/scratch/summer/valid_until_31_January_2019/bottleneck/miniconda/bin is already added to your path.
+If that does not work than check your $PATH and see if net/projects/scratch/summer/valid_until_31_January_2019/bottleneck/miniconda/bin is already added to your path. If not: ::
+
+      $ export PATH=$PATH:/net/projects/scratch/summer/valid_until_31_January_2019/bottleneck/miniconda/bin
 
 11. In order to run the experiment type: ::
 
-    $ python run_experiments-py -c configs/cohort_xx
+    $ python run_experiments.py -c configs/cohort_xx
 
 Choose your config file.
 

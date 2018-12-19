@@ -15,4 +15,4 @@ Welcome to Deep Bottleneck's documentation!
    *
    experiments/index
    api_doc/modules.rst
-
+   analyses/index.rst
