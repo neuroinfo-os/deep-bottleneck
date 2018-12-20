@@ -145,7 +145,7 @@ def load_estimator(estimator, discretization_range, architecture, n_classes):
 
 
 @ex.automain
-def conduct(epochs, batch_size, n_runs, _run):
+def conduct(epochs, batch_size, n_runs, _run, plot_median = False):
     data = load_dataset()
 
     plotter_objects = make_plotters()
@@ -210,8 +210,12 @@ def conduct(epochs, batch_size, n_runs, _run):
     _run.add_artifact(mi_filename, name="information_measures_test")
 
     # compute mean of information measures over all runs
-    mi_mean_over_runs_train = measures_all_runs_train.groupby(['epoch', 'layer']).median()
-    mi_mean_over_runs_test = measures_all_runs_test.groupby(['epoch', 'layer']).median()
+    if plot_median:
+        mi_mean_over_runs_train = measures_all_runs_train.groupby(['epoch', 'layer']).median()
+        mi_mean_over_runs_test = measures_all_runs_test.groupby(['epoch', 'layer']).median()
+    else:
+        mi_mean_over_runs_train = measures_all_runs_train.groupby(['epoch', 'layer']).mean()
+        mi_mean_over_runs_test = measures_all_runs_test.groupby(['epoch', 'layer']).mean()
 
     measures_summary_train = {'measures_all_runs': measures_all_runs_train,
                               'mi_mean_over_runs': mi_mean_over_runs_train,
