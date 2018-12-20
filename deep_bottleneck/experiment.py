@@ -4,6 +4,8 @@ import numpy as np
 import h5py
 import os
 
+from random import randint
+
 from sacred import Experiment
 from sacred.observers import MongoObserver
 
@@ -21,7 +23,6 @@ import matplotlib
 matplotlib.use('agg')
 
 import deep_bottleneck.credentials as credentials
-from random import randint
 
 ex = Experiment('sacred_keras_example')
 
