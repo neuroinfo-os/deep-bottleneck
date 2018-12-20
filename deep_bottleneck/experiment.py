@@ -1,5 +1,6 @@
 import importlib
 import pandas as pd
+import numpy as np
 import h5py
 import os
 
@@ -20,6 +21,7 @@ import matplotlib
 matplotlib.use('agg')
 
 import deep_bottleneck.credentials as credentials
+from random import randint
 
 ex = Experiment('sacred_keras_example')
 
@@ -145,17 +147,16 @@ def load_estimator(estimator, discretization_range, architecture, n_classes):
 def generator(examples, labels, batch_size):
 # Create empty arrays to contain batch of features and labels#
 
-batch_features = []
-batch_labels = []
+    batch_features = []
+    batch_labels = []
 
-while True:
-for i in range(batch_size):
-    # choose random index in features
-    index= randint(1,len(examples))
-    #index= random.choice(examples)
-    batch_features.append(examples[index])
-    batch_labels.append(labels[index])
-yield np.asarray(batch_features), np.asarray(batch_labels)   
+    while True:
+        for i in range(batch_size):
+            # choose random index in features
+            index= randint(0,len(examples)-1)
+            batch_features.append(examples[index])
+            batch_labels.append(labels[index])
+        yield np.asarray(batch_features), np.asarray(batch_labels)   
 
 
 @ex.automain
