@@ -157,11 +157,11 @@ def generator(examples, labels, batch_size):
             index= randint(0,len(examples)-1)
             batch_features.append(examples[index])
             batch_labels.append(labels[index])
-        yield np.asarray(batch_features), np.asarray(batch_labels)   
+        yield np.asarray(batch_features), np.asarray(batch_labels)
 
 
 @ex.automain
-def conduct(epochs, batch_size, n_runs, _run, steps_per_epoch=None):
+def conduct(epochs, batch_size, n_runs, _run, steps_per_epoch=None, plot_median = False):
     data = load_dataset()
 
     plotter_objects = make_plotters()
@@ -182,7 +182,7 @@ def conduct(epochs, batch_size, n_runs, _run, steps_per_epoch=None):
         callbacks = make_callbacks(data=data,
                                    file_dump_train=file_dump_train,
                                    file_dump_test=file_dump_test)
-        
+
         if steps_per_epoch == None:
             model.fit(x=data.train.examples, y=data.train.one_hot_labels,
                       verbose=2,
@@ -190,14 +190,14 @@ def conduct(epochs, batch_size, n_runs, _run, steps_per_epoch=None):
                       epochs=epochs,
                       validation_data=(data.test.examples, data.test.one_hot_labels),
                       callbacks=callbacks)
-        else:    
+        else:
             model.fit_generator(generator(data.train.examples, data.train.one_hot_labels, batch_size),
                                 steps_per_epoch=steps_per_epoch,
                                 epochs=epochs,
                                 validation_data=generator(data.test.examples, data.test.one_hot_labels, batch_size),
                                 validation_steps = steps_per_epoch,
                                 callbacks=callbacks)
-        
+
         print('fit successful')
 
         measures_train = estimator.compute_mi(data.train,
@@ -232,8 +232,12 @@ def conduct(epochs, batch_size, n_runs, _run, steps_per_epoch=None):
     _run.add_artifact(mi_filename, name="information_measures_test")
 
     # compute mean of information measures over all runs
-    mi_mean_over_runs_train = measures_all_runs_train.groupby(['epoch', 'layer']).mean()
-    mi_mean_over_runs_test = measures_all_runs_test.groupby(['epoch', 'layer']).mean()
+    if plot_median:
+        mi_mean_over_runs_train = measures_all_runs_train.groupby(['epoch', 'layer']).median()
+        mi_mean_over_runs_test = measures_all_runs_test.groupby(['epoch', 'layer']).median()
+    else:
+        mi_mean_over_runs_train = measures_all_runs_train.groupby(['epoch', 'layer']).mean()
+        mi_mean_over_runs_test = measures_all_runs_test.groupby(['epoch', 'layer']).mean()
 
     measures_summary_train = {'measures_all_runs': measures_all_runs_train,
                               'mi_mean_over_runs': mi_mean_over_runs_train,
