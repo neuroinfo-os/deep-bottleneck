@@ -762,23 +762,33 @@ Entropy and mutual information
 ------------------------------
 If a random variable, called X, could give any information about another random variable, say Y, we consider them dependent. The dependency of two random variables means knowing the state of one will affect the probability of the possible states of the other one. In the same way, the dependency of a random variable could be passed and also defined for a probability distribution.
 Investigating a possible dependancy between two random variables is a difficult task. A more specific and more difficult task is to determine the level of that dependency. There are two main categories of techniques for measuring statistical dependency between two random variables. The first category mainly deals with the linear dependency and includes basic techniques like the Pearson Correlation and the Spearman’s Measure. But these techniques do not have a good performance measuring nonlinear dependencies which are more frequent in data.
-
-|
-|  
+The second category, however, include more general techniques that also cover nonlinear dependencies.
 
 Nonlinear Dependence Measure
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 **Distance Correlation**
 
+Distance correlation (dCor) works for both linear and nonlinear dependence and it can handle random variables with arbitrary dimensions. Not surprisingly, dCor works with the distance; the Euclidean distance. Assume we have two random variables X and Y. The first step is to form their corresponding transformed matrices, TMx and TMy. Then we calculate the distance covariance:
+
+.. image:: https://user-images.githubusercontent.com/27868570/51983505-1ad0d280-2499-11e9-9890-bfaf186753c3.png
+
+And finally, we calculate the square root of the dCor as follows:
+
+.. image:: https://user-images.githubusercontent.com/27868570/51983850-0e00ae80-249a-11e9-9751-908f8e677a49.png
+
+The dCor value is a real number between 0 and 1 (inclusively), and 0 means that the two variables are independent.
+
 **Mutual Information**
+
+Mutual information (MI) is a measure based on the information theory. 
 
 **Maximal Information Coefficient**
 
 |    
 | 
 
-How does entropy help understanding artificial neural networks
---------------------------------------------------------------
+How does entropy help understanding artificial neural networks?
+---------------------------------------------------------------
 |    
 |  
 
