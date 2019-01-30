@@ -778,9 +778,15 @@ And finally, we calculate the square root of the dCor as follows:
 
 The dCor value is a real number between 0 and 1 (inclusively), and 0 means that the two variables are independent.
 
+|    
+|  
+
 **Mutual Information**
 
-Mutual information (MI) is a measure based on the information theory. 
+Mutual information (MI) is a measure of dependance based on the core concept of information theory, entropy. Entropy is a measure of uncertainty, and is formulated based on the information content, which is a measure of information.
+
+
+
 
 **Maximal Information Coefficient**
 
