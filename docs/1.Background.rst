@@ -768,6 +768,12 @@ But...
 
 Entropy and mutual information
 ------------------------------
+If a random variable, called X, could give any information about another random variable, say Y, we consider them dependent. The dependency of two random variables means knowing the state of one will affect the probability of the possible states of the other one. In the same way, the dependency of a random variable could be passed and also defined for a probability distribution.
+Investigating a possible dependancy between two random variables is a difficult task. A more specific and more difficult task is to determine the level of that dependency.
+
+There are two main categories of techniques for measuring statistical dependency between two random variables: techniques for linear dependency and techniques that also cover nonlinear dependencies.
+
+
 Entropy for a piece of data translates the level of uncertainty about the content of that piece, which is the same quantity as the maximum number of binary bits required to code that piece of data,
 
 |    
