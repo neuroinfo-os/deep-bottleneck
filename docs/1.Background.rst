@@ -709,44 +709,25 @@ A network with two Maxout neurons can approximate any continuous function with a
 
 Exponential function...
 
-.. image:: http://www.animatedimages.org/data/media/695/animated-under-construction-image-0035.gif
-
-
 **Softplus Function**
 
 Softplus function...
-
-.. image:: http://www.animatedimages.org/data/media/695/animated-under-construction-image-0035.gif
-
 
 **Radial Basis Function**
 
 Radial Basis function...
 
-.. image:: http://www.animatedimages.org/data/media/695/animated-under-construction-image-0035.gif
-
-
 **Swish Function**
 
 Swish function...
-
-.. image:: http://www.animatedimages.org/data/media/695/animated-under-construction-image-0035.gif
-
 
 **Arctangent Function**
 
 Arctangent function...
 
-
-.. image:: http://www.animatedimages.org/data/media/695/animated-under-construction-image-0035.gif
-
-
 **Hard Tangent Function**
 
 Hard tangent function...
-
-
-.. image:: http://www.animatedimages.org/data/media/695/animated-under-construction-image-0035.gif
 
 
 **Problem (3)**
@@ -773,9 +754,10 @@ Investigating a possible dependancy between two random variables is a difficult 
 
 There are two main categories of techniques for measuring statistical dependency between two random variables: techniques for linear dependency and techniques that also cover nonlinear dependencies.
 |
-| 
+|  
+
 Linear Dependence Measure
-^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^ 
 **Pearson Correlation**
 
 **Spearman’s Measure**
@@ -791,35 +773,9 @@ Nonlinear Dependence Measure
 
 |    
 | 
-.. image:: https://latex.codecogs.com/gif.latex?\dpi{150}&space;\text{Entropy}&space;=&space;H(X)&space;=&space;-\sum_{x\in&space;X}p(x)log(p(x))&space;\\
-
-|    
-| 
-
-.. image:: https://latex.codecogs.com/gif.latex?\dpi{150}&space;\text{Conditional&space;Entropy}&space;=&space;H(Y|X)&space;=&space;-\sum_{x\in&space;X}p(x)log(H(Y|X=x))&space;\\&space;\text{&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;}&space;=&space;-\sum_{x\in&space;X}p(x)\sum_{y\in&space;Y}p(y|x)log(p(y|x))&space;\\&space;\text{&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;}&space;=&space;-\sum_{x\in&space;X}\sum_{y\in&space;Y}p(x,y)log(p(y|x))&space;\\
-
-
-|    
-| 
-.. image:: https://latex.codecogs.com/gif.latex?\dpi{150}&space;\text{Joint&space;Entropy}&space;=&space;H(X,Y)&space;=&space;-\sum_{x\in&space;X}\sum_{y\in&space;Y}p(x,y)log(p(x,y))&space;\\&space;\text{\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;}&space;=&space;H(X)&space;&plus;&space;H(Y|X)
-
-|    
-| 
-
-.. image:: https://latex.codecogs.com/gif.latex?\dpi{150}&space;\text{Mutual&space;Information}&space;=&space;I(X;Y)&space;=&space;-\sum_{x\in&space;X}\sum_{y\in&space;Y}p(x,y)log(\frac{p(x,y)}{p(x)p(y)})&space;\\&space;\text{\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;}&space;=&space;H(X)&space;-&space;H(X|Y)\\&space;\text{\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;\&space;}&space;=&space;H(Y)&space;-&space;H(Y|X)
-
-|    
-|
 
 Entropy for understanding artificial neural networks
 ----------------------------------------------------
-|    
-|  
-
-
-
-.. image:: https://images-na.ssl-images-amazon.com/images/I/410zfLWCuTL.jpg
-
 |    
 |  
 
