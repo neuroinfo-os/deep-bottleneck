@@ -3,7 +3,7 @@ import pandas as pd
 
 
 def load(discretization_range, architecture, n_classes):
-    estimator = EDGE(3277, n_classes=n_classes, architecture=architecture)
+    estimator = EDGE(n_classes=n_classes, architecture=architecture)
     return estimator
 
 
@@ -22,44 +22,60 @@ class H2:
     def __init__(self, N, cH):
         self.cHN = N * cH
 
-    def perform_hash(self, sample):
-        str_sample = str(sample)
-        native_hash = hash(str_sample)
+    def hash_entry(self, sample):
+        native_hash = hash(tuple(sample))
         result = np.mod(native_hash, self.cHN)
-
         return result
+
+    def perform_hash(self, x):
+        result = map(self.hash_entry, x)
+        return list(result)
 
 
 class EDGE:
 
-    def __init__(self, n_examples, n_classes, architecture):
-        self.n_examples = n_examples
+    def __init__(self, n_classes, architecture):
         self.n_classes = n_classes
         self.architecture = architecture
 
+    def _initialize_estimator(self, n_examples, n_dimensions):
+        self.n_examples = n_examples
+
         self.cH = 4
-        self.epsilon = 0.008
+        self.epsilon = self.n_examples ** (-1/(2 * n_dimensions))
         self.n_buckets = self.n_examples * self.cH
 
         self.h1 = H1(self.epsilon)
         self.h2 = H2(self.n_examples, self.cH)
 
     def _g(self, x):
-        result = np.zeros_like(x).astype('float32')
-        result[x != 0.0] = x[x != 0.0] * np.log(x[x != 0.0])
+        result = dict()
+        for (x_idx, y_idx), w_ij in x.items():
+            result[(x_idx, y_idx)] = x[(x_idx, y_idx)] * np.log(x[(x_idx, y_idx)])
         return result
 
     def _count_collisions(self, X, Y):
 
         counts_i = np.zeros(self.n_buckets).astype('int32')
         counts_j = np.zeros(self.n_buckets).astype('int32')
-        counts_ij = np.zeros((self.n_buckets, self.n_buckets)).astype('int32')
+        counts_ij = dict()
+
+        h1_applied_x = self.h1.perform_hash(X)
+        h1_applied_y = self.h1.perform_hash(Y)
+
+        h2_applied_x = self.h2.perform_hash(h1_applied_x)
+        h2_applied_y = self.h2.perform_hash(h1_applied_y)
+
         for k in range(self.n_examples):
-            h_x = self.h2.perform_hash(self.h1.perform_hash(X[k]))
-            h_y = self.h2.perform_hash(self.h1.perform_hash(Y[k]))
+            h_x = h2_applied_x[k]
+            h_y = h2_applied_y[k]
             counts_i[h_x] += 1
             counts_j[h_y] += 1
-            counts_ij[h_x, h_y] += 1
+
+            if (h_x, h_y) in counts_ij.keys():
+                counts_ij[(h_x, h_y)] += 1
+            else:
+                counts_ij[(h_x, h_y)] = 1
 
         return counts_i, counts_j, counts_ij
 
@@ -67,34 +83,26 @@ class EDGE:
         w_i = counts_i / self.n_examples
         w_j = counts_j / self.n_examples
 
-        # this will cause division by zero warnings
-        w_ij = counts_ij * self.n_examples / (counts_i * counts_j)
-        w_ij[np.isinf(w_ij)] = 0  # workaround
-        w_ij[np.isnan(w_ij)] = 0  # workaround
+        edges = dict()
+        for (x_idx, y_idx), c_ij in counts_ij.items():
+            edges[(x_idx, y_idx)] = counts_i[x_idx] * counts_j[y_idx]
+
+        w_ij = dict()
+        for (x_idx, y_idx), c_ij in counts_ij.items():
+            w_ij[(x_idx, y_idx)] = counts_ij[(x_idx, y_idx)] * self.n_examples / edges[(x_idx, y_idx)]
 
         return w_i, w_j, w_ij
 
     def _compute_mi_per_epoch_and_layer(self, X, Y):
-        #print("X:" + str(X.shape))
-        #print("Y:" + str(Y.shape))
 
         counts_i, counts_j, counts_ij = self._count_collisions(X, Y)
         w_i, w_j, w_ij = self._compute_edge_weights(counts_i, counts_j, counts_ij)
 
         g_applied = self._g(w_ij)
-        # lower bound # used bins for Y
-        used_bins_y = np.sum(counts_j[counts_j != 0])
-        U = np.ones_like(g_applied) * used_bins_y
 
-        stacked = np.stack([g_applied, U])
-        g_schlange = np.max(stacked, axis=0)
-
-        nonzero = np.nonzero(w_ij)
         MI = 0
-        for idx in range(len(nonzero[0])):
-            i_idx = nonzero[0][idx]
-            j_idx = nonzero[1][idx]
-            MI += w_i[i_idx] * w_j[j_idx] * g_schlange[i_idx, j_idx]
+        for (i_idx, j_idx), w_ij in w_ij.items():
+            MI += w_i[i_idx] * w_j[j_idx] * g_applied[(i_idx, j_idx)]
 
         return MI
 
@@ -109,6 +117,9 @@ class EDGE:
         print(f'*** Start running {self.__class__.__name__}. ***')
 
         labels = data.labels
+        self._initialize_estimator(n_examples=data.examples.shape[0],
+                                   n_dimensions=data.examples.shape[1])
+
         one_hot_labels = data.one_hot_labels
 
         n_layers = len(self.architecture) + 1  # + 1 for output layer
@@ -121,10 +132,11 @@ class EDGE:
             summary = file_dump[str(epoch)]
             for layer_index in range(n_layers):
                 layer_activations = summary['activations'][str(layer_index)]
-                mi_with_label = self._compute_mi_per_epoch_and_layer(layer_activations, labels)
+                layer_activations = np.asarray(layer_activations, dtype=np.float32)
+
+                mi_with_label = self._compute_mi_per_epoch_and_layer(layer_activations, labels[:, np.newaxis])
                 mi_with_input = self._compute_mi_per_epoch_and_layer(layer_activations, data.examples)
-                print(mi_with_label)
-                print(mi_with_input)
+
                 measures.loc[(epoch, layer_index), 'MI_XM'] = mi_with_input
                 measures.loc[(epoch, layer_index), 'MI_YM'] = mi_with_label
         return measures
