@@ -772,9 +772,22 @@ If a random variable, called X, could give any information about another random 
 Investigating a possible dependancy between two random variables is a difficult task. A more specific and more difficult task is to determine the level of that dependency.
 
 There are two main categories of techniques for measuring statistical dependency between two random variables: techniques for linear dependency and techniques that also cover nonlinear dependencies.
+|
+| 
+Linear Dependence Measure
+^^^^^^^^^^^^^^^^^^^^^^^^^
+**Pearson Correlation**
 
+**Spearman’s Measure**
+|
+| 
+Nonlinear Dependence Measure
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+**Hoeffding’s D**
 
-Entropy for a piece of data translates the level of uncertainty about the content of that piece, which is the same quantity as the maximum number of binary bits required to code that piece of data,
+**Mutual Information**
+
+**Maximal Information Coefficient**
 
 |    
 | 
