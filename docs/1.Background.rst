@@ -707,27 +707,38 @@ A network with two Maxout neurons can approximate any continuous function with a
 
 **Exponential Linear Unit or  ELU Function**
 
-Exponential function...
+|
+| 
+
 
 **Softplus Function**
 
-Softplus function...
+|
+| 
+
 
 **Radial Basis Function**
 
-Radial Basis function...
+|
+| 
+
 
 **Swish Function**
 
-Swish function...
+|
+| 
+
 
 **Arctangent Function**
 
-Arctangent function...
+|
+| 
+
 
 **Hard Tangent Function**
 
-Hard tangent function...
+|
+| 
 
 
 **Problem (3)**
@@ -750,22 +761,14 @@ But...
 Entropy and mutual information
 ------------------------------
 If a random variable, called X, could give any information about another random variable, say Y, we consider them dependent. The dependency of two random variables means knowing the state of one will affect the probability of the possible states of the other one. In the same way, the dependency of a random variable could be passed and also defined for a probability distribution.
-Investigating a possible dependancy between two random variables is a difficult task. A more specific and more difficult task is to determine the level of that dependency.
+Investigating a possible dependancy between two random variables is a difficult task. A more specific and more difficult task is to determine the level of that dependency. There are two main categories of techniques for measuring statistical dependency between two random variables. The first category mainly deals with the linear dependency and includes basic techniques like the Pearson Correlation and the Spearman’s Measure. But these techniques do not have a good performance measuring nonlinear dependencies which are more frequent in data.
 
-There are two main categories of techniques for measuring statistical dependency between two random variables: techniques for linear dependency and techniques that also cover nonlinear dependencies.
 |
 |  
 
-Linear Dependence Measure
-^^^^^^^^^^^^^^^^^^^^^^^^^ 
-**Pearson Correlation**
-
-**Spearman’s Measure**
-|
-| 
 Nonlinear Dependence Measure
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-**Hoeffding’s D**
+**Distance Correlation**
 
 **Mutual Information**
 
@@ -774,8 +777,8 @@ Nonlinear Dependence Measure
 |    
 | 
 
-Entropy for understanding artificial neural networks
-----------------------------------------------------
+How does entropy help understanding artificial neural networks
+--------------------------------------------------------------
 |    
 |  
 
