@@ -172,7 +172,7 @@ def Compute_MI(XW, YV, U, eps_X, eps_Y, b_X, b_Y):
 
     return I
 
-
+# Estimator from https://github.com/mrtnoshad/EDGE/ based on Paper https://arxiv.org/abs/1801.09125
 def NoshadEDGE(X, Y, U=10, gamma=[1, 1], epsilon=[0, 0], epsilon_vector='range', eps_range_factor=0.1, normalize_epsilon=True,
          ensemble_estimation='median', L_ensemble=10, hashing='p-stable', stochastic=False):
     gamma = np.array(gamma)
@@ -277,7 +277,7 @@ class EDGE:
         self.architecture = architecture
 
     def _compute_mi_per_epoch_and_layer(self, X, Y):
-        MI = NoshadEDGE(X,Y, U=12, L_ensemble=1, gamma=[1,0.001], normalize_epsilon=False)
+        MI = NoshadEDGE(X,Y, U=12, L_ensemble=1, gamma=[1,0.001])
 
         return MI
 
