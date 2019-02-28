@@ -204,30 +204,30 @@ Literature summary
 - In the following, two algorithms for estimating mutual information will be taken
   into account:
 
-    #. In the **first algorithm**, the numbers of points :math:`x_j` whose distance from
-       :math:`x_i` is strictly less than :math:`\frac{\epsilon (i)}{2}` is counted
-       and called :math:`n_x(i)`. Analogous for :math:`y`.
-    #. By :math:`<...>` the averages over all :math:`i \in [1,...,N]` and over all
-       realisations of random samples is denoted:
+    * In the **first algorithm**, the numbers of points :math:`x_j` whose distance from
+      :math:`x_i` is strictly less than :math:`\frac{\epsilon (i)}{2}` is counted
+      and called :math:`n_x(i)`. Analogous for :math:`y`.
+    * By :math:`<...>` the averages over all :math:`i \in [1,...,N]` and over all
+      realisations of random samples is denoted:
 
-       .. math::
-       <...> = \dfrac{1}{N} \sum_{i=1}^N E[...(i)].
+      .. math::
+         <...> = \dfrac{1}{N} \sum_{i=1}^N E[...(i)].
 
-    #. The mutual information can then be estimated with:
+    * The mutual information can then be estimated with:
 
-       .. math::
-       I^{(1)}(X,Y) = \psi (k) - <\psi (n_x + 1) + \psi (n_y + 1)> + \psi (N).
+      .. math::
+         I^{(1)}(X,Y) = \psi (k) - <\psi (n_x + 1) + \psi (n_y + 1)> + \psi (N).
 
-    #. In the **second algorithm** :math:`n_x(i)` and :math:`n_y(i)` are replaced
-       by the number of points that satisfy the following equations:
+    * In the **second algorithm** :math:`n_x(i)` and :math:`n_y(i)` are replaced
+      by the number of points that satisfy the following equations:
 
-       .. math::
-       ||x_i - x_j|| \leq \dfrac{\epsilon_x (i)}{2} \text{and} ||y_i - y_j|| \leq \dfrac{\epsilon_y (i)}{2}
+      .. math::
+         ||x_i - x_j|| \leq \dfrac{\epsilon_x (i)}{2} \text{and} ||y_i - y_j|| \leq \dfrac{\epsilon_y (i)}{2}
 
-    #. Then mutual information can be estimated via
+    * Then mutual information can be estimated via
 
-       ..math::
-        I^{(2)}(X,Y) = \psi (k) - 1/k - <\psi (n_x) + \psi (n_y)> + \psi (N).
+      .. math::
+         I^{(2)}(X,Y) = \psi (k) - 1/k - <\psi (n_x) + \psi (n_y)> + \psi (N).
 
 - Generally, both estimates give similar results. But it proves that :math:`I^{(1)}`
   has the tendency to have slightly smaller statistical errors, but larger
