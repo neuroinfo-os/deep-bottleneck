@@ -86,12 +86,125 @@ Literature summary
 `Click here to open presentation as PDF document. <_static/on_the_information_bottleneck_theory_presentation.pdf>`_
 
 
+5. Estimating mutual information
+--------------------------------
+:cite:`Kraskov2004`
 
-5. SVCCA: singular vector canonical correlation analysis
+
+5.1 Introduction
+^^^^^^^^^^^^^^^^
+- Kraskov suggests an alternative mutual information estimator that is not based
+  on binning but on k-nearest neighbour distances.
+
+- Mutual information is often used as a measure of independence between random
+  variables. We note that mutual information is zero if and only if two random
+  variables are strictly independent.
+
+- Mutual information has some well known properties and advantages since it has
+  close ties to Shannon entropy (see appendix of the paper), still estimating mutual
+  information is not always that easy.
+
+- Most mutual information estimation techniques are based on binning, which often
+  leads to a systematic error.
+
+- Consider a set of :math:`N` bivariate measurements, :math:`z_i = (x_i, y_i),
+  i = 1,...,N`, which are assumed to be iid (independent identically distributed)
+  realizations of a random variable :math:`Z=(X,Y)` with density :math:`\mu (x,y)`.
+  :math:`x` and :math:`y` can be scalars or elements of a higher dimensional space.
+
+- For simplicity we say that :math:`0 \cdot \log(0) = 0` in order to consider probability
+  density functions that do not have to be strictly positive.
+
+- The marginal densities of :math:`X` and :math:`Y` can be denoted as follows:
+
+  .. math::
+     \mu_x(x) = \int \mu (x,y) dy \ \text{and } \ \mu_y(y) = \int \mu (x,y) dx.
+
+- Therefore we can define mutual information as
+
+  .. math::
+     I(x,y) = \int_Y \int_X \mu (x,y) \cdot \log \dfrac{\mu (x,y)}{\mu_x (x) \mu_y(y)} dx dy.
+
+- Note that the base of the logarithm sets the unit in which information is measured.
+  That means that if we want to measure in bits, we have to take base 2. In the
+  following we will take the natural logarithm for estimating mutual information.
+
+- Our aim is to estimate mutual information without any knowledge of the probability
+  functions :math:`\mu`, :math:`\mu_x` and :math:`\mu_y`. The only information we
+  have is set :math:`\{ z_i \}`.
+
+
+5.2 Binning
+^^^^^^^^^^^
+- Binning is an often used technique to estimate mutual information. Therefore we
+  partition the supports of :math:`X` and :math:`Y` into bins of finite size by
+  considering the finite sum:
+
+  .. math::
+     I(X,Y) \approx I_{\text{binned}} (X,Y) \equiv \sum_{i,j} p(i,j) \log \dfrac{p(i,j)}{p_x(i)p_y(j)},
+
+  where :math:`p_x(i) = \int_i \mu_x (x) dx, p_y(j) = \int_j \mu_y(y)` and
+  :math:`p(i,j) = \int_i \int_j \mu (x,y) dx dy` (meaning :math:`\int_i` is the
+  integral over bin :math:`i`).
+
+- Set :math:`n_x(i)` to be the number of points falling into bin i of :math:`X`
+  and analogous to that set :math:`n_y(j)` to be the number of points falling into
+  bin j of :math:`Y`. Moreover, :math:`n(i,j)` is the number of points in their
+  intersection.
+
+- Since we do not know the exact probability density function, we approximate them
+  with :math:`p_x(i) \approx \frac{n_x(i)}{N}`, :math:`p_y(j) \approx \frac{n_y(j)}{N}`,
+  and :math:`p(i,j) \approx \frac{n(i,j)}{N}`.
+
+- For :math:`N \rightarrow \infty` and bin sizes tending to zero, the binning
+  approximation (:math:`I_{\text{binned}}`) indeed converges to :math:`I(X,Y)`. Constraint: all
+  densities exist as proper functions.
+
+- Note that the bin size do not have to be the same for each bin. Adaptive bin sizes
+  actually lead to much better estimations.
+
+5.3 Kraskov estimator
+^^^^^^^^^^^^^^^^^^^^^
+- The Kraskov estimator uses k-nearest neighbour statistics to estimate mutual
+  information.
+
+- The basic idea is to estimate :math:`H(X)` from the average distance to the
+  k-nearest neighbour, averaged over all :math:`x_i`.
+
+- Since mutual information between two random variables can also be written as
+
+  .. math::
+     I(X,Y) = H(X) + H(Y) - H(X,Y),
+
+  with :math:`H(X)= - \int \mu (x) \log \mu (x) dx` being the Shannon entropy, we
+  can estimate the mutual information by estimating the Shannon entropy for
+  :math:`H(X)`, :math:`H(Y)` and :math:`H(X,Y)`.
+  This estimation would mean that the errors made in the individual estimates would
+  presumably not cancel. Therefore, we proceed a bit differently:
+
+- Assume some metrics to be given on the spaces by :math:`X, Y` and :math:`Z=(X,Y)`.
+
+- For each point :math:`z_i=(x_i,y_i)` we rank its neighbours by distance
+  :math:`d_{i,j} = ||z_i - z_j||: d_{i,j_1} \leq d_{i,j_2} \leq d_{i,j_3} \leq ...`.
+  Similar rankings can be done in the subspaces :math:`X` and :math:`Y`.
+
+- Furthermore, we will use the maximum norm for the distances in the space
+  :math:`Z=(X,Y)`, i.e.
+
+  .. math::
+     ||z-z'||_{\max} = \max \{ ||x - x'||, ||y - y'||\},
+
+  while any norms can be used for :math:`||x - x'||` and :math:`||y - y'||`.
+
+- We make further notations: :math:`\frac{\epsilon (i)}{2}` is the distance between
+  :math:`z_i` and its :math:`k`-th neighbour.
+
+
+6. SVCCA: singular vector canonical correlation analysis
 --------------------------------------------------------
 :cite:`Raghu2017`
 
-5.1 Key points of the paper
+6.1 Key points of the paper
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - They developed a method that analyses each neuron's activation vector (i.e.
@@ -110,7 +223,7 @@ Literature summary
     * It is fast to compute, which allows more comparisons to be calculated
       than with previous methods.
 
-5.2 Experiment set-up
+6.2 Experiment set-up
 ^^^^^^^^^^^^^^^^^^^^^
 
 - **Dataset**: mostly CIFAR-10 (augmented with random translations)
@@ -120,7 +233,7 @@ Literature summary
 - In order to produce a few figures, they decided to design a toy regression task (training a four hidden layer fully connected network with 1D input and 4D output)
 
 
-5.3 How SVCCA works
+6.3 How SVCCA works
 ^^^^^^^^^^^^^^^^^^^
 
 - SVCCA is short for Singular Vector Canonical Correlation Analysis and
@@ -159,7 +272,7 @@ Literature summary
     .. math::
       \bar{\rho} = \frac{1}{\min(m_1,m_2)} \sum_i \rho_i .
 
-5.4 Results
+6.4 Results
 ^^^^^^^^^^^
 
 - The dimensionality of a layer's learned representation does not have to be the same number than the number of neurons in the layer.
