@@ -200,7 +200,7 @@ Literature summary
   :math:`z_i` and its :math:`k`-th neighbour. :math:`\frac{\epsilon_x (i)}{2}` and
   :math:`\frac{\epsilon_y (i)}{2}` denote the distance between the same points projected
   into the :math:`X` and :math:`Y`subspaces.
-- Note that :math:`\epsilon(i)=\max \lbrace frac{\epsilon_x (i)}{2}, frac{\epsilon_y (i)}{2}\rbrace`.
+- Note that :math:`\epsilon(i)=\max \lbrace \frac{\epsilon_x (i)}{2}, \frac{\epsilon_y (i)}{2}\rbrace`.
 - In the following, two algorithms for estimating mutual information will be taken
   into account:
 
@@ -222,7 +222,7 @@ Literature summary
       by the number of points that satisfy the following equations:
 
       .. math::
-         ||x_i - x_j|| \leq \dfrac{\epsilon_x (i)}{2} \text{and} ||y_i - y_j|| \leq \dfrac{\epsilon_y (i)}{2}
+         ||x_i - x_j|| \leq \dfrac{\epsilon_x (i)}{2} \ \text{and} \ ||y_i - y_j|| \leq \dfrac{\epsilon_y (i)}{2}
 
     * Then mutual information can be estimated via
 
