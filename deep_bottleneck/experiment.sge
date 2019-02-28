@@ -25,23 +25,25 @@ echo ""
 echo "Start"
 echo ""
 
-source /net/home/student/j/jrebstadt/conda_setup/dneck_setup.bash
-
-export PATH=/home/student/j/jschoening/local/cuda-9.0/bin:$PATH
-export LD_LIBRARY_PATH=/home/student/j/jschoening/local/cuda-9.0/lib64:$LD_LIBRARY_PATH
-export CUDA_HOME=/home/student/j/jschoening/local/cuda-9.0
-
-echo "CUDA VERSION (should be 9):"
-nvcc --version
+export ADA_ROOT=/net/projects/scratch/winter/valid_until_31_July_2019/fmeyerzudrie
+export CONDA_PATH=/net/projects/scratch/winter/valid_until_31_July_2019/fmeyerzudrie/AdaptiveNeurons/miniconda/bin
+export PATH=$CONDA_PATH:$PATH
 
 rm /tmp/* -R -f 2> /dev/null
 
 echo "ROOT"
-echo $DNECK_ROOT
+echo $ADA_ROOT
 source activate dneck
 
 echo "Sacred Experiment"
-PYTHONPATH=$DNECK_ROOT/$USER/deep-bottleneck WALLTIME=01:30:00 PYTHONHASHSEED=0 START_TIME=$(date +%s) python experiment.py --name ${1-noname} with ${2-configs/basic.json} seed=0
+PYTHONPATH=$ADA_ROOT/deep-bottleneck WALLTIME=01:30:00 PYTHONHASHSEED=0 START_TIME=$(date +%s) python experiment.py --name ${1-noname} with ${2-configs/basic.json} seed=0
+
+
+echo ""
+date
+echo "*** End of SGE job ***"
+
+conda deactivate
 
 
 echo ""
