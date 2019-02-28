@@ -1,7 +1,10 @@
 import importlib
 import pandas as pd
+import numpy as np
 import h5py
 import os
+
+from random import randint
 
 from sacred import Experiment
 from sacred.observers import MongoObserver
@@ -126,7 +129,6 @@ def make_callbacks(callbacks, data, batch_size, _run,
 
     callback_objects.append(SacredMetricsLogger(_run))
 
-    callback_objects.append(TensorBoard(log_dir=f'./logs/{_run._id}', histogram_freq=10))
     callback_objects.append(ActivityProjector(data.test,
                                               log_dir=f'./logs/{_run._id}',
                                               embeddings_freq=10))
@@ -143,17 +145,29 @@ def load_estimator(estimator, discretization_range, architecture, n_classes):
     module = importlib.import_module(estimator)
     return module.load(discretization_range, architecture, n_classes)
 
+def generator(examples, labels, batch_size):
+# Create empty arrays to contain batch of features and labels#
+
+    batch_features = []
+    batch_labels = []
+
+    while True:
+        for i in range(batch_size):
+            # choose random index in features
+            index= randint(0,len(examples)-1)
+            batch_features.append(examples[index])
+            batch_labels.append(labels[index])
+        yield np.asarray(batch_features), np.asarray(batch_labels)
+
 
 @ex.automain
-def conduct(epochs, batch_size, n_runs, _run):
+def conduct(epochs, batch_size, n_runs, _run, steps_per_epoch=None, plot_median = False):
     data = load_dataset()
 
     plotter_objects = make_plotters()
 
     measures_all_runs_train = []
     measures_all_runs_test = []
-
-    steps_per_epoch = None
 
     for run_id in range(n_runs):
         estimator = load_estimator(n_classes=data.n_classes)
@@ -168,13 +182,21 @@ def conduct(epochs, batch_size, n_runs, _run):
         callbacks = make_callbacks(data=data,
                                    file_dump_train=file_dump_train,
                                    file_dump_test=file_dump_test)
-        model.fit(x=data.train.examples, y=data.train.one_hot_labels,
-                  verbose=2,
-                  batch_size=batch_size,
-                  steps_per_epoch=steps_per_epoch,
-                  epochs=epochs,
-                  validation_data=(data.test.examples, data.test.one_hot_labels),
-                  callbacks=callbacks)
+
+        if steps_per_epoch == None:
+            model.fit(x=data.train.examples, y=data.train.one_hot_labels,
+                      verbose=2,
+                      batch_size=batch_size,
+                      epochs=epochs,
+                      validation_data=(data.test.examples, data.test.one_hot_labels),
+                      callbacks=callbacks)
+        else:
+            model.fit_generator(generator(data.train.examples, data.train.one_hot_labels, batch_size),
+                                steps_per_epoch=steps_per_epoch,
+                                epochs=epochs,
+                                validation_data=generator(data.test.examples, data.test.one_hot_labels, batch_size),
+                                validation_steps = steps_per_epoch,
+                                callbacks=callbacks)
 
         print('fit successful')
 
@@ -210,8 +232,12 @@ def conduct(epochs, batch_size, n_runs, _run):
     _run.add_artifact(mi_filename, name="information_measures_test")
 
     # compute mean of information measures over all runs
-    mi_mean_over_runs_train = measures_all_runs_train.groupby(['epoch', 'layer']).mean()
-    mi_mean_over_runs_test = measures_all_runs_test.groupby(['epoch', 'layer']).mean()
+    if plot_median:
+        mi_mean_over_runs_train = measures_all_runs_train.groupby(['epoch', 'layer']).median()
+        mi_mean_over_runs_test = measures_all_runs_test.groupby(['epoch', 'layer']).median()
+    else:
+        mi_mean_over_runs_train = measures_all_runs_train.groupby(['epoch', 'layer']).mean()
+        mi_mean_over_runs_test = measures_all_runs_test.groupby(['epoch', 'layer']).mean()
 
     measures_summary_train = {'measures_all_runs': measures_all_runs_train,
                               'mi_mean_over_runs': mi_mean_over_runs_train,
