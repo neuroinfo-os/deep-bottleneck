@@ -38,18 +38,18 @@ def hyperparams():
     initial_bias = 0.0
     if dataset == 'dataset.mnist':
         plotters = [
-            # ('plotter.informationplane', []),
+            ('plotter.informationplane', [])#,
             #         ('plotter.snr', []),
             #         ('plotter.informationplane_movie', []),
-            ('plotter.activations', [])
+            #('plotter.activations', [])
         ]
     else:
         plotters = [
-            ('plotter.informationplane', []),
-            ('plotter.snr', []),
-            ('plotter.informationplane_movie', []),
-            ('plotter.activations', []),
-            ('plotter.activations_single_neuron', [])
+            ('plotter.informationplane', [])#,
+            #('plotter.snr', []),
+            #('plotter.informationplane_movie', []),
+            #('plotter.activations', []),
+            #('plotter.activations_single_neuron', [])
         ]
 
 
