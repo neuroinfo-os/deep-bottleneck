@@ -11,5 +11,5 @@
   "discretization_range": 0.07,
   "callbacks": [],
   "n_runs": 1,
-  "initial_bias": 0
+  "initial_bias": 0.1
 }
