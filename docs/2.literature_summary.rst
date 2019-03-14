@@ -1,31 +1,13 @@
 Literature summary
 ==================
 
-1. The information bottleneck method (Tishby 1999)
---------------------------------------------------
-:cite:`Tishby2000`
-
-
-
-2. Deep learning and the information bottleneck principle (Tishby 2015)
------------------------------------------------------------------------
-:cite:`Tishby2015`
-
-
-
-3. Opening the black box of deep neural networks via information (Tishby 2017)
-------------------------------------------------------------------------------
-:cite:`Schwartz-ziv2017`
-
-
-
-4. On the information bottleneck theory of deep learning (Saxe 2018)
+1. On the information bottleneck theory of deep learning (Saxe 2018)
 --------------------------------------------------------------------
 :cite:`Saxe2018`
 
 
 
-4.1 Key points of the paper
+1.1 Key points of the paper
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 * none of the following claims of Tishby (:cite:`Tishby2015`) holds in the general case:
@@ -45,7 +27,7 @@ Literature summary
   although the overall information about the input may monotonically increase with training time. This compression happens concurrently
   with the fitting process rather than during a subsequent compression period.
 
-4.2 Most important experiments
+1.2 Most important experiments
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 #. Tishby's experiment reconstructed:
 
@@ -80,18 +62,18 @@ Literature summary
     * trained on MNIST dataset
     * ReLU-activation function
 
-4.3 Presentation
+1.3 Presentation
 ^^^^^^^^^^^^^^^^
 
 `Click here to open presentation as PDF document. <_static/on_the_information_bottleneck_theory_presentation.pdf>`_
 
 
-5. Estimating mutual information
+2. Estimating mutual information
 --------------------------------
 :cite:`Kraskov2004`
 
 
-5.1 Introduction
+2.1 Introduction
 ^^^^^^^^^^^^^^^^
 - Kraskov suggests an alternative mutual information estimator that is not based
   on binning but on k-nearest neighbour distances.
@@ -134,7 +116,7 @@ Literature summary
   have is set :math:`\{ z_i \}`.
 
 
-5.2 Binning
+2.2 Binning
 ^^^^^^^^^^^
 - Binning is an often used technique to estimate mutual information. Therefore we
   partition the supports of :math:`X` and :math:`Y` into bins of finite size by
@@ -163,7 +145,7 @@ Literature summary
 - Note that the bin size do not have to be the same for each bin. Adaptive bin sizes
   actually lead to much better estimations.
 
-5.3 Kraskov estimator
+2.3 Kraskov estimator
 ^^^^^^^^^^^^^^^^^^^^^
 - The Kraskov estimator uses k-nearest neighbour statistics to estimate mutual
   information.
@@ -235,11 +217,11 @@ Literature summary
   dimensions, we better should use :math:`I^{(2)}`.
 
 
-6. SVCCA: singular vector canonical correlation analysis
+3. SVCCA: singular vector canonical correlation analysis
 --------------------------------------------------------
 :cite:`Raghu2017`
 
-6.1 Key points of the paper
+3.1 Key points of the paper
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - They developed a method that analyses each neuron's activation vector (i.e.
@@ -258,7 +240,7 @@ Literature summary
     * It is fast to compute, which allows more comparisons to be calculated
       than with previous methods.
 
-6.2 Experiment set-up
+3.2 Experiment set-up
 ^^^^^^^^^^^^^^^^^^^^^
 
 - **Dataset**: mostly CIFAR-10 (augmented with random translations)
@@ -268,7 +250,7 @@ Literature summary
 - In order to produce a few figures, they decided to design a toy regression task (training a four hidden layer fully connected network with 1D input and 4D output)
 
 
-6.3 How SVCCA works
+3.3 How SVCCA works
 ^^^^^^^^^^^^^^^^^^^
 
 - SVCCA is short for Singular Vector Canonical Correlation Analysis and
@@ -307,7 +289,7 @@ Literature summary
     .. math::
       \bar{\rho} = \frac{1}{\min(m_1,m_2)} \sum_i \rho_i .
 
-6.4 Results
+3.4 Results
 ^^^^^^^^^^^
 
 - The dimensionality of a layer's learned representation does not have to be the same number than the number of neurons in the layer.
