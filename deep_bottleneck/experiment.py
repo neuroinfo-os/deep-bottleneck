@@ -129,9 +129,9 @@ def make_callbacks(callbacks, data, batch_size, _run,
 
     callback_objects.append(SacredMetricsLogger(_run))
 
-    callback_objects.append(ActivityProjector(data.test,
-                                              log_dir=f'./logs/{_run._id}',
-                                              embeddings_freq=10))
+    #callback_objects.append(ActivityProjector(data.test,
+    #                                          log_dir=f'./logs/{_run._id}',
+    #                                          embeddings_freq=10))
 
     for callback in callbacks:
         callback_object = importlib.import_module(callback[0]).load(*callback[1])
