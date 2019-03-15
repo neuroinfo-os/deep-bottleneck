@@ -76,8 +76,8 @@ def do_report(epoch):
         return True
     elif epoch < 100:  # Then for every 2th epoch
         return (epoch % 2) == 0
-    elif epoch < 500:  # Then for every 5th epoch
-        return (epoch % 5) == 0
+    #elif epoch < 500:  # Then for every 5th epoch
+    #    return (epoch % 5) == 0
     elif epoch < 2000:  # Then every 20th
         return (epoch % 20) == 0
     else:  # Then every 100th
