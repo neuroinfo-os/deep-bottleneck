@@ -276,8 +276,8 @@ class EDGE:
         self.n_classes = n_classes
         self.architecture = architecture
 
-    def _compute_mi_per_epoch_and_layer(self, X, Y):
-        MI = NoshadEDGE(X,Y, U=12, L_ensemble=5, gamma=[1,0.001])
+    def _compute_mi_per_epoch_and_layer(self, X, Y, U=100):
+        MI = NoshadEDGE(X,Y, U=U, L_ensemble=5, gamma=[1,0.001])
 
         return MI
 
@@ -307,8 +307,8 @@ class EDGE:
                 layer_activations = summary['activations'][str(layer_index)]
                 layer_activations = np.asarray(layer_activations, dtype=np.float32)
 
-                mi_with_label = self._compute_mi_per_epoch_and_layer(layer_activations, labels[:, np.newaxis])
-                mi_with_input = self._compute_mi_per_epoch_and_layer(layer_activations, data.examples)
+                mi_with_label = self._compute_mi_per_epoch_and_layer(layer_activations, labels[:, np.newaxis], U=1)
+                mi_with_input = self._compute_mi_per_epoch_and_layer(layer_activations, data.examples, U=12)
 
                 measures.loc[(epoch, layer_index), 'MI_XM'] = mi_with_input
                 measures.loc[(epoch, layer_index), 'MI_YM'] = mi_with_label
