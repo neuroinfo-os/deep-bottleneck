@@ -864,9 +864,6 @@ KSG results are of high precision and it is a great option while working with hi
 
 How does 'Statistical Dependance' help understanding deep learning?
 -------------------------------------------------------------------
-|    
-|  
-  
 Artificial neural networks were originaly designed to somehow replicate our biological neural network. Researcher were also partially hopeful to be able, by this replication, to learn a thing or two about the inner workings of human brain. But the irony is that the ANNs, especially the 'deep neural network' generation, turned to such a successful computational structure that its excellent behavior became a mysterious puzzle itself. 
 
 Publishing three papers in 1999, 2015, and 2017, Tishby offered and explored an idea for demystifying the DNN excellency using information theory concepts. According to Tishby, the key feature of a DNN is its capacity to forget. It is crucial to forget because not all the input information is necessary for accomplishing the task at the output layer.  For example, consider a classification task in which pictures of cats and dogs are fed into the network and the network should decide whether an input image represent a cat or a dog. Feeding a cat photo into the network, we enter not only information about the shape of the animal but also its color. However, we know that whatever color is the animal, it does not affect its catish nature. For good results, the network should recognize and focus on the, probably the animal ear shape or face structure. So there is lots of information available which not only consume computational efforts, but also might mislead a network in its final decision. So what is important here, is not the 'information,' rather the 'relevant' information. That is where the 'forgetting' thing seems essential.
@@ -881,12 +878,19 @@ What Tishby seems to find out through his information plane was dazzling:
 .. image:: https://d2r55xnwy6nx47.cloudfront.net/uploads/2017/09/DeepLearning_5001.jpg
 
 ``https://www.quantamagazine.org/new-theory-cracks-open-the-black-box-of-deep-learning-20170921/``
-
+|    
+|  
+  
 
 The information plane shows a really interesting path of information flow or in fact mutual information ratio, especially, in the last hidden layers of DNN. It seems like the last layers start with a very low mutual information with the input data which is understandable, because the input data passing through all the layers with all their neurons had enough time to scattered enough not to be statistically similar/dependance to the original data at the input layer. So, these layers start with low I(X;T) but spend training time to gather enough information and generalize the 'concepts' in the input data. Tishby called this phase of increasing I(X;T) 'fitting phase.'
 
 Then, as you see, the last hidden layers start to lose input information, but at the same time gain information, or in fact structures of information, similar to the labels data. So their I(T;Y) keep increasing while I(X;T) is decreasing. Tishby calls this phase, 'compression phase,' in which the network lose irrelevant data and compress its information flow. And according to Tishby, this phase change and 'forgetting' process is what makes the deep learning so efficient and successful.
 
+|    
+|     
+|  
+
+--------------------------------------------------------------------------------------------------------------
 
 .. [#] We usually denote an activation function input with the letter z, rather than good old x, in order to prevent any confusion of the function input with the perceptron/network inputs.
 .. [#] For motivation, assume Netflix offered a US$1,000,000 prize for designing this perceptron.
