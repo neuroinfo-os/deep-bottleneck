@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-
+# import cvxpy as cvx
 
 def load(discretization_range, architecture, n_classes):
     estimator = EDGE(n_classes=n_classes, architecture=architecture)
@@ -270,6 +270,29 @@ def NoshadEDGE(X, Y, U=10, gamma=[1, 1], epsilon=[0, 0], epsilon_vector='range',
     return I
 
 
+#def compute_weights(L, d, T, N):
+#    # Create optimization variables.
+#     cvx_eps = cvx.Variable()
+#     cvx_w = cvx.Variable(L)
+#
+#     # Create constraints:
+#     constraints = [cvx.sum(cvx_w) == 1, cvx.pnorm(cvx_w, 2) - cvx_eps / 2 <= 0]
+#     for i in range(1, L):
+#         Tp = ((1.0 * T / N) ** (1.0 * i / (2 * d)))
+#         cvx_mult = cvx_w.T * Tp
+#         constraints.append(cvx.sum(cvx_mult) - cvx_eps * 2 <= 0)
+#
+#     # Form objective.
+#     obj = cvx.Minimize(cvx_eps)
+#
+#     # Form and solve problem.
+#     prob = cvx.Problem(obj, constraints)
+#     prob.solve()  # Returns the optimal value.
+#     sol = np.array(cvx_w.value)
+#
+#     return sol.T
+
+
 class EDGE:
 
     def __init__(self, n_classes, architecture):
@@ -277,7 +300,7 @@ class EDGE:
         self.architecture = architecture
 
     def _compute_mi_per_epoch_and_layer(self, X, Y, U=100):
-        MI = NoshadEDGE(X,Y, U=U, L_ensemble=5, gamma=[2,0.001])
+        MI = NoshadEDGE(X,Y, U=U, L_ensemble=5, gamma=[0.01, 1])
 
         return MI
 
