@@ -277,7 +277,7 @@ class EDGE:
         self.architecture = architecture
 
     def _compute_mi_per_epoch_and_layer(self, X, Y, U=100):
-        MI = NoshadEDGE(X,Y, U=U, L_ensemble=5, gamma=[1,0.001])
+        MI = NoshadEDGE(X,Y, U=U, L_ensemble=5, gamma=[2,0.001])
 
         return MI
 
