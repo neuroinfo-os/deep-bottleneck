@@ -16,6 +16,8 @@ Let’s start with the *perceptron*, which is a mathematical model of a single n
 
 .. image:: https://user-images.githubusercontent.com/27868570/46575181-adaca500-c9b0-11e8-8788-ce58fe1fb5bd.png
   :alt: Perceptron
+  :scale: 200%
+  
 ``Fig. 1. Perceptron``
 
 |    
@@ -24,6 +26,8 @@ Let’s start with the *perceptron*, which is a mathematical model of a single n
 In language of math, a perceptron is a simple equation:
 
 .. image:: http://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20H%28%5Csum_%7Bi%7Dw_ix_i&plus;b%29
+  :scale: 200%
+
 ``Eq. 1``
 
 |    
@@ -32,6 +36,8 @@ In language of math, a perceptron is a simple equation:
 where **x**\ :sub:`i` \ is the **\i**\th input, **w**\ :sub:`i` \ is the weight correspond to the **\i**\th input, **b** stands for the bias, and **H** is the Heaviside step function which will be activated with positive input:
 
 .. image:: http://latex.codecogs.com/gif.latex?%5Cinline%20%5Cdpi%7B150%7D%20H%28z%29%3D%5Cleft%5C%7B%5Cbegin%7Bmatrix%7D%200%20%5Ctext%7B%2C%20if%20%7D%20z%20%3C%200%5C%5C1%20%5Ctext%7B%2C%20if%20%7D%20z%20%5Cgeq%200%20%5Cend%7Bmatrix%7D%5Cright.
+  :scale: 200%
+
 ``Eq. 2`` [#]_
 
 |    
@@ -41,6 +47,8 @@ where **x**\ :sub:`i` \ is the **\i**\th input, **w**\ :sub:`i` \ is the weight 
 
 
 .. image:: http://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20H%28%5Csum_%7Bi%7Dw_ix_i%29
+  :scale: 200%
+
 ``Eq. 3``
 
 |    
@@ -49,6 +57,8 @@ where **x**\ :sub:`i` \ is the **\i**\th input, **w**\ :sub:`i` \ is the weight 
 and simplify the diagram, by removing the addition node, assuming everyone knows that the activation function will work on the summation of inputs:
 
 .. image:: https://user-images.githubusercontent.com/27868570/46575888-71804100-c9be-11e8-872f-a53d47a80f96.png
+  :scale: 200%
+
 ``Fig. 2. Perceptron``
 
 |    
@@ -111,6 +121,8 @@ As we did with the code, dealing with a perceptron, the input is the only variab
 But for now, let’s just talk about what does each of the perceptron parameters do? We can use a simple example. Assume you want to use a perceptron deciding if a specific person likes watching a specific movie or not.\ [#]_ You could define an almost arbitrary set of criteria as your perceptron input, like the movie genre, how good are the actors, and say the movie production budget. We can quantize these three criteria assuming the person loves watching comedies, so if the movie genre is comedy (1) or not (0). And the total number of prestigious awards won by the four leading/supporting actors, and the budget in million USD. The output 0 means the person, probably, does not like the movie and 1 means she, probably, does.
 
 .. image:: https://user-images.githubusercontent.com/27868570/46581161-bc886b80-ca33-11e8-88fa-cbf9ffafe517.png
+  :scale: 200%
+
 ``Fig. 3. A perceptron for binary classification of movies for a single Netflix user``
 
 |    
@@ -133,6 +145,7 @@ The bias role, however, is not as obvious as the weights. The simplest explanati
   combination of the parameters is: wA = -2, wB = -1, and the bias = 1. We can check the results:
   
 .. image:: https://user-images.githubusercontent.com/27868570/46581680-1e010800-ca3d-11e8-8c83-945878afe6bd.png
+  :scale: 200%
 
 ::
 
@@ -157,11 +170,15 @@ So… not a big deal? We have a basic classifier which it is limited to linearly
   Design a perceptron that takes two binary inputs, A and B and returns the XOR value of them:
   
 .. image::  https://user-images.githubusercontent.com/27868570/46582158-2b20f580-ca43-11e8-8d15-4ae0779c5a37.png
+  :scale: 200%
+
 |    
 
 So at this point, perceptron might seem a little boring. But we can make it wildly exciting with taking one step further in imitating our brain structure by connecting artificial neurons together to form a network in which each perceptron output is fed as input to another perceptron; something like this:
 
 .. image:: https://user-images.githubusercontent.com/27868570/46582293-97e8bf80-ca44-11e8-9dae-832699152ee2.png
+  :scale: 200%
+
 ``Fig. 4. An artificial neural network``
 
 |    
@@ -192,12 +209,14 @@ Imagine we want to estimate people income, based on their age, education, and sa
   Heaviside step function as their activation function:
 
 .. image:: https://user-images.githubusercontent.com/27868570/46582663-cbc6e380-ca4a-11e8-806e-8332f6daa22a.png
+  :scale: 200%
 
 ::
 
   The hidden layer weights are given with the following connectivity matrix: 
 
 .. image:: http://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5C%20%5C%20%5C%20%5C%20%5Cbegin%7Bmatrix%7D%20x_1%26%20x_2%26%20x_3%20%5Cend%7Bmatrix%7D%20%5C%5C%20%5Cbegin%7Bmatrix%7D%20h_1%5C%5C%20h_2%5C%5C%20h_3%5C%5C%20h_4%20%5Cend%7Bmatrix%7D%20%5Cbegin%7Bbmatrix%7D%204%263%262%20%5C%5C%20-2%261%26.5%20%5C%5C%202%26-5%261.2%5C%5C%203%26-1%266%20%5Cend%7Bbmatrix%7D
+  :scale: 200%
 
 ::
 
@@ -211,12 +230,14 @@ Imagine we want to estimate people income, based on their age, education, and sa
   And, in the same way, the following connectivity matrix gives us the output layer weights: 
   
 .. image:: http://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5C%20%5C%20%5C%20%5C%20%5Cbegin%7Bmatrix%7D%20h_1%26%20h_2%26%20h_3%26%20h_4%20%5Cend%7Bmatrix%7D%20%5C%5C%20%5Cbegin%7Bmatrix%7D%20y_1%5C%5C%20y_2%20%5Cend%7Bmatrix%7D%20%5Cbegin%7Bbmatrix%7D%202%26-1%265%263.2%20%5C%5C%20-4.5%261%263%262%20%5Cend%7Bbmatrix%7D
+  :scale: 200%
 
 ::
 
   And the bias vectors are:  
   
 .. image:: http://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20B_0%20%3D%20%5Cbegin%7Bbmatrix%7D%202%20%5C%5C%20-3%5C%5C%201%5C%5C%20.6%5C%5C%20%5Cend%7Bbmatrix%7D%20B_1%20%3D%20%5Cbegin%7Bbmatrix%7D%204%20%5C%5C%205%20%5Cend%7Bbmatrix%7D
+  :scale: 200%
 
 
 ::
@@ -287,6 +308,8 @@ Earlier we talked about the absurdity of a perceptron (not to mention a network)
 However, a linear activation function could still be used in a network, if we use it as activation function of a few nodes; especially the ones in the output layer. There are cases, when we are interested in regression problems rather than classification ones, in which we want our network to have an unbounded and continuous range of outputs. Let’s return to example where we wanted to design a perceptron capable of predicting if a user wants to watch a movie or not. That was a classification problem because our desired range of output was discrete; a simple bit of 0 or 1 was enough for our purpose. But assume the same perceptron with the same inputs is supposed to predict the box office revenue. That would be a regression problem because our desired range of output is a continuous one. In such a case a linear activation function in the output layer would send out whatever it takes in, without confining it within a narrow and discrete range.
 
 .. image:: http://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20g%28z%29%20%3D%20z
+  :scale: 200%
+
 ``Eq. 4``
 
 |    
@@ -324,12 +347,15 @@ However, a linear activation function could still be used in a network, if we us
   plt.show()
 
 .. image:: https://user-images.githubusercontent.com/27868570/46586156-a8b42800-ca7a-11e8-969f-5b3da841e294.png
+  :scale: 200%
 
 **Heaviside Step Function**
 
 We already met the Heaviside step function:
 
 .. image:: http://latex.codecogs.com/gif.latex?%5Cinline%20%5Cdpi%7B150%7D%20H%28z%29%3D%5Cleft%5C%7B%5Cbegin%7Bmatrix%7D%200%20%5Ctext%7B%2C%20if%20%7D%20z%20%3C%200%5C%5C1%20%5Ctext%7B%2C%20if%20%7D%20z%20%5Cgeq%200%20%5Cend%7Bmatrix%7D%5Cright.
+  :scale: 200%
+
 ``Eq. 5``
 
 |    
@@ -367,12 +393,15 @@ We already met the Heaviside step function:
   plt.show()
 
 .. image:: https://user-images.githubusercontent.com/27868570/46586226-a8685c80-ca7b-11e8-9c1c-932bb5c187f2.png
+  :scale: 200%
 
 **Sigmoid or Logistic Function**
 
 Sigmoid or logistic function is currently one of the most used activation functions, capable of being used in both hidden and output layers. It is a continuous and smoothly-changing function, and that makes it a popular option because these features let the neurons to tune its parameters at the finest level.
 
 .. image:: http://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20%5Csigma%20%28z%29%3D%5Cfrac%7B1%7D%7B1&plus;e%5E%7B-z%7D%7D
+  :scale: 200%
+
 ``Eq. 6``
 
 |    
@@ -410,6 +439,7 @@ Sigmoid or logistic function is currently one of the most used activation functi
   plt.show()
 
 .. image:: https://user-images.githubusercontent.com/27868570/46586280-8c18ef80-ca7c-11e8-958a-f19638a9c2ad.png
+  :scale: 200%
 
 **Softmax Function**
 
@@ -422,6 +452,8 @@ Since Softmax is designed for such a specific task, using it in hidden layers is
 Anyway, this is the Softmax activation function:
 
 .. image:: http://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20S%28z%29_i%3D%5Cfrac%7Be%5E%7B%28z_i%29%7D%7D%7B%5Csum_%7Bj%3D1%7D%5E%7Bn%7De%5E%7B%28z_j%29%7D%7D
+  :scale: 200%
+
 ``Eq. 7``
 
 |    
@@ -430,6 +462,8 @@ Anyway, this is the Softmax activation function:
 To have a better understanding of what is going on over there, the following diagram could be useful:
 
 .. image:: https://user-images.githubusercontent.com/27868570/46586549-45c58f80-ca80-11e8-824b-c75df0001e55.png
+  :scale: 200%
+
 ``Fig. 5. Softmax layer``
 
 |    
@@ -466,12 +500,15 @@ To have a better understanding of what is going on over there, the following dia
   plt.show()
   
 .. image:: https://user-images.githubusercontent.com/27868570/46586583-df8d3c80-ca80-11e8-8dad-6514bb87a11c.png
+  :scale: 200%
 
 **Hyperbolic Tangent or TanH Function**
 
 Hyperbolic tangent activation function or simply tanh is pretty much like the sigmoid function, with the same popularity, and the same s-like graph. In fact, as you can check with the equation, you can define the tanh function using a horizontally and vertically, scaled and shifted version of the sigmoid function. And for that reason you can model a network with tanh hidden nodes using a network with sigmoid hidden nodes and vice versa. However, unlike the sigmoid function which its output is between 0 and 1, and therefore a lovely choice for probabilistics problems, tanh output ranges between -1 and 1, and therefore is zero centered, thanks to the vertical shift we mentioned. That enables tanh function to handle negative values with its negative range. For the very same reason, training process is easier and faster with tanh nodes.
 
 .. image:: http://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20tanh%28z%29%3D%5Cfrac%7Bsinh%28z%29%7D%7Bcosh%28z%29%7D%3D%5Cfrac%7Be%5Ez-e%5E%7B-z%7D%7D%7Be%5Ez&plus;e%5E%7B-z%7D%7D%3D%5Cfrac%7B1-e%5E%7B-2z%7D%7D%7B1&plus;e%5E%7B-2z%7D%7D%3D%5Cfrac%7B2%7D%7B1&plus;e%5E%7B-2z%7D%7D-1%3D2%5Csigma%20%282z%29-1
+  :scale: 200%
+
 ``Eq. 8``
 
 |    
@@ -508,12 +545,15 @@ Hyperbolic tangent activation function or simply tanh is pretty much like the si
   plt.show()
 
 .. image:: https://user-images.githubusercontent.com/27868570/47258882-60493100-d4a2-11e8-9720-143d1afb1975.png
+  :scale: 200%
 
 **Rectified Linear Unit or ReLU Function**
 
 Rectified Linear Unit or ReLU function, currently, is the hottest activation function in the hidden layers. Mathematically, ReLU is the step function and linear function joining together at the point zero. It rectifies the linear function by shutting it down in negative range.
 
 .. image:: http://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20R%28z%29%3Dmax%280%2Cz%29
+  :scale: 200%
+
 ``Eq. 9``
 
 |    
@@ -556,12 +596,16 @@ Though this negative blindness of ReLU has its own issues, as well. First and mo
   plt.show()
 
 .. image:: https://user-images.githubusercontent.com/27868570/47259304-dd2ad980-d4a7-11e8-99b2-c4246733c12a.png
+  :scale: 200%
+
 
 **Leaky ReLU Function**
 
 And the Leaky ReLU function is here to solve the negative issues about the negative blindness of ReLU function aka dying ReLU. So instead of a flatline with zero change rate, leaky ReLU leaks a little in negative range, with an arbitrary, but gentle slope, usually set to .01. But it costs us the ‘sparse activation’ advantage of ReLU.
 
 .. image:: http://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20g%28z%29%3Dmax%28.01z%2Cz%29
+  :scale: 200%
+
 ``Eq. 10``
 
 |    
@@ -598,12 +642,15 @@ And the Leaky ReLU function is here to solve the negative issues about the negat
   plt.show()
 
 .. image:: https://user-images.githubusercontent.com/27868570/47259351-d18be280-d4a8-11e8-8929-8cc40661a676.png
+  :scale: 200%
 
 **Parametric ReLU  or PReLU Function**
 
 Parametric ReLU or PReLU function is a variant of the Leaky ReLU, in that the slope is not constant but it is defined as a another parameter of the network, 𝛼, which will be tuned during training just like other parameters, weights and biases.
 
 .. image:: http://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20g%28z%29%3Dmax%28%5Calpha%20z%2Cz%29
+  :scale: 200%
+
 ``Eq. 11``
 
 |    
@@ -642,12 +689,15 @@ Parametric ReLU or PReLU function is a variant of the Leaky ReLU, in that the sl
   plt.show()
 
 .. image:: https://user-images.githubusercontent.com/27868570/47259431-c2596480-d4a9-11e8-85c6-314d55bcb6cd.png
+  :scale: 200%
 
 **Maxout Function**
 
 You see how PReLU was generalizing Leaky ReLU, and Leaky ReLU was, somehow, generalization of ReLU. Now, the Maxout activation function is a big step further in generalization of ReLU family of activation functions. Think about PReLU one more time, and this time try to see it as a combination of two linear functions.
 
 .. image:: https://user-images.githubusercontent.com/27868570/47259443-f16fd600-d4a9-11e8-84ce-6a7a240b6162.jpg
+  :scale: 200%
+
 ``Fig. 6.``
 
 |    
@@ -656,6 +706,8 @@ You see how PReLU was generalizing Leaky ReLU, and Leaky ReLU was, somehow, gene
 So, what ReLU family do, basically, is to take the x and compute the corresponding y, using two lines’ equations, and then pass the biggest y as the output. Now, what Maxout does, is to do the same except two things. First, Maxout won’t limit itself to only two lines. And second, those lines that Maxout work with, do not have pre-defined equations, but their characteristics like slope and y-insects will be learned. From this aspect, you can say Maxout is not just training the network, but on a lower level, it is also training the activation function, itself.
 
 .. image:: https://user-images.githubusercontent.com/27868570/47259503-7c50d080-d4aa-11e8-9de3-f61e27bc83a5.jpg
+  :scale: 200%
+
 ``Fig. 7.``
 
 |    
@@ -664,12 +716,15 @@ So, what ReLU family do, basically, is to take the x and compute the correspondi
 Maxout has a two-stage mechanism. There are linear nodes, at the first stage, which take the previous layer outputs (or the networks input, for sure) as their inputs, and the next stage is just a simple function, picking the maximum out.
 
 .. image:: http://latex.codecogs.com/gif.latex?%5Cdpi%7B150%7D%20g%28X%29%3Dmax%28z_1%2Cz_2%2C..%2Cz_i%29%20%5Ctext%7B%2C%20the%20second%20stage%7D%20%5C%5C%20where%20%5Ctext%7B%20%5C%20%5C%20%7D%20z_i%3D%5Csum_%7B1%7D%5E%7Bj%7Dw_%7Bij%7Dx_j%20&plus;b_i%5Ctext%7B%2C%20the%20first%20stage%7D
+  :scale: 200%
+
 ``Eq. 12``
 
 |    
 |  
 
 .. image:: https://user-images.githubusercontent.com/27868570/47259589-7f988c00-d4ab-11e8-8cc1-f7aded41a54c.png
+  :scale: 200%
 
 ``Fig. 8. Maxout inside workings``
 
@@ -703,59 +758,6 @@ A network with two Maxout neurons can approximate any continuous function with a
     '''
     y = np.max(w @ np.transpose(x) + np.transpose(b))
     return y
-    
-
-**Exponential Linear Unit or  ELU Function**
-
-|
-| 
-
-
-**Softplus Function**
-
-|
-| 
-
-
-**Radial Basis Function**
-
-|
-| 
-
-
-**Swish Function**
-
-|
-| 
-
-
-**Arctangent Function**
-
-|
-| 
-
-
-**Hard Tangent Function**
-
-|
-| 
-
-
-**Problem (3)**
-
-::
-
-  Think of a new activation function with some advantages over the popular ones. Run an expriment to
-  compare its perfocrmance with the others. If it outperforms the hot ones, publish a paper on it.
-
-
-
-Training
-^^^^^^^^
-But...
-
-
-.. image:: https://i.ebayimg.com/images/g/n9EAAOSwvc1ZaCei/s-l300.jpg
 
 
 Statistical Dependence
@@ -768,10 +770,12 @@ If a random variable, called X, could give any information about another random 
 Distance correlation (dCor) is a nonlinear dependence measure and it can handle random variables with arbitrary dimensions. Not surprisingly, dCor works with the distance; the Euclidean distance. Assume we have two random variables X and Y. The first step is to form their corresponding transformed matrices, TMx and TMy. Then we calculate the distance covariance:
 
 .. image:: https://user-images.githubusercontent.com/27868570/51983505-1ad0d280-2499-11e9-9890-bfaf186753c3.png
+  :scale: 200%
 
 And finally, we calculate the squared dCor value as follows:
 
 .. image:: https://user-images.githubusercontent.com/27868570/51983850-0e00ae80-249a-11e9-9751-908f8e677a49.png
+  :scale: 200%
 
 The dCor value is a real number between 0 and 1 (inclusively), and 0 means that the two variables are independent.
 
@@ -785,20 +789,24 @@ Mutual information (MI) is a general measure of dependance based on the core con
 Information content of the outcome x with probability P(x):
 
 .. image:: https://user-images.githubusercontent.com/27868570/52379671-6c65f800-2a6b-11e9-97b2-0dd7e05b510c.png
+  :scale: 200%
 
 Entropy of an event with N outcomes with probabilities P1...Pn:
 
 .. image:: https://user-images.githubusercontent.com/27868570/52380294-87396c00-2a6d-11e9-8d82-acba394783db.png
+  :scale: 200%
 
 Mutual information is a symmetric relation between two variables and it indicates the amount of information that one random variable reveals about the other. Or in other words the reduction of uncertainty about a variable, resulted from our knowledge about another one:
 
 .. image:: https://user-images.githubusercontent.com/27868570/52519670-42752700-2c5f-11e9-97f6-7630757d8bff.png
+  :scale: 200%
 
 Mutual information is a symmetric and non negative value. And a zero MI means two independent variables. 
 
 Calculating MI for discrete valued variables is somewhat easy, the problem arises when we try to calculate MI, or in fact the entropy itself, for variables with real, continuous values. For working under this condition, we use the other version of MI formula which is a specific form of the more general form of Kullback-Leibler divergence and works on Probability Density Function (PDF) of joint probabilities:
  
 .. image:: https://user-images.githubusercontent.com/27868570/52527839-a0d9ee00-2ccf-11e9-9d48-e29b53a1f688.png
+  :scale: 200%
 
 However, the need for knowing PDF is another problem. In practice, we usually have access to a finite set of data spamles, and not the PDF they are representing. So before being able to calculate MI, or in essence entropy, we need to approximate the PDF itself. In this sense, the problem of estimating MI reduces to the problem of estimating PDF. In fact, most of MI estimators start with PDF estimation procedure. There are two main groups of MI estimators: parametric and non-parametric estimators. Parametric estimators are the ones that assume the probability density could be modelled with one of the most frequent distributions like Gaussian. Non-parametric estimators assume nothing about the hidden PDF.
 
@@ -812,6 +820,7 @@ The main approaches for estimating MI, in a non-parametric way, are methods base
 Using a histogram is a simple, neat, and popular approach for MI estimation, which is computationally easy and efficient: we discretize the distribution into N number of bins, count the number of occurrences of samples per bin. The number of bins is an arbitrary option, best decided on, cosidering the nature of our data. Using bins with constant width make our estimation too sensitivie to the that arbitrary number of N which could lead ignoring some meaningful patterns in our data, only because some samples were interpreted within two neighboring, instead of one single bin. That is, constant bins number or their width is not sensitive to the changes in data stream, and therfore, not as efficient as the histogram estimation could potentially be. So another way is to focus on the bins width rather than their number and try to define them variably. This approach will reduce the estimation error, but would increase the complexity of the computation by adding a new problem of how to decide about the changing bin-width and how to implement the decision.
 
 .. image:: https://media.springernature.com/original/springer-static/image/art%3A10.1007%2Fs10700-014-9178-0/MediaObjects/10700_2014_9178_Fig10_HTML.gif
+  :scale: 200%
 
 ``An example of using histogram estimation. Haeri, M. A., & Ebadzadeh, M. M. (2014). Estimation of mutual information by the fuzzy histogram. Fuzzy Optimization and Decision Making, 13(3), 287-318.``
 
@@ -823,6 +832,7 @@ Using a histogram is a simple, neat, and popular approach for MI estimation, whi
 Adaptive partitioning, as it is clear from its name, is another way of dividing data space into subsets and subsequent counting of the covered occurrences. The new thing about adaptive partitioning is that it does not confine itself to classic histogram bins, rather it feels free to use different-sized rectangular tiles to cover the data space in a way that increase the conditional independence between partitions. Partitioning is done through an iterative procedure in which after each step, the conditional independence of each tile regarding the other partitions will be examined using Chi-square statistical test.
 
 .. image:: https://media.springernature.com/full/springer-static/image/art%3A10.1186%2Fs12918-017-0458-5/MediaObjects/12918_2017_458_Fig1_HTML.gif
+  :scale: 200%
 
 ``An example of adaptive partitioning procedure. He, J., Zhou, Z., Reed, M., & Califano, A. (2017). Accelerated parallel algorithm for gene network reverse engineering. BMC systems biology, 11(4), 83.``
 
@@ -835,6 +845,7 @@ Kernel density estimation, outperforms both histogram and adaptive partitioning 
 In the next step, KDE calculates one of different possible probability densities including Gaussian, Rectangular, and Epanechnikov around each data samples, add them up together to obtain a smooth PDF over all data samples from the superposition of these kernels. The resulted PDF is of high quality because of a smaller MSE rate.
 
 .. image:: http://4.bp.blogspot.com/-WIaKAWGI5eY/UVl2EufeQLI/AAAAAAAAAPQ/OocN9rEiCh0/s1600/KDEWIKI.png
+  :scale: 200%
 
 ``Implementing KDE. http://daveakshat.blogspot.com/2013/04/convolution-probabilty-density.html``
 
@@ -846,6 +857,7 @@ In the next step, KDE calculates one of different possible probability densities
 This method is simply using basis spline function to approximate the underlying PDF. A B-spline function separates dataspce with equally-distanced hypotetical lines (or thier counterparts in case of working with higer dimensional data) and try to regress the data points trapped in each interval with a polynomial function. These continuous functions form the PDF which we will use later for calculating MI. B-spline results usually improve by increasing the function order. But when the final goal is estimating MI, increasing the order to more than 3 won't affect the result.
 
 .. image:: https://user-images.githubusercontent.com/27868570/54483438-24e53f80-4853-11e9-98f4-6bafe037fd64.png
+  :scale: 200%
 
 ``An example of using splines with different orders to approximate an underlying function. Venelli, A. (2010, April). Efficient entropy estimation for mutual information analysis using B-splines. In IFIP International Workshop on Information Security Theory and Practices (pp. 17-30). Springer, Berlin, Heidelberg.``
 
@@ -858,6 +870,7 @@ K-Nearest Neighbor method has a big difference with the previous MI estimators. 
 KSG results are of high precision and it is a great option while working with high dimensional data. KSG is capable of working with irregular PDFs and it, currently, is one of the most popular MI estimators.
 
 .. image:: https://user-images.githubusercontent.com/27868570/54495665-34fa2f00-48e6-11e9-8830-b32725f997ba.png
+  :scale: 200%
 
 ``The pseudocode for KSG. Gao, W., Kannan, S., Oh, S., & Viswanath, P. (2017). Estimating mutual information for discrete-continuous mixtures. In Advances in Neural Information Processing Systems (pp. 5986-5997).``
 
