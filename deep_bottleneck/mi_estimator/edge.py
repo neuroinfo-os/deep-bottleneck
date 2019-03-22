@@ -263,6 +263,7 @@ def NoshadEDGE(X, Y, U=10, gamma=[1, 1], epsilon=[0, 0], epsilon_vector='range',
     ## Normalize epsilon according to MI estimation (cross validation)
     if normalize_epsilon == True:
         gamma = gamma * math.pow(2, -math.sqrt(I * 2.0) + (0.5 / I))
+        print(gamma)
         normalize_epsilon = False
         I = NoshadEDGE(X, Y, U, gamma, epsilon, epsilon_vector, eps_range_factor, normalize_epsilon, ensemble_estimation,
                  L_ensemble, hashing, stochastic)
@@ -300,7 +301,7 @@ class EDGE:
         self.architecture = architecture
 
     def _compute_mi_per_epoch_and_layer(self, X, Y, U=100):
-        MI = NoshadEDGE(X,Y, U=U, L_ensemble=5, gamma=[0.01, 1])
+        MI = NoshadEDGE(X,Y, U=U, L_ensemble=10, gamma=[0.1, 0.1], normalize_epsilon=False, epsilon=[0, 0], ensemble_estimation='median')
 
         return MI
 
