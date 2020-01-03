@@ -1,6 +1,8 @@
+import os
 import numpy as np
 from collections import namedtuple
-
+from dotenv import load_dotenv
+from pathlib import Path
 
 def construct_full_dataset(training, test):
     """Concatenates training and test data splits to obtain the full dataset.
@@ -111,3 +113,14 @@ def get_min_max(activations_summary, layer_number, neuron_number=None):
         total_min = np.min([current_min, total_min])
 
     return total_min, total_max
+
+ENV_PATH = Path(__file__).parent.parent  / "infrastructure" / "sacred_setup" / ".env"
+
+def get_mongo_config():
+    load_dotenv(dotenv_path=ENV_PATH)
+    uri = (
+            f'mongodb://{os.environ["MONGO_INITDB_ROOT_USERNAME"]}:'
+            f'{os.environ["MONGO_INITDB_ROOT_PASSWORD"]}@{os.environ["MONGO_HOST"]}/?authMechanism=SCRAM-SHA-1'
+        )
+
+    return uri, os.environ["MONGO_DATABASE"]
