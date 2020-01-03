@@ -18,16 +18,16 @@ from deep_bottleneck.callbacks.gradient_logger import GradientLogger
 
 from deep_bottleneck.callbacks.metrics_logger import MetricsLogger, SacredMetricsLogger
 from deep_bottleneck.callbacks.activityprojector import ActivityProjector
+from deep_bottleneck.utils import get_mongo_config
+
 import matplotlib
 
 matplotlib.use('agg')
 
-import deep_bottleneck.credentials as credentials
-
 ex = Experiment('sacred_keras_example')
 
-ex.observers.append(MongoObserver.create(url=credentials.MONGODB_URI,
-                                         db_name=credentials.MONGODB_DBNAME))
+url, db_name = get_mongo_config()
+ex.observers.append(MongoObserver.create(url=url, db_name=db_name))
 
 
 @ex.config

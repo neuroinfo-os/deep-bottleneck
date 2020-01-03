@@ -1,5 +1,5 @@
 """This script can be used to submit several experiments to the grid.
-All the experiments need to be specified as seperate JSON."""
+All the experiments need to be specified as separate JSON."""
 import os
 import argparse
 
@@ -21,7 +21,7 @@ def parse_command_line_args():
     parser.add_argument('-c', '--configpath',
                         help='The folder containing the experiment configurations or a single configuration file.')
     parser.add_argument('-l', '--local_execution',
-                        default=False,
+                        default=True,
                         help='Whether the experiments should be run locally or on the grid.')
     args = parser.parse_args()
     return args

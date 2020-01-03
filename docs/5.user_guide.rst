@@ -9,8 +9,12 @@ Environment
 -----------
 To run the experiment you need to install the required dependencies.
 We highly recommend that you use a virtual environment as provided
-by `conda <https://conda.io/docs/>`_ or `pipenv <https://docs.pipenv.org/>`_.
+by `conda <https://conda.io/docs/>`_.
 
+To create your environment run::
+
+    $ conda create -n deep-bottleneck python=3.6
+    $ conda activate deep-bottleneck
 
 Then in your environment run::
 
@@ -34,11 +38,10 @@ to
 
 ::
 
-    $ cd infractructure/sacred_setup
+    $ cd infrastructure/sacred_setup/
 
-4. Edit the ``.env`` file. This file is hidden by default, but you can still edit it with any text
-   editor, e.g. by ``vi .env``. Replace all values in angle brackets with meaningful and secure values.
-
+4. If you plan to expose the mongoDB to the internet you should edit the ``.env`` file and replace
+   all values with more secure values.
 
 5. Run docker-compose::
 
@@ -50,36 +53,24 @@ Afterwards mongoDB should be up and running. ``mongo-express`` should now be ava
 accessible by the user and password you set in the ``.env`` file (``ME_CONFIG_BASICAUTH_USERNAME``
 and ``ME_CONFIG_BASICAUTH_PASSWORD``). Sacredboard should be available on port ``5000``.
 
-The current setup is optimized for a team that collaboratively stores results on a remote server.
-When running the experiments locally for yourself, you should change the port mapping in the
-``docker-compose.yml`` file to only map to localhost, such that you do not expose your database to
-the internet. Simply prefix all port mappings with localhost, e.g. replace::
+The current setup is optimized for running experiments locally.
+When you want to log results to a remote server, you should change the port mapping in the
+``docker-compose.yml`` file.
+Note that this will expose your database to the internet.
+Simply remove the localhost prefixes form all port mappings, e.g. replace::
 
     ports:
-      - 5000:5000
+      - 127.0.0.1:5000:5000
 
 by
 
 .. code-block:: yaml
 
     ports:
-      - 127.0.0.1:5000:5000
+      - 5000:5000
 
 
-5. In a final step, you need to tell sacred how to connect to the database. Edit file
-``deep_bottleneck/credentials.py``, again replacing all values in angle brackets by the
-values you actually set in the ``.env`` file. Additionally, you have to provide the IP
-address of the server your database is running on, which is either the address given
-by your server provider or ``127.0.0.1`` when running mongo locally.
-You should also tell git to ignore any changes you make to the ``credentials.py``,
-so they will not be accidentally committed, by running::
-
-    git update-index --skip-worktree deep_bottleneck/credentials.py
-
-This will stop git from taking notice of any changes you make to the file.
-
-
-6. You are ready to run some exciting experiments!
+5. You are ready to run some exciting experiments!
 
 Importing and exporting from mongoDB
 ------------------------------------
@@ -173,7 +164,8 @@ The currently relevant parts of the configuration and their effects are explaine
     ``hard_sigmoid``, ``selu``, ``relu6``, ``elu`` and ``linear``.
 :model:
     The parameter which defines the basic model-choice. Currently only different architectures of feed-foreward-networks can be used.
-    So the possible choices right now are ``models.feedforward`` and ``models.feedforward_batchnorm``, the actual architecture is defined by the architecture parameter.
+    So the possible choices right now are ``models.feedforward`` and ``models.feedforward_batchnorm``,
+    the actual architecture is defined by the architecture parameter.
 :dataset:
     The parameter which defines the dataset used for training.
     Currently implemented datasets are ``harmonics``, ``mnist``, ``fashion_mnist`` and ``mushroom``.
@@ -208,11 +200,11 @@ deep_bottleneck folder by::
 
 and then execute experiments by either pointing to a specific ``JSON`` file defining the experiment, e.g.::
 
-    $ python run_experiments_local.py -d configs/basic.json
+    $ python run_experiments.py -d configs/basic.json
 
 or pointing at a directory containing all the experiments one wants to execute, e.g.::
 
-    $ python run_experiments_local.py -d configs/mnist
+    $ python run_experiments.py -d configs/mnist
 
 In that case all the ``JSONs`` in the folder and in its sub-folders are recursively executed.
 
