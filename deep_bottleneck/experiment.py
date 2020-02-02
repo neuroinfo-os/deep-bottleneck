@@ -7,7 +7,7 @@ import os
 from random import randint
 
 from sacred import Experiment
-from sacred.observers import MongoObserver
+from sacred.observers import MongoObserver, FileStorageObserver
 
 from tensorflow.python.keras import backend as K
 
@@ -27,7 +27,8 @@ matplotlib.use('agg')
 ex = Experiment('sacred_keras_example')
 
 url, db_name = get_mongo_config()
-ex.observers.append(MongoObserver.create(url=url, db_name=db_name))
+# ex.observers.append(MongoObserver(url=url, db_name=db_name))
+ex.observers.append(FileStorageObserver())
 
 
 @ex.config
@@ -38,14 +39,14 @@ def hyperparams():
     initial_bias = 0.0
     if dataset == 'dataset.mnist':
         plotters = [
-            ('plotter.informationplane', [])#,
+            ('plotter.informationplane', []),
             #         ('plotter.snr', []),
             #         ('plotter.informationplane_movie', []),
             #('plotter.activations', [])
         ]
     else:
         plotters = [
-            ('plotter.informationplane', [])#,
+            ('plotter.informationplane', []),
             #('plotter.snr', []),
             #('plotter.informationplane_movie', []),
             #('plotter.activations', []),
