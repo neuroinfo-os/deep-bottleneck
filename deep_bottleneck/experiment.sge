@@ -28,22 +28,20 @@ echo ""
 export PROJECT_ROOT=/net/projects/scratch/winter/valid_until_31_July_2020/rbusche/deep-bottleneck
 export CONDA_PATH=/net/projects/scratch/winter/valid_until_31_July_2020/rbusche/miniconda/condabin/
 export PATH=$CONDA_PATH:$PATH
-source /home/student/r/rbusche/.bashrc
+export PYTHON_EXE=/net/projects/scratch/winter/valid_until_31_July_2020/rbusche/miniconda/envs/dneck/bin/python
+
 
 rm /tmp/* -R -f 2> /dev/null
 
 echo "ROOT"
 echo $PROJECT_ROOT
-conda activate dneck
 
 echo "Sacred Experiment"
-PYTHONPATH=$PROJECT_ROOT WALLTIME=01:30:00 PYTHONHASHSEED=0 START_TIME=$(date +%s) python experiment.py --name ${1-noname} with ${2-configs/basic.json}
+PYTHONPATH=$PROJECT_ROOT WALLTIME=01:30:00 PYTHONHASHSEED=0 START_TIME=$(date +%s) ${PYTHON_EXE} experiment.py --name ${1-noname} with ${2-configs/basic.json}
 
 
 echo ""
 date
 echo "*** End of SGE job ***"
-
-conda deactivate
 
 rm /tmp/* -R -f 2> /dev/null
