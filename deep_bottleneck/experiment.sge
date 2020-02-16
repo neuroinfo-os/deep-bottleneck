@@ -28,7 +28,7 @@ echo ""
 export PROJECT_ROOT=/net/projects/scratch/winter/valid_until_31_July_2020/rbusche/deep-bottleneck
 export CONDA_PATH=/net/projects/scratch/winter/valid_until_31_July_2020/rbusche/miniconda/condabin/
 export PATH=$CONDA_PATH:$PATH
-conda init bash
+source /home/student/r/rbusche/.bashrc
 
 rm /tmp/* -R -f 2> /dev/null
 
