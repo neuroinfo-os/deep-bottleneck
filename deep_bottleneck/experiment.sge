@@ -25,18 +25,18 @@ echo ""
 echo "Start"
 echo ""
 
-export ADA_ROOT=/net/projects/scratch/winter/valid_until_31_July_2019/fmeyerzudrie
-export CONDA_PATH=/net/projects/scratch/winter/valid_until_31_July_2019/fmeyerzudrie/AdaptiveNeurons/miniconda/bin
+export PROJECT_ROOT=/net/projects/scratch/winter/valid_until_31_July_2020/rbusche/deep-bottleneck
+export CONDA_PATH=/net/projects/scratch/winter/valid_until_31_July_2020/rbusche/miniconda/condabin/
 export PATH=$CONDA_PATH:$PATH
 
 rm /tmp/* -R -f 2> /dev/null
 
 echo "ROOT"
-echo $ADA_ROOT
-source activate dneck
+echo $PROJECT_ROOT
+conda activate dneck
 
 echo "Sacred Experiment"
-PYTHONPATH=$ADA_ROOT/deep-bottleneck WALLTIME=01:30:00 PYTHONHASHSEED=0 START_TIME=$(date +%s) python experiment.py --name ${1-noname} with ${2-configs/basic.json}
+PYTHONPATH=$PROJECT_ROOT WALLTIME=01:30:00 PYTHONHASHSEED=0 START_TIME=$(date +%s) python experiment.py --name ${1-noname} with ${2-configs/basic.json}
 
 
 echo ""

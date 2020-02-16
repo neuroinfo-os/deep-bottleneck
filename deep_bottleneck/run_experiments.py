@@ -21,7 +21,7 @@ def parse_command_line_args():
     parser.add_argument('-c', '--configpath',
                         help='The folder containing the experiment configurations or a single configuration file.')
     parser.add_argument('-l', '--local_execution',
-                        default=True,
+                        default=False,
                         help='Whether the experiments should be run locally or on the grid.')
     args = parser.parse_args()
     return args
