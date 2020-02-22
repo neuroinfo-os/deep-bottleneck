@@ -28,7 +28,7 @@ ex = Experiment('sacred_keras_example')
 
 url, db_name = get_mongo_config()
 # ex.observers.append(MongoObserver(url=url, db_name=db_name))
-ex.observers.append(FileStorageObserver())
+ex.observers.append(FileStorageObserver("runs"))
 
 
 @ex.config
