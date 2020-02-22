@@ -62,7 +62,7 @@ done
 # Check if user was set.
 if [ -z "$user" ]; then
     printhelp
-    exit
+    exit 1
 fi
 
 # Set default mountpoint.
@@ -73,7 +73,7 @@ fi
 # Check if sshfs is installed.
 if [ ! -f $sshfs_path ]; then
    echo "sshfs is not installed on your system"
-   exit
+   exit 1
 fi
 
 # Create directory to mount into.
@@ -82,7 +82,7 @@ if [ ! -d "$mountpoint" ]; then
 fi
 
 # Get the recent root directory of our project.
-DNECK_ROOT=`ssh "$user@gate.ikw.uni-osnabrueck.de" 'source /net/home/student/j/jrebstadt//conda_setup/dneck_setup.bash; echo $DNECK_ROOT'`
+DNECK_ROOT=/net/projects/scratch/winter/valid_until_31_July_2020/rbusche/deep-bottleneck
 
 # Mount the files from the grid.
 sshfs "$user@gate.ikw.uni-osnabrueck.de:$DNECK_ROOT" "$mountpoint"
