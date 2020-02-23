@@ -11,6 +11,6 @@
   "estimator": "mi_estimator.upper",
   "discretization_range": 0.001,
   "callbacks": [],
-  "n_runs": 1,
+  "n_runs": 10,
   "initial_bias": 0.1
 }
