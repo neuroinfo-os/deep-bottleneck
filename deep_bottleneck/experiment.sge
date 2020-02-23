@@ -7,7 +7,7 @@
 #$ -j y
 #$ -o ./output/
 #$ -pe default 3
-#$ -l h_rt=01:30:00
+#$ -l h_rt=48:00:00
 #$ -l h=*cippy*
 # -l hostname=!*picture*
 
