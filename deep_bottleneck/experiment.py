@@ -252,11 +252,11 @@ def conduct(epochs, batch_size, n_runs, _run, steps_per_epoch=None, plot_median=
     # Save information measures
     mi_filename = "information_measures_train.csv"
     measures_all_runs_train.to_csv(mi_filename)
-    _run.add_artifact(mi_filename, name="information_measures_train")
+    _run.add_artifact(mi_filename)
 
     mi_filename = "information_measures_test.csv"
     measures_all_runs_test.to_csv(mi_filename)
-    _run.add_artifact(mi_filename, name="information_measures_test")
+    _run.add_artifact(mi_filename)
 
     # compute mean of information measures over all runs
     if plot_median:

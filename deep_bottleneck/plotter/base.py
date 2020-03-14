@@ -18,7 +18,7 @@ class BasePlotter:
         suffix = '_' + suffix if suffix else suffix
         artifact_name = f'{self.plotname}{suffix}'
 
-        self.run.add_artifact(filename, name=artifact_name)
+        self.run.add_artifact(filename)
 
     def plot(self, measures_summary) -> matplotlib.figure.Figure:
         raise NotImplementedError

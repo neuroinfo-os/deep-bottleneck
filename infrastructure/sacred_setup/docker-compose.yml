@@ -21,6 +21,16 @@ services:
     depends_on:
       - mongo
 
+  omniboard:
+    image: vivekratnavel/omniboard:latest
+    command: ["--mu", "mongodb://$MONGO_INITDB_ROOT_USERNAME:$MONGO_INITDB_ROOT_PASSWORD@mongo:27017/$MONGO_DATABASE?authSource=admin"]
+    ports:
+      - 127.0.0.1:9000:9000
+    restart: unless-stopped
+    env_file: .env
+    depends_on:
+      - mongo
+
   sacredboard:
     build: ./sacredboard
     ports:
