@@ -132,3 +132,5 @@ core
 
 # Logs
 logs/
+
+.vscode/
