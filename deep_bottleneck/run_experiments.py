@@ -2,7 +2,8 @@
 All the experiments need to be specified as separate JSON."""
 import os
 import argparse
-
+import subprocess
+import sys
 
 def main():
     create_output_directory()
@@ -21,7 +22,7 @@ def parse_command_line_args():
     parser.add_argument('-c', '--configpath',
                         help='The folder containing the experiment configurations or a single configuration file.')
     parser.add_argument('-l', '--local_execution',
-                        default=False,
+                        default=True,
                         help='Whether the experiments should be run locally or on the grid.')
     args = parser.parse_args()
     return args
@@ -32,11 +33,15 @@ def start_experiments(config_dir_or_file, local_execution):
     configurations in there to the grid.
     """
     n_experiments = 0
+    processes = []
     if os.path.isdir(config_dir_or_file):
         for root, _, files in os.walk(config_dir_or_file):
             for file in files:
-                start_experiment(root, file, local_execution)
+                processes.append(start_experiment(root, file, local_execution))
                 n_experiments += 1
+        
+        for process in processes:
+            process.wait()
 
     else:
         root, file = os.path.split(config_dir_or_file)
@@ -53,11 +58,15 @@ def start_experiment(root, file, local_execution):
         config_path = os.path.join(root, file)
         experiment_name, _ = os.path.splitext(config_path)
         if local_execution:
-            command = f'python experiment.py --name {experiment_name} with {config_path} seed=0'
+            return subprocess.Popen(
+                ['python', "experiment.py", "--name", experiment_name, "with", config_path, "seed=0"], 
+                stdout=sys.stdout, 
+                stderr=sys.stderr
+            )
         else:
             command = f'qsub -N {submission_name} experiment.sge {experiment_name} {config_path}'
-        print(f'Executing command: {command}')
-        os.system(command)
+            print(f'Executing command: {command}')
+            os.system(command)
 
 
 if __name__ == '__main__':

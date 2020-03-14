@@ -1,0 +1,22 @@
+{
+    "seed": 1,
+    "epochs": 10000,
+    "batch_size": 256,
+    "architecture": [
+        10,
+        7,
+        5,
+        4,
+        3
+    ],
+    "optimizer": "adam",
+    "learning_rate": 0.0004,
+    "activation_fn": "tanh",
+    "model": "models.feedforward",
+    "dataset": "datasets.harmonics_zero_mean",
+    "estimator": "mi_estimator.upper",
+    "discretization_range": 0.001,
+    "callbacks": [],
+    "n_runs": 10,
+    "initial_bias": 0.1
+}
