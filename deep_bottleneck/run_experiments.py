@@ -35,7 +35,10 @@ def start_experiments(config_dir_or_file, local_execution):
     n_experiments = 0
     processes = []
     if os.path.isdir(config_dir_or_file):
-        for root, _, files in os.walk(config_dir_or_file):
+        for root, dirs, files in _walk_excluding_hidden(config_dir_or_file):
+            
+            files = [f for f in files if not f[0] == '.']
+            dirs[:] = [d for d in dirs if not d[0] == '.']
             for file in files:
                 processes.append(start_experiment(root, file, local_execution))
                 n_experiments += 1
@@ -50,6 +53,13 @@ def start_experiments(config_dir_or_file, local_execution):
 
     print(f'Submitted {n_experiments} experiments.')
 
+
+def _walk_excluding_hidden(path):
+    for root, dirs, files in os.walk(path):    
+        files = [f for f in files if not f[0] == '.']
+        dirs[:] = [d for d in dirs if not d[0] == '.']
+        
+        yield root, dirs, files
 
 def start_experiment(root, file, local_execution):
     submission_name, extension = os.path.splitext(file)
