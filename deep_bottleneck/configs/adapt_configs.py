@@ -8,7 +8,7 @@ Config = Dict[str, Any]
 
 def main():
     convert_configs(
-        src=Path("cohort_17_paper/"), dst=Path("cohort_18_paper/"), adapt=change
+        src=Path("cohort_18_paper/"), dst=Path("cohort_19_adam_paper/"), adapt=change
     )
 
 
@@ -35,11 +35,7 @@ def write_json(p: Path, d: Config):
 
 def change(d: Config) -> Config:
     d = deepcopy(d)
-    d["epochs"] = 10_000
-    d["n_runs"] = 10
-    d["optimizer"] = "sgd"
-    d["initial_bias"] = 0
-    d["dataset"] = "datasets.harmonics"
+    d["optimizer"] = "adam"
     return d
 
 
