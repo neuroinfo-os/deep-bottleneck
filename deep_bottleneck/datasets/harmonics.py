@@ -31,7 +31,7 @@ def load(nb_dir='') -> Dataset:
 
 
 def import_IB_data_from_mat(name_ID, nb_dir=''):
-    """ Writes a .npy file to disk containing the harmonics dataset used by Tishby
+    """Writes a .npy file to disk containing the harmonics dataset used by Tishby
     
     Args:
         name_ID: Identifier which is going to be part of the output filename
