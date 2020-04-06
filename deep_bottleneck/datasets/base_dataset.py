@@ -20,7 +20,7 @@ class Dataset:
 class LabelledDataset:
     """Representation of a labelled subset of a dataset.
 
-    This could be a trainging, test or validation set.
+    This could be a training, test or validation set.
     """
 
     @classmethod
