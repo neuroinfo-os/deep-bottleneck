@@ -8,7 +8,7 @@ def load():
     n_classes = 2
 
     X, y = make_classification(
-        n_samples=100_000,
+        n_samples=5_000,
         n_features=12,
         n_informative=6,
         n_redundant=4,
