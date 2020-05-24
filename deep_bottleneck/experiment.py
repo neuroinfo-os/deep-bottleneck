@@ -9,6 +9,7 @@ from random import randint
 from sacred import Experiment
 from sacred.observers import MongoObserver, FileStorageObserver
 
+import tensorflow as tf
 from tensorflow.python.keras import backend as K
 import tensorflow as tf
 from tensorflow.python.keras.callbacks import TensorBoard
@@ -26,9 +27,8 @@ matplotlib.use("agg")
 
 ex = Experiment("sacred_keras_example")
 
-NUM_THREADS = 20
-tf.config.threading.set_inter_op_parallelism_threads(NUM_THREADS)
-tf.config.threading.set_intra_op_parallelism_threads(NUM_THREADS)
+NUM_THREADS = 3
+K.set_session(tf.Session(config=tf.ConfigProto(intra_op_parallelism_threads=NUM_THREADS, inter_op_parallelism_threads=NUM_THREADS)))
 
 url, db_name = get_mongo_config()
 ex.observers.append(FileStorageObserver("runs"))
