@@ -1,0 +1,5 @@
+axes.titlesize: xx-large
+axes.labelsize: 22
+xtick.labelsize: x-large
+ytick.labelsize: x-large
+figure.dpi       : 300   
